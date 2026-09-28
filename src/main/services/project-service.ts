@@ -1,9 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import type { ProjectInfo } from "../../shared/project";
-
-const CONTENT_PATH = "src/server/lessons/content";
+import type { ProjectContent, ProjectInfo } from "../../shared/project";
+import { CONTENT_PATH } from "../constants";
 
 export async function openProject(projectPath: string): Promise<ProjectInfo> {
   const contentPath = path.join(projectPath, CONTENT_PATH);
@@ -21,5 +20,44 @@ export async function openProject(projectPath: string): Promise<ProjectInfo> {
   return {
     path: projectPath,
     contentPath,
+  };
+}
+
+export async function getProjectContent(
+  projectPath: string,
+): Promise<ProjectContent> {
+  const { contentPath } = await openProject(projectPath);
+  const languageEntries = await fs.readdir(contentPath, {
+    withFileTypes: true,
+  });
+
+  const lessonLanguages: ProjectContent["lessonLanguages"] = [];
+
+  for (const languageEntry of languageEntries) {
+    if (!languageEntry.isDirectory()) {
+      continue;
+    }
+
+    const languagePath = path.join(contentPath, languageEntry.name);
+
+    const levelEntries = await fs.readdir(languagePath, {
+      withFileTypes: true,
+    });
+
+    const levels = levelEntries
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+
+    lessonLanguages.push({
+      language: languageEntry.name,
+      levels,
+    });
+  }
+
+  return {
+    lessonLanguages: lessonLanguages.sort((a, b) =>
+      a.language.localeCompare(b.language),
+    ),
   };
 }

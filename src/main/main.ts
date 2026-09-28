@@ -1,7 +1,9 @@
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
-import { openProject } from "./services/project-service";
+import { getProjectContent, openProject } from "./services/project-service";
+import { getSettings, updateSettings } from "./services/settings-service";
+import { AppSettings } from "../shared/settings";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -63,6 +65,18 @@ ipcMain.handle("app:select-directory", async () => {
 
 ipcMain.handle("project:open", async (_, projectPath: string) => {
   return openProject(projectPath);
+});
+
+ipcMain.handle("project:get-content", async (_, projectPath: string) => {
+  return getProjectContent(projectPath);
+});
+
+ipcMain.handle("settings:get", async () => {
+  return getSettings();
+});
+
+ipcMain.handle("settings:update", async (_, updates: Partial<AppSettings>) => {
+  return updateSettings(updates);
 });
 
 app.on("activate", () => {
