@@ -8,6 +8,7 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,8 +19,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noUncheckedSideEffectImports": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "electron"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "forge.env.d.ts"]
 }

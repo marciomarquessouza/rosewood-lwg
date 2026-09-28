@@ -1,7 +1,7 @@
 {
   "name": "rosewood-lwg",
   "productName": "rosewood-lwg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "private": true,
@@ -10,6 +10,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],
@@ -36,7 +37,7 @@
     "electron": "44.4.5",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.32.0",
-    "typescript": "~4.5.4",
+    "typescript": "5.9.3",
     "vite": "^5.4.21"
   },
   "dependencies": {
