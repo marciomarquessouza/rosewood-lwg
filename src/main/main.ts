@@ -1,5 +1,4 @@
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
-import path from "node:path";
 import started from "electron-squirrel-startup";
 import { getProjectContent, openProject } from "./services/project-service";
 import { getSettings, updateSettings } from "./services/settings-service";

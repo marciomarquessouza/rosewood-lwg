@@ -1,3 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 export function Dashboard() {
-  return <div>Dashboard</div>;
+  const navigate = useNavigate();
+  return (
+    <div>
+      <button onClick={() => navigate("/language/de-DE/A1-1")}>
+        Language Level
+      </button>
+    </div>
+  );
 }

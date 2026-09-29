@@ -1,4 +1,11 @@
+import { useLocation, useNavigate } from "react-router-dom";
+
 export function Header() {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const isDashboard = pathname === "/";
+
   return (
     <header className="p-6 flex flex-row justify-between">
       <div>
@@ -11,8 +18,19 @@ export function Header() {
         </p>
       </div>
       <div>
-        <button className=" bg-rosewood-ink text-rosewood-bg p-2 text-sm">
-          DASHBOARD ◆
+        <button
+          onClick={isDashboard ? undefined : () => navigate(-1)}
+          className=" bg-rosewood-ink text-rosewood-bg p-2 text-sm min-w-32"
+        >
+          {isDashboard ? (
+            <span>
+              DASHBOARD <span className="text-lg">◆</span>
+            </span>
+          ) : (
+            <span>
+              BACK <span className="text-lg">◆</span>
+            </span>
+          )}
         </button>
       </div>
     </header>
