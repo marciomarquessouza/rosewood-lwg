@@ -1,8 +1,36 @@
-body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
-    sans-serif;
-  margin: auto;
-  max-width: 38rem;
-  padding: 2rem;
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Josefin Sans";
+  src: url("../assets/fonts/JosefinSans-VariableFont_wght.ttf")
+    format("truetype");
+  font-style: normal;
+  font-weight: 100 700;
+}
+
+@theme {
+  --font-josefin: "Josefin Sans", sans-serif;
+
+  --color-rosewood-bg: #f4e8ca;
+  --color-rosewood-surface: #ffffff;
+  --color-rosewood-ink: #22303d;
+  --color-rosewood-accent: #cc1745;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-josefin);
+    background: var(--color-rosewood-bg);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
 }

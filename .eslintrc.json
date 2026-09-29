@@ -12,5 +12,17 @@
     "plugin:import/electron",
     "plugin:import/typescript"
   ],
-  "parser": "@typescript-eslint/parser"
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "files": ["vite.*.config.ts", "vite.*.config.mts"],
+      "settings": {
+        "import/resolver": {
+          "typescript": {
+            "project": "./tsconfig.node.json"
+          }
+        }
+      }
+    }
+  ]
 }
