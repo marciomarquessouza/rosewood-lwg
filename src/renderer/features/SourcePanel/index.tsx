@@ -1,6 +1,6 @@
 import databaseIcon from "../../../assets/icons/database.svg";
 import { Button } from "../../components/Button";
-import { Panel } from "../../components/Panel.tsx";
+import { Panel } from "../../components/Panel/index.tsx";
 import { useProject } from "../../contexts/ProjectContext.tsx";
 import { SourceDetails } from "./SourceDetails";
 
@@ -9,7 +9,7 @@ export function SourcePanel() {
     useProject();
 
   return (
-    <aside className="w-64 shrink-0">
+    <aside className="w-68 shrink-0">
       <Panel
         variant="support"
         header={

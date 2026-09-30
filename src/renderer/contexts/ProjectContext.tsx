@@ -24,6 +24,7 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState<ProjectInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const contentPath = project?.contentPath  ? project?.contentPath.replace(project?.path, "") : "" 
 
   useEffect(() => {
     const loadProject = async () => {
@@ -80,7 +81,7 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
         connected: !!project,
         loading,
         projectPath: project?.path ?? "",
-        contentPath: project?.contentPath ?? "",
+        contentPath,
         connect: connectProject,
         error,
       }}
