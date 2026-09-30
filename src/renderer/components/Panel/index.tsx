@@ -17,6 +17,7 @@ export function Panel({
   className = "",
 }: PanelProps) {
   const isSupport = variant === "support";
+
   return (
     <section
       className={[
@@ -28,7 +29,7 @@ export function Panel({
       ].join(" ")}
     >
       {header && (
-        <header className="px-7 pt-6">
+        <header className="shrink-0 px-7 pt-6">
           {header}
 
           <div
@@ -40,10 +41,14 @@ export function Panel({
         </header>
       )}
 
-      <div className="p-7">{children}</div>
+      <div className="min-h-0 flex-1 p-7">
+        {children}
+      </div>
 
       {footer && (
-        <footer className="flex justify-center px-7 pb-6">{footer}</footer>
+        <footer className="flex shrink-0 justify-center px-7 pb-6">
+          {footer}
+        </footer>
       )}
     </section>
   );

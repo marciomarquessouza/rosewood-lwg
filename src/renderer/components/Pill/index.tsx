@@ -9,7 +9,7 @@ interface PillProps extends PropsWithChildren {
 
 const variants: Record<PillVariant, string> = {
   accent: "bg-rosewood-accent text-rosewood-surface",
-  dark: "bg-rosewood-ink text-rosewood-surface",
+  dark: "bg-rosewood-ink text-rosewood-white",
   info: " bg-rosewood-info text-rosewood-surface",
   neutral: "bg-rosewood-paper text-rosewood-ink",
 };

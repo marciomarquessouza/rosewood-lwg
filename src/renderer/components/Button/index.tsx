@@ -11,7 +11,7 @@ interface ButtonProps extends PropsWithChildren<
 const variants: Record<ButtonVariant, string> = {
   dark: ["bg-rosewood-ink", "text-white", "border-rosewood-ink"].join(" "),
   accent: ["bg-rosewood-accent", "text-white", "border-rosewood-ink"].join(" "),
-  light: ["bg-rosewood-bg", "text-rosewood-ink", "border-rosewood-ink"].join(
+  light: ["bg-rosewood-surface", "text-rosewood-ink", "border-rosewood-ink"].join(
     " ",
   ),
 };

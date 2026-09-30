@@ -6,6 +6,7 @@ import { levelSchema } from "../../schemas/level";
 import { projectContentSchema } from "../../schemas/project";
 import type { ProjectContentLines, ProjectInfo } from "../../shared/project";
 import { CONTENT_PATH } from "../constants";
+import { dayDirectorySchema } from "../../schemas/day";
 
 export async function openProject(projectPath: string): Promise<ProjectInfo> {
   const contentPath = path.join(projectPath, CONTENT_PATH);
@@ -65,10 +66,25 @@ export async function getProjectContent(
 
       const meta = JSON.parse(await fs.readFile(metaPath, "utf-8"));
 
+      const daysPath = path.join(levelPath, "days");
+
+      const dayEntries = await fs.readdir(daysPath, {
+        withFileTypes: true,
+      });
+
+      const days = dayEntries
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => dayDirectorySchema.safeParse(entry.name))
+        .filter((result) => result.success)
+        .map((result) => result.data)
+        .sort();
+
       const projectContent = projectContentSchema.parse({
         language,
         level,
         ...meta,
+        days,
+        createdDays: days.length,
       });
 
       lines.push(projectContent);

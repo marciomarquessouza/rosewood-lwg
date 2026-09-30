@@ -3,20 +3,23 @@ import { Pill } from "../../components/Pill";
 interface DashboardHeaderProps {
   lines: number;
 }
+
 export function DashboardHeader({ lines }: DashboardHeaderProps) {
   return (
-    <div className="flex flex-row">
-      <div className="flex min-w-4xl flex-col">
-        <p className="font-bold text-3xl uppercase">DASHBOARD</p>
-        <p className="text-rosewood-accent text-base">
+    <div className="flex items-center justify-between gap-4">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <p className="text-3xl font-bold uppercase">
+          Dashboard
+        </p>
+
+        <p className="text-base text-rosewood-accent">
           Language/Level Overview
         </p>
       </div>
-      <div className="flex justify-center items-center">
-        <Pill variant="accent">
-          {lines} {lines > 1 ? "items" : "item"}
-        </Pill>
-      </div>
+
+      <Pill variant="accent">
+        {lines} {lines === 1 ? "item" : "items"}
+      </Pill>
     </div>
   );
 }
