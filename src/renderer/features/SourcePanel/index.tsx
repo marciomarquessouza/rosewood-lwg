@@ -1,18 +1,11 @@
 import databaseIcon from "../../../assets/icons/database.svg";
 import { Button } from "../../components/Button";
 import { Panel } from "../../components/Panel.tsx";
-import { SourceDetails, SourceDetailsProps } from "./SourceDetails";
+import { useProject } from "../../contexts/ProjectContext.tsx";
+import { SourceDetails } from "./SourceDetails";
 
-interface SourcePanelProps extends SourceDetailsProps {
-  onReconnect: () => void;
-}
-
-export function SourcePanel({
-  projectPath,
-  contentPath,
-  connected,
-  onReconnect,
-}: SourcePanelProps) {
+export function SourcePanel() {
+  const { connected, projectPath, contentPath, connect } = useProject();
   return (
     <aside className="w-64 shrink-0">
       <Panel
@@ -24,15 +17,15 @@ export function SourcePanel({
           </div>
         }
         footer={
-          <Button variant="accent" onClick={onReconnect}>
-            Reconnect
+          <Button variant="accent" onClick={connect}>
+            {connected ? "Reconnect" : "Connect"}
           </Button>
         }
       >
         <SourceDetails
-          projectPath={projectPath}
-          contentPath={contentPath}
-          connected={connected}
+          projectPath={projectPath ?? ""}
+          contentPath={contentPath ?? ""}
+          connected={connected ?? ""}
         />
       </Panel>
     </aside>
