@@ -1,11 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import type { ProjectContent, ProjectInfo } from "../../shared/project";
-import { CONTENT_PATH } from "../constants";
 import { languageSchema } from "../../schemas/language";
 import { levelSchema } from "../../schemas/level";
-import { languageLevelSchema } from "../../schemas/languageLevel";
+import { projectContentSchema } from "../../schemas/project";
+import type { ProjectContentLines, ProjectInfo } from "../../shared/project";
+import { CONTENT_PATH } from "../constants";
 
 export async function openProject(projectPath: string): Promise<ProjectInfo> {
   const contentPath = path.join(projectPath, CONTENT_PATH);
@@ -28,63 +28,56 @@ export async function openProject(projectPath: string): Promise<ProjectInfo> {
 
 export async function getProjectContent(
   projectPath: string,
-): Promise<ProjectContent> {
+): Promise<ProjectContentLines> {
   const { contentPath } = await openProject(projectPath);
+
   const languageEntries = await fs.readdir(contentPath, {
     withFileTypes: true,
   });
 
-  const lessonLanguages: ProjectContent["lessonLanguages"] = [];
+  const lines: ProjectContentLines["lines"] = [];
 
   for (const languageEntry of languageEntries) {
-    if (!languageEntry.isDirectory()) {
-      continue;
-    }
+    if (!languageEntry.isDirectory()) continue;
 
-    const language = languageSchema.parse(languageEntry.name);
+    const languageResult = languageSchema.safeParse(languageEntry.name);
 
+    if (!languageResult.success) continue;
+
+    const language = languageResult.data;
     const languagePath = path.join(contentPath, languageEntry.name);
 
     const levelEntries = await fs.readdir(languagePath, {
       withFileTypes: true,
     });
 
-    const projects = [];
-
     for (const levelEntry of levelEntries) {
-      if (!levelEntry.isDirectory()) {
-        continue;
-      }
-      const level = levelSchema.parse(levelEntry.name);
-      const levelMetaPath = path.join(
-        contentPath,
-        languageEntry.name,
-        levelEntry.name,
-        "meta.json",
-      );
-      const levelMeta = await fs.readFile(levelMetaPath, "utf-8");
-      const meta = languageLevelSchema.parse(levelMeta);
-      projects.push({
+      if (!levelEntry.isDirectory()) continue;
+
+      const levelResult = levelSchema.safeParse(levelEntry.name);
+
+      if (!levelResult.success) continue;
+
+      const level = levelResult.data;
+      const levelPath = path.join(languagePath, levelEntry.name);
+
+      const metaPath = path.join(levelPath, "meta.json");
+
+      const meta = JSON.parse(await fs.readFile(metaPath, "utf-8"));
+
+      const projectContent = projectContentSchema.parse({
         language,
         level,
-        meta,
+        ...meta,
       });
+
+      lines.push(projectContent);
     }
-
-    // const levels = levelEntries
-    //   .filter((entry) => entry.isDirectory())
-    //   .map((entry) => levelSchema.parse(entry.name))
-    //   .sort();
-
-    lessonLanguages.push({
-      language,
-      levels: [],
-    });
   }
 
-  return {
-    lessonLanguages: lessonLanguages.sort((a, b) =>
-      a.language.localeCompare(b.language),
-    ),
-  };
+  lines.sort((a, b) =>
+    `${a.language}|${a.level}`.localeCompare(`${b.language}|${b.level}`),
+  );
+
+  return { lines };
 }

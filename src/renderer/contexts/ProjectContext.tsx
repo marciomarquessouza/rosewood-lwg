@@ -32,6 +32,7 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
         const settings = await window.rosewood.getSettings();
 
         if (!settings.projectPath) {
+          setProject(null)
           return;
         }
 

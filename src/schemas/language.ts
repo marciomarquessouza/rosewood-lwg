@@ -4,12 +4,7 @@ export const DEFAULT_PLAYER_LANGUAGE = "en-UK";
 
 export const DEFAULT_LESSON_LANGUAGE = "de-DE";
 
-export const SUPPORTED_LANGUAGES = [
-  "de-DE",
-  "en-UK",
-  "pt-BR",
-  "es-ES",
-] as const;
+export const SUPPORTED_LANGUAGES = ["de-DE", "en-UK", "pt-BR"] as const;
 
 export const languageSchema = z.enum(SUPPORTED_LANGUAGES);
 

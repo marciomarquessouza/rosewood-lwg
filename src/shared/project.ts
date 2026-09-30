@@ -1,14 +1,10 @@
-import { Language } from "../schemas/language";
-import { Level } from "../schemas/level";
+import { ProjectContent } from "../schemas/project";
 
 export interface ProjectInfo {
   path: string;
   contentPath: string;
 }
 
-export interface ProjectContent {
-  lessonLanguages: {
-    language: Language;
-    levels: Level[];
-  }[];
+export interface ProjectContentLines {
+  lines: ProjectContent[];
 }

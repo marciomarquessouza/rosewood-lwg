@@ -14,6 +14,12 @@ export function createMainWindow() {
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+
+    if (process.env.ROSEWOOD_DEVTOOLS === "true") {
+      mainWindow.webContents.openDevTools({
+        mode: "detach",
+      });
+    }
   } else {
     mainWindow.loadFile(
       path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
