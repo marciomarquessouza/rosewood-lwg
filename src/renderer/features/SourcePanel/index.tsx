@@ -5,7 +5,9 @@ import { useProject } from "../../contexts/ProjectContext.tsx";
 import { SourceDetails } from "./SourceDetails";
 
 export function SourcePanel() {
-  const { connected, projectPath, contentPath, connect } = useProject();
+  const { connected, projectPath, contentPath, connect, error, loading } =
+    useProject();
+
   return (
     <aside className="w-64 shrink-0">
       <Panel
@@ -17,15 +19,16 @@ export function SourcePanel() {
           </div>
         }
         footer={
-          <Button variant="accent" onClick={connect}>
-            {connected ? "Reconnect" : "Connect"}
+          <Button variant="accent" onClick={connect} disabled={loading}>
+            {loading ? "◆ Loading..." : connected ? "Reconnect" : "Connect"}
           </Button>
         }
       >
         <SourceDetails
-          projectPath={projectPath ?? ""}
-          contentPath={contentPath ?? ""}
-          connected={connected ?? ""}
+          projectPath={projectPath}
+          contentPath={contentPath}
+          connected={connected}
+          error={error}
         />
       </Panel>
     </aside>

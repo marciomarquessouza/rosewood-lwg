@@ -2,15 +2,22 @@ export interface SourceDetailsProps {
   projectPath: string;
   contentPath: string;
   connected: boolean;
+  error: string | null;
 }
 
 export function SourceDetails({
   projectPath,
   contentPath,
   connected,
+  error,
 }: SourceDetailsProps) {
   return (
     <div className="text-sm">
+      {error && (
+        <p className="bg-rosewood-accent p-2 text-rosewood-surface">
+          ◆ {error}
+        </p>
+      )}
       <p className="mb-1 font-light">
         ◆ {connected ? "CONNECTED:" : "DISCONNECTED:"}
       </p>
