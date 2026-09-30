@@ -1,3 +1,6 @@
+import { Language } from "../schemas/language";
+import { Level } from "../schemas/level";
+
 export interface ProjectInfo {
   path: string;
   contentPath: string;
@@ -5,7 +8,7 @@ export interface ProjectInfo {
 
 export interface ProjectContent {
   lessonLanguages: {
-    language: string;
-    levels: string[];
+    language: Language;
+    levels: Level[];
   }[];
 }
