@@ -7,7 +7,7 @@ export function AppLayout() {
       <div className="flex h-full min-h-0 flex-col border border-dashed border-rosewood-ink/50">
         <Header />
 
-        <main className="min-h-0 flex-1 px-6 py-2">
+        <main className="flex min-h-0 flex-1 flex-col px-6 py-2">
           <Outlet />
         </main>
       </div>

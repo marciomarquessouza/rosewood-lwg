@@ -7,7 +7,7 @@ import {
 } from "react";
 import { ProjectInfo } from "../../shared/project";
 
-interface ProjectContextValue {
+interface ProjectInfoContextValue {
   connected: boolean;
   loading: boolean;
   projectPath: string;
@@ -16,15 +16,17 @@ interface ProjectContextValue {
   connect?: () => Promise<void>;
 }
 
-const ProjectContext = createContext<ProjectContextValue | undefined>(
+const ProjectInfoContext = createContext<ProjectInfoContextValue | undefined>(
   undefined,
 );
 
-export const ProjectProvider = ({ children }: PropsWithChildren) => {
+export const ProjectInfoProvider = ({ children }: PropsWithChildren) => {
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState<ProjectInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const contentPath = project?.contentPath  ? project?.contentPath.replace(project?.path, "") : "" 
+  const contentPath = project?.contentPath
+    ? project?.contentPath.replace(project?.path, "")
+    : "";
 
   useEffect(() => {
     const loadProject = async () => {
@@ -32,7 +34,7 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
         const settings = await window.rosewood.getSettings();
 
         if (!settings.projectPath) {
-          setProject(null)
+          setProject(null);
           return;
         }
 
@@ -77,7 +79,7 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <ProjectContext.Provider
+    <ProjectInfoContext.Provider
       value={{
         connected: !!project,
         loading,
@@ -88,15 +90,15 @@ export const ProjectProvider = ({ children }: PropsWithChildren) => {
       }}
     >
       {children}
-    </ProjectContext.Provider>
+    </ProjectInfoContext.Provider>
   );
 };
 
-export const useProject = () => {
-  const context = useContext(ProjectContext);
+export const useProjectInfo = () => {
+  const context = useContext(ProjectInfoContext);
 
   if (!context) {
-    throw new Error("useProject must be used within ProjectProvider");
+    throw new Error("useProjectInfo must be used within ProjectProvider");
   }
 
   return context;

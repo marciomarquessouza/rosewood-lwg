@@ -1,12 +1,12 @@
 import databaseIcon from "../../../assets/icons/database.svg";
 import { Button } from "../../components/Button";
 import { Panel } from "../../components/Panel/index.tsx";
-import { useProject } from "../../contexts/ProjectContext.tsx";
+import { useProjectInfo } from "../../contexts/ProjectInfoContext.tsx";
 import { SourceDetails } from "./SourceDetails";
 
 export function SourcePanel() {
   const { connected, projectPath, contentPath, connect, error, loading } =
-    useProject();
+    useProjectInfo();
 
   return (
     <aside className="w-68 shrink-0">

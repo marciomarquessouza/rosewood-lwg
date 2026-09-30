@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { LANGUAGE_DETAILS } from "../../../constants";
 import { ProjectContent } from "../../../schemas/project";
 import { Button } from "../../components/Button";
@@ -10,6 +11,8 @@ export function DashboardItem({
   plannedDays,
   createdDays,
 }: ProjectContent) {
+  const navigate = useNavigate();
+
   return (
     <div
       className={[
@@ -28,7 +31,12 @@ export function DashboardItem({
       </div>
       <div className="flex items-center justify-center gap-4">
         <div className="flex gap-3">
-          <Button variant="light">Edit</Button>
+          <Button
+            variant="light"
+            onClick={() => navigate(`/project/${language}/${level}`)}
+          >
+            Edit
+          </Button>
           <Button variant="light">Add Day</Button>
           <Button variant="accent">Remove</Button>
         </div>
