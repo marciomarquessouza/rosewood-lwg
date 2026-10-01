@@ -11,6 +11,7 @@ export const projectContentSchema = z.object({
   plannedDays: z.number().int().min(0).default(0),
   createdDays: z.number().int().min(0).default(0),
   days: z.array(z.string()),
+  locales: z.array(languageSchema).default([]),
 });
 
 export type ProjectContent = z.infer<typeof projectContentSchema>;

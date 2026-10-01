@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   initialState,
   projectFormReducer,
@@ -6,11 +6,26 @@ import {
 } from "./projectFormReducer";
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
 import { LANGUAGE_DETAILS } from "../../../../constants";
+import { Level } from "../../../../schemas/level";
+import { useProjectContent } from "../../../contexts/ProjectContentContext";
+import { ProjectContent } from "../../../../schemas/project";
+import { createProjectFormState } from "../helpers/createProjectFormState";
 
-export function useProjectForm() {
+interface ProjectFormOptions {
+  projectLng?: Language | null;
+  projectLevel?: Level | null;
+  isUpdate: boolean;
+}
+
+export function useProjectForm({
+  projectLng,
+  projectLevel,
+  isUpdate,
+}: ProjectFormOptions) {
+  const { projectContent } = useProjectContent();
   const [state, dispatch] = useReducer(projectFormReducer, initialState);
   const supportedLanguages = SUPPORTED_LANGUAGES.filter(
-    (language) => !state.locales.includes(language),
+    (language) => !state.locales.includes(language) && language !== projectLng,
   ).map((language) => ({
     value: language,
     label: LANGUAGE_DETAILS[language].name,
@@ -42,6 +57,26 @@ export function useProjectForm() {
   const removeLocale = (locale: Language) => {
     dispatch({ type: "REMOVE_LOCALE", locale });
   };
+
+  useEffect(() => {
+    if (!isUpdate || !projectContent || !projectLng || !projectLevel) {
+      return;
+    }
+
+    const project = projectContent.lines.find(
+      ({ language, level }) =>
+        language === projectLng && level === projectLevel,
+    );
+
+    if (!project) {
+      return;
+    }
+
+    dispatch({
+      type: "INITIALIZE",
+      payload: createProjectFormState(project),
+    });
+  }, [isUpdate, projectContent, projectLng, projectLevel]);
 
   return {
     state,

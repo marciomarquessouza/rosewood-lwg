@@ -3,7 +3,7 @@ import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
 export type ProjectFormState = {
   description: string;
   lore: string;
-  plannedLessons: string;
+  lessonPlan: string;
   plannedDays: number;
   selectedLocale: Language | null;
   locales: Language[];
@@ -12,13 +12,17 @@ export type ProjectFormState = {
 export const initialState: ProjectFormState = {
   description: "",
   lore: "",
-  plannedLessons: "",
+  lessonPlan: "",
   plannedDays: 20,
   selectedLocale: SUPPORTED_LANGUAGES[0] ?? null,
   locales: [],
 };
 
 type ProjectFormAction =
+  | {
+      type: "INITIALIZE";
+      payload: ProjectFormState;
+    }
   | {
       type: "SET_FIELD";
       field: keyof ProjectFormState;
@@ -42,6 +46,8 @@ export function projectFormReducer(
   action: ProjectFormAction,
 ): ProjectFormState {
   switch (action.type) {
+    case "INITIALIZE":
+      return action.payload;
     case "SET_FIELD":
       return {
         ...state,

@@ -15,9 +15,13 @@ export function ProjectForm() {
   const params = useParams();
   const language = params ? (params["language"] as Language) : null;
   const level = params ? (params["level"] as Level) : null;
-  const isUpdate = language && level;
+  const isUpdate = !!(language && level);
   const { state, setField, addLocale, removeLocale, supportedLanguages } =
-    useProjectForm();
+    useProjectForm({
+      projectLevel: level,
+      projectLng: language,
+      isUpdate
+    });
 
   return (
     <Panel
@@ -58,12 +62,12 @@ export function ProjectForm() {
                 onChange={(event) => setField("lore", event.target.value)}
               />
               <TextArea
-                id="planned-lesson"
+                id="lesson-plan"
                 label="Planned Lessons"
                 placeholder="Write overview outline here..."
-                value={state.plannedLessons}
+                value={state.lessonPlan}
                 onChange={(event) =>
-                  setField("plannedLessons", event.target.value)
+                  setField("lessonPlan", event.target.value)
                 }
               />
               <div className="w-32">
