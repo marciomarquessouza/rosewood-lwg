@@ -1,14 +1,28 @@
 import type { InputHTMLAttributes } from "react";
 
+type LabelVariant = "dark" | "accent";
+
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  labelVariant?: LabelVariant;
 }
 
-export function Input({ label, id, className = "", ...props }: InputProps) {
+const variants: Record<LabelVariant, string> = {
+  dark: ["font-bold", "text-rosewood-ink"].join(" "),
+  accent: ["font-bold", "text-rosewood-accent"].join(" "),
+};
+
+export function Input({
+  label,
+  id,
+  labelVariant = "dark",
+  className = "",
+  ...props
+}: InputProps) {
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={id} className="font-bold text-rosewood-ink">
+        <label htmlFor={id} className={variants[labelVariant]}>
           {label}
         </label>
       )}

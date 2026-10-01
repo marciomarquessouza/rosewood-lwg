@@ -6,9 +6,8 @@ import {
 } from "./projectFormReducer";
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
 import { LANGUAGE_DETAILS } from "../../../../constants";
-import { Level } from "../../../../schemas/level";
+import { Level, SUPPORTED_LEVELS } from "../../../../schemas/level";
 import { useProjectContent } from "../../../contexts/ProjectContentContext";
-import { ProjectContent } from "../../../../schemas/project";
 import { createProjectFormState } from "../helpers/createProjectFormState";
 
 interface ProjectFormOptions {
@@ -24,7 +23,15 @@ export function useProjectForm({
 }: ProjectFormOptions) {
   const { projectContent } = useProjectContent();
   const [state, dispatch] = useReducer(projectFormReducer, initialState);
-  const supportedLanguages = SUPPORTED_LANGUAGES.filter(
+  const supportedLanguages = SUPPORTED_LANGUAGES.map((language) => ({
+    value: language,
+    label: LANGUAGE_DETAILS[language].name,
+  }));
+  const supportedLevels = SUPPORTED_LEVELS.map((level) => ({
+    value: level,
+    label: level,
+  }));
+  const supportedLocales = SUPPORTED_LANGUAGES.filter(
     (language) => !state.locales.includes(language) && language !== projectLng,
   ).map((language) => ({
     value: language,
@@ -84,5 +91,7 @@ export function useProjectForm({
     addLocale,
     removeLocale,
     supportedLanguages,
+    supportedLocales,
+    supportedLevels,
   };
 }

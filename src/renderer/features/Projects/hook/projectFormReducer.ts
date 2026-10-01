@@ -1,6 +1,9 @@
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
+import { Level } from "../../../../schemas/level";
 
 export type ProjectFormState = {
+  language: Language;
+  level: Level;
   description: string;
   lore: string;
   lessonPlan: string;
@@ -10,6 +13,8 @@ export type ProjectFormState = {
 };
 
 export const initialState: ProjectFormState = {
+  language: "de-DE",
+  level: "A1-1",
   description: "",
   lore: "",
   lessonPlan: "",
