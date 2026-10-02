@@ -12,6 +12,7 @@ import { useProjectInfo } from "./ProjectInfoContext";
 interface ProjectContentContextValue {
   loading: boolean;
   projectContent: ProjectContentLines | null;
+  loadProjectContent: () => Promise<void>;
   error: string | null;
 }
 
@@ -40,35 +41,36 @@ export function ProjectContentProvider({
       return;
     }
 
-    const loadProjectContent = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const content = await window.rosewood.getProjectContent(projectPath);
-
-        setProjectContent(content);
-      } catch (error) {
-        setProjectContent(null);
-
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Unable to open project content.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     void loadProjectContent();
   }, [connected, projectPath]);
+
+  const loadProjectContent = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const content = await window.rosewood.getProjectContent(projectPath);
+
+      setProjectContent(content);
+    } catch (error) {
+      setProjectContent(null);
+
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Unable to open project content.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ProjectContentContext.Provider
       value={{
         loading,
         projectContent,
+        loadProjectContent,
         error,
       }}
     >

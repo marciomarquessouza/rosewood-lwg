@@ -1,31 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
-import { languageSchema } from "../../schemas/language";
-import { levelSchema } from "../../schemas/level";
-import { projectContentSchema } from "../../schemas/project";
-import type { ProjectContentLines, ProjectInfo } from "../../shared/project";
-import { CONTENT_PATH } from "../constants";
-import { dayDirectorySchema } from "../../schemas/day";
-
-export async function openProject(projectPath: string): Promise<ProjectInfo> {
-  const contentPath = path.join(projectPath, CONTENT_PATH);
-
-  try {
-    const stat = await fs.stat(contentPath);
-
-    if (!stat.isDirectory()) {
-      throw new Error();
-    }
-  } catch {
-    throw new Error(`Invalid LWG project: ${CONTENT_PATH} was not found.`);
-  }
-
-  return {
-    path: projectPath,
-    contentPath,
-  };
-}
+import { ProjectContentLines } from "../../../shared/project";
+import { openProject } from "./openProject";
+import { languageSchema } from "../../../schemas/language";
+import { levelSchema } from "../../../schemas/level";
+import { dayDirectorySchema } from "../../../schemas/day";
+import { projectContentSchema } from "../../../schemas/project";
 
 export async function getProjectContent(
   projectPath: string,

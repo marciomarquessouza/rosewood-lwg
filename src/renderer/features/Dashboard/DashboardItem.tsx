@@ -4,14 +4,59 @@ import { ProjectContent } from "../../../schemas/project";
 import { Button } from "../../components/Button";
 import { Pill } from "../../components/Pill";
 import { ProgressBar } from "../../components/ProgressBar";
+import { useState } from "react";
+import { FeedbackTypes } from "../../components/Feedback";
+import { useProjectInfo } from "../../contexts/ProjectInfoContext";
+import { useProjectContent } from "../../contexts/ProjectContentContext";
+
+interface DashboardItemProps extends ProjectContent {
+  onFeedback: (feedback: { type: FeedbackTypes; message: string } | null) => void;
+}
 
 export function DashboardItem({
   level,
   language,
   plannedDays,
   createdDays,
-}: ProjectContent) {
+  onFeedback,
+}: DashboardItemProps) {
   const navigate = useNavigate();
+  const { loadProjectContent } = useProjectContent();
+  const [loading, setLoading] = useState(false);
+  const { projectPath } = useProjectInfo();
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm(
+      `Remove ${LANGUAGE_DETAILS[language].name} ${level}? This will permanently delete all its content.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+    onFeedback(null);
+    setLoading(true);
+
+    try {
+      await window.rosewood.deleteProjectContent(projectPath, language, level);
+      await loadProjectContent();
+      onFeedback({
+        type: "success",
+        message: "Scarlett removed your project (She is smiling)",
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Scarlett was not able to remove your project (She is crying)";
+
+      onFeedback({
+        type: "error",
+        message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div
@@ -37,8 +82,12 @@ export function DashboardItem({
           >
             Edit
           </Button>
-          <Button variant="light">Add Day</Button>
-          <Button variant="accent">Remove</Button>
+
+          <Button variant="light">Day List</Button>
+
+          <Button variant="accent" loading={loading} onClick={handleDelete}>
+            Remove
+          </Button>
         </div>
         <ProgressBar value={createdDays} max={plannedDays} />
       </div>

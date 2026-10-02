@@ -10,15 +10,21 @@ import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";
 import { Select } from "../../components/Select";
 import { Pill } from "../../components/Pill";
+import { Feedback } from "../../components/Feedback";
 
 export function ProjectForm() {
-  const params = useParams();
-  const language = params ? (params["language"] as Language) : null;
-  const level = params ? (params["level"] as Level) : null;
-  const isUpdate = !!(language && level);
+  const { language: languageParam, level: levelParam } = useParams();
+
+  const language = languageParam as Language | undefined;
+  const level = levelParam as Level | undefined;
+
+  const isUpdate = Boolean(language && level);
   const {
     state,
+    loading,
+    apiFeedback,
     setField,
+    setLanguage,
     addLocale,
     removeLocale,
     supportedLocales,
@@ -38,11 +44,11 @@ export function ProjectForm() {
         <div className="flex items-center justify-between gap-4">
           <p className="text-2xl font-bold">
             {isUpdate
-              ? `${level} ${LANGUAGE_DETAILS[language].name} [${language}]`
+              ? `${level} ${LANGUAGE_DETAILS[language as Language].name} [${language}]`
               : "New Project"}
           </p>
           <div>
-            <Button onClick={handleSubmit} variant="accent">
+            <Button loading={loading} onClick={handleSubmit} variant="accent">
               {isUpdate ? "Save Changes" : "Create"}
             </Button>
           </div>
@@ -51,8 +57,13 @@ export function ProjectForm() {
     >
       <div className="h-full overflow-y-auto">
         <div className="flex flex-col gap-4">
+          {apiFeedback && (
+            <Feedback variant={apiFeedback.type}>
+              {apiFeedback.message}
+            </Feedback>
+          )}
           <Collapsible title="Details">
-            <form className="flex flex-col gap-3 pl-4">
+            <div className="flex flex-col gap-3 pl-4">
               <div className=" flex flex-row gap-2">
                 <div id="language" className=" w-40">
                   {isUpdate ? (
@@ -68,10 +79,10 @@ export function ProjectForm() {
                     <Select
                       id="language"
                       label="Language"
-                      value={state.language ?? ""}
+                      value={state.language}
                       className="w-38"
                       onChange={(event) =>
-                        setField("language", event.target.value as Language)
+                        setLanguage(event.target.value as Language)
                       }
                       options={supportedLanguages}
                     />
@@ -140,7 +151,7 @@ export function ProjectForm() {
                 error={state.errors.lessonPlan}
                 onChange={(event) => setField("lessonPlan", event.target.value)}
               />
-            </form>
+            </div>
           </Collapsible>
           <Collapsible title="Locales">
             {supportedLocales.length > 0 && (
@@ -171,9 +182,7 @@ export function ProjectForm() {
               </div>
             )}
             {state.errors.locales && (
-              <div className="bg-rosewood-accent p-2 text-white my-2">
-                <p>{state.errors.locales}</p>
-              </div>
+              <Feedback variant="error">{state.errors.locales}</Feedback>
             )}
             <ul className="flex flex-row my-2 pl-4 gap-2">
               {state.locales.map((locale) => (

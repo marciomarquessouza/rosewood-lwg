@@ -1,10 +1,13 @@
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import started from "electron-squirrel-startup";
-import { getProjectContent, openProject } from "./services/project-service";
-import { getSettings, updateSettings } from "./services/settings-service";
 import { AppSettings } from "../shared/settings";
 import { createSplashWindow } from "./windows/createSplashWindow";
 import { createMainWindow } from "./windows/createMainWindow";
+import { settingsServices } from "./services/settings";
+import { projectServices } from "./services/project";
+import { ProjectContent } from "../schemas/project";
+import { Level } from "../schemas/level";
+import { Language } from "../schemas/language";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -55,19 +58,33 @@ ipcMain.handle("app:select-directory", async () => {
 });
 
 ipcMain.handle("project:open", async (_, projectPath: string) => {
-  return openProject(projectPath);
+  return projectServices.openProject(projectPath);
 });
 
 ipcMain.handle("project:get-content", async (_, projectPath: string) => {
-  return getProjectContent(projectPath);
+  return projectServices.getProjectContent(projectPath);
 });
 
+ipcMain.handle(
+  "project:save-content",
+  async (_, targetPath: string, content: ProjectContent) => {
+    return projectServices.saveProjectContent(targetPath, content);
+  },
+);
+
+ipcMain.handle(
+  "project:delete-content",
+  async (_, targetPath: string, language: Language, level: Level) => {
+    return projectServices.deleteProjectContent(targetPath, language, level);
+  },
+);
+
 ipcMain.handle("settings:get", async () => {
-  return getSettings();
+  return settingsServices.getSettings();
 });
 
 ipcMain.handle("settings:update", async (_, updates: Partial<AppSettings>) => {
-  return updateSettings(updates);
+  return settingsServices.updateSettings(updates);
 });
 
 app.on("activate", () => {

@@ -1,16 +1,24 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Button } from "../../components/Button";
+import { Feedback, FeedbackTypes } from "../../components/Feedback";
 import { Panel } from "../../components/Panel";
+import { useProjectContent } from "../../contexts/ProjectContentContext";
+import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { SourcePanel } from "../SourcePanel";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardItem } from "./DashboardItem";
-import { useProjectContent } from "../../contexts/ProjectContentContext";
-import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 
 export function Dashboard() {
+  const navigate = useNavigate();
   const { connected } = useProjectInfo();
   const { projectContent, error } = useProjectContent();
-  const navigate = useNavigate();
+
+  const [feedback, setFeedback] = useState<{
+    type: FeedbackTypes;
+    message: string;
+  } | null>(null);
 
   if (error) {
     return (
@@ -26,10 +34,15 @@ export function Dashboard() {
 
       <Panel
         className="flex min-h-0 flex-1 flex-col"
-        header={<DashboardHeader lines={projectContent?.lines.length ?? 0} />}
+        header={
+          <DashboardHeader lines={projectContent?.lines.length ?? 0} />
+        }
         footer={
           <div className="flex flex-1 items-end justify-end">
-            <Button onClick={() => navigate("/project/new")} variant="dark">
+            <Button
+              variant="dark"
+              onClick={() => navigate("/project/new")}
+            >
               Add New Language/Level
             </Button>
           </div>
@@ -44,13 +57,27 @@ export function Dashboard() {
             <span className="text-rosewood-accent">◆</span> Loading...
           </p>
         ) : (
-          <ul className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto">
-            {projectContent.lines.map((line) => (
-              <li key={`${line.language}-${line.level}`}>
-                <DashboardItem {...line} />
-              </li>
-            ))}
-          </ul>
+          <>
+            {feedback && (
+              <Feedback
+                variant={feedback.type}
+                className="my-2"
+              >
+                {feedback.message}
+              </Feedback>
+            )}
+
+            <ul className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto">
+              {projectContent.lines.map((line) => (
+                <li key={`${line.language}-${line.level}`}>
+                  <DashboardItem
+                    {...line}
+                    onFeedback={setFeedback}
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </Panel>
     </div>
