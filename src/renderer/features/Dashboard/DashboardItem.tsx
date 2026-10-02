@@ -1,62 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import { LANGUAGE_DETAILS } from "../../../constants";
 import { ProjectContent } from "../../../schemas/project";
+import { ProgressBar } from "../../components/ProgressBar";
+import { Language } from "../../../schemas/language";
+import { Level } from "../../../schemas/level";
 import { Button } from "../../components/Button";
 import { Pill } from "../../components/Pill";
-import { ProgressBar } from "../../components/ProgressBar";
-import { useState } from "react";
-import { FeedbackTypes } from "../../components/Feedback";
-import { useProjectInfo } from "../../contexts/ProjectInfoContext";
-import { useProjectContent } from "../../contexts/ProjectContentContext";
 
 interface DashboardItemProps extends ProjectContent {
-  onFeedback: (feedback: { type: FeedbackTypes; message: string } | null) => void;
+  loading: boolean;
+  onDelete: (language: Language, level: Level) => void;
 }
 
 export function DashboardItem({
+  loading,
   level,
   language,
   plannedDays,
   createdDays,
-  onFeedback,
+  onDelete,
 }: DashboardItemProps) {
   const navigate = useNavigate();
-  const { loadProjectContent } = useProjectContent();
-  const [loading, setLoading] = useState(false);
-  const { projectPath } = useProjectInfo();
-
-  const handleDelete = async () => {
-    const confirmed = window.confirm(
-      `Remove ${LANGUAGE_DETAILS[language].name} ${level}? This will permanently delete all its content.`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-    onFeedback(null);
-    setLoading(true);
-
-    try {
-      await window.rosewood.deleteProjectContent(projectPath, language, level);
-      await loadProjectContent();
-      onFeedback({
-        type: "success",
-        message: "Scarlett removed your project (She is smiling)",
-      });
-    } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Scarlett was not able to remove your project (She is crying)";
-
-      onFeedback({
-        type: "error",
-        message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div
@@ -85,7 +49,11 @@ export function DashboardItem({
 
           <Button variant="light">Day List</Button>
 
-          <Button variant="accent" loading={loading} onClick={handleDelete}>
+          <Button
+            variant="accent"
+            loading={loading}
+            onClick={() => onDelete(language, level)}
+          >
             Remove
           </Button>
         </div>

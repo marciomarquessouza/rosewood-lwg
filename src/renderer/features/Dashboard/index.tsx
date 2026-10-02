@@ -9,16 +9,54 @@ import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { SourcePanel } from "../SourcePanel";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardItem } from "./DashboardItem";
+import { LANGUAGE_DETAILS } from "../../../constants";
+import { Language } from "../../../schemas/language";
+import { Level } from "../../../schemas/level";
 
 export function Dashboard() {
   const navigate = useNavigate();
   const { connected } = useProjectInfo();
   const { projectContent, error } = useProjectContent();
-
+  const { loadProjectContent } = useProjectContent();
+  const [loading, setLoading] = useState(false);
+  const { projectPath } = useProjectInfo();
   const [feedback, setFeedback] = useState<{
     type: FeedbackTypes;
     message: string;
   } | null>(null);
+
+  const handleDelete = async (language: Language, level: Level) => {
+    const confirmed = window.confirm(
+      `Remove ${LANGUAGE_DETAILS[language].name} ${level}? This will permanently delete all its content.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+    setFeedback(null);
+    setLoading(true);
+
+    try {
+      await window.rosewood.deleteProjectContent(projectPath, language, level);
+      await loadProjectContent();
+      setFeedback({
+        type: "success",
+        message: "Scarlett removed your project (She is smiling)",
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Scarlett was not able to remove your project (She is crying)";
+
+      setFeedback({
+        type: "error",
+        message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (error) {
     return (
@@ -34,15 +72,10 @@ export function Dashboard() {
 
       <Panel
         className="flex min-h-0 flex-1 flex-col"
-        header={
-          <DashboardHeader lines={projectContent?.lines.length ?? 0} />
-        }
+        header={<DashboardHeader lines={projectContent?.lines.length ?? 0} />}
         footer={
           <div className="flex flex-1 items-end justify-end">
-            <Button
-              variant="dark"
-              onClick={() => navigate("/project/new")}
-            >
+            <Button variant="dark" onClick={() => navigate("/project/new")}>
               Add New Language/Level
             </Button>
           </div>
@@ -61,7 +94,9 @@ export function Dashboard() {
             {feedback && (
               <Feedback
                 variant={feedback.type}
-                className="my-2"
+                className="mb-2"
+                timeout={8_000}
+                onTimeout={() => setFeedback(null)}
               >
                 {feedback.message}
               </Feedback>
@@ -72,7 +107,8 @@ export function Dashboard() {
                 <li key={`${line.language}-${line.level}`}>
                   <DashboardItem
                     {...line}
-                    onFeedback={setFeedback}
+                    loading={loading}
+                    onDelete={handleDelete}
                   />
                 </li>
               ))}
