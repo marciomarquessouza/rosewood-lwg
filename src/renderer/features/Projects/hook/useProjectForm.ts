@@ -129,6 +129,7 @@ export function useProjectForm({
 
   useEffect(() => {
     if (!isUpdate || !projectContent || !projectLng || !projectLevel) {
+      setLanguage("de-DE");
       return;
     }
 
@@ -182,7 +183,7 @@ export function useProjectForm({
 
       setApiFeedback({
         type: "success",
-        message: `Scarlett ${isUpdate ? "updated" : "created"} the project ${projectReference}`,
+        message: `Project ${isUpdate ? "updated" : "created"}: ${projectReference}`,
       });
     } catch (error) {
       console.error(error);

@@ -41,13 +41,11 @@ export function Dashboard() {
       await loadProjectContent();
       setFeedback({
         type: "success",
-        message: "Scarlett removed your project (She is smiling)",
+        message: `Project removed - ${language}|${level}`,
       });
     } catch (error) {
       const message =
-        error instanceof Error
-          ? error.message
-          : "Scarlett was not able to remove your project (She is crying)";
+        error instanceof Error ? error.message : "Unexpected error";
 
       setFeedback({
         type: "error",
