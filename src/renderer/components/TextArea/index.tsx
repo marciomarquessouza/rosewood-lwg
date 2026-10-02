@@ -2,14 +2,18 @@ import type { TextareaHTMLAttributes } from "react";
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
+  error?: string;
 }
 
 export function TextArea({
   label,
   id,
+  error,
   className = "",
   ...props
 }: TextAreaProps) {
+  const errorId = id ? `${id}-error` : undefined;
+
   return (
     <div className="flex flex-col gap-1">
       {label && (
@@ -20,13 +24,15 @@ export function TextArea({
 
       <textarea
         id={id}
+        aria-invalid={!!error}
+        aria-describedby={error ? errorId : undefined}
         className={`
           min-h-16
           w-full
           resize-y
           rounded-md
           border-2
-          border-rosewood-ink
+          ${error ? "border-rosewood-accent" : "border-rosewood-ink"}
           bg-rosewood-surface
           px-3
           py-2
@@ -41,6 +47,16 @@ export function TextArea({
         `}
         {...props}
       />
+
+      {error && (
+        <span
+          id={errorId}
+          role="alert"
+          className="text-sm font-bold text-rosewood-accent"
+        >
+          {error}
+        </span>
+      )}
     </div>
   );
 }

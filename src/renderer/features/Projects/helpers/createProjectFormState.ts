@@ -13,5 +13,6 @@ export const createProjectFormState = (
     plannedDays: project.plannedDays ?? 20,
     locales: project.locales ?? [],
     selectedLocale: "de-DE",
+    errors: {},
   };
 };

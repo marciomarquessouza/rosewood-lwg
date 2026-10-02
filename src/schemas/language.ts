@@ -6,7 +6,7 @@ export const DEFAULT_LESSON_LANGUAGE = "de-DE";
 
 export const SUPPORTED_LANGUAGES = ["de-DE", "en-UK", "pt-BR"] as const;
 
-export const languageSchema = z.enum(SUPPORTED_LANGUAGES);
+export const languageSchema = z.enum(SUPPORTED_LANGUAGES, "Invalid Language");
 
 export type Language = z.infer<typeof languageSchema>;
 

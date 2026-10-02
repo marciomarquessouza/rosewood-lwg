@@ -1,6 +1,8 @@
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
 import { Level } from "../../../../schemas/level";
 
+export type ProjectFormField = Exclude<keyof ProjectFormState, "errors">;
+
 export type ProjectFormState = {
   language: Language;
   level: Level;
@@ -10,6 +12,7 @@ export type ProjectFormState = {
   plannedDays: number;
   selectedLocale: Language | null;
   locales: Language[];
+  errors: Partial<Record<ProjectFormField, string>>;
 };
 
 export const initialState: ProjectFormState = {
@@ -21,6 +24,7 @@ export const initialState: ProjectFormState = {
   plannedDays: 20,
   selectedLocale: SUPPORTED_LANGUAGES[0] ?? null,
   locales: [],
+  errors: {},
 };
 
 type ProjectFormAction =
@@ -40,6 +44,10 @@ type ProjectFormAction =
   | {
       type: "REMOVE_LOCALE";
       locale: Language;
+    }
+  | {
+      type: "SET_ERRORS";
+      errors: ProjectFormState["errors"];
     }
   | {
       type: "RESET";
@@ -69,6 +77,12 @@ export function projectFormReducer(
       return {
         ...state,
         locales: state.locales.filter((locale) => locale !== action.locale),
+      };
+
+    case "SET_ERRORS":
+      return {
+        ...state,
+        errors: action.errors,
       };
 
     case "RESET":

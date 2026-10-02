@@ -13,7 +13,7 @@ export const SUPPORTED_LEVELS = [
   "B2-2",
 ] as const;
 
-export const levelSchema = z.enum(SUPPORTED_LEVELS);
+export const levelSchema = z.enum(SUPPORTED_LEVELS, "Invalid Level");
 
 export type Level = z.infer<typeof levelSchema>;
 

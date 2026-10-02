@@ -24,6 +24,7 @@ export function ProjectForm() {
     supportedLocales,
     supportedLanguages,
     supportedLevels,
+    handleSubmit,
   } = useProjectForm({
     projectLevel: level,
     projectLng: language,
@@ -41,7 +42,7 @@ export function ProjectForm() {
               : "New Project"}
           </p>
           <div>
-            <Button variant="accent">
+            <Button onClick={handleSubmit} variant="accent">
               {isUpdate ? "Save Changes" : "Create"}
             </Button>
           </div>
@@ -105,6 +106,7 @@ export function ProjectForm() {
                     className="w-18"
                     label="Planned Days:"
                     value={state.plannedDays}
+                    error={state.errors.plannedDays}
                     onChange={(event) =>
                       setField("plannedDays", Number(event.target.value))
                     }
@@ -117,6 +119,7 @@ export function ProjectForm() {
                 label="Description"
                 placeholder="Write overview outline here..."
                 value={state.description}
+                error={state.errors.description}
                 onChange={(event) =>
                   setField("description", event.target.value)
                 }
@@ -126,6 +129,7 @@ export function ProjectForm() {
                 label="Lore"
                 placeholder="Write overview outline here..."
                 value={state.lore}
+                error={state.errors.lore}
                 onChange={(event) => setField("lore", event.target.value)}
               />
               <TextArea
@@ -133,6 +137,7 @@ export function ProjectForm() {
                 label="Planned Lessons"
                 placeholder="Write overview outline here..."
                 value={state.lessonPlan}
+                error={state.errors.lessonPlan}
                 onChange={(event) => setField("lessonPlan", event.target.value)}
               />
             </form>
@@ -163,6 +168,11 @@ export function ProjectForm() {
                     Add
                   </Button>
                 </div>
+              </div>
+            )}
+            {state.errors.locales && (
+              <div className="bg-rosewood-accent p-2 text-white my-2">
+                <p>{state.errors.locales}</p>
               </div>
             )}
             <ul className="flex flex-row my-2 pl-4 gap-2">

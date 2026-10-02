@@ -5,13 +5,13 @@ import { languageSchema } from "./language";
 export const projectContentSchema = z.object({
   language: languageSchema,
   level: levelSchema,
-  description: z.string(),
-  lore: z.string(),
-  lessonPlan: z.string().default(""),
-  plannedDays: z.number().int().min(0).default(0),
+  description: z.string().trim().min(1, "Description is required"),
+  lore: z.string().trim().min(1, "Lore is required"),
+  lessonPlan: z.string().min(1, "Lesson Plan is required"),
+  plannedDays: z.number().int().min(1, "Planned days is required").default(1),
   createdDays: z.number().int().min(0).default(0),
-  days: z.array(z.string()),
-  locales: z.array(languageSchema).default([]),
+  days: z.array(z.string()).default([]),
+  locales: z.array(languageSchema).min(1, "At last one locale is required"),
 });
 
 export type ProjectContent = z.infer<typeof projectContentSchema>;

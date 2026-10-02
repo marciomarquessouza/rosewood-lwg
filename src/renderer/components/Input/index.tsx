@@ -5,6 +5,7 @@ type LabelVariant = "dark" | "accent";
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   labelVariant?: LabelVariant;
+  error?: string;
 }
 
 const variants: Record<LabelVariant, string> = {
@@ -16,9 +17,12 @@ export function Input({
   label,
   id,
   labelVariant = "dark",
+  error,
   className = "",
   ...props
 }: InputProps) {
+  const errorId = id ? `${id}-error` : undefined;
+
   return (
     <div className="flex flex-col gap-1">
       {label && (
@@ -29,10 +33,12 @@ export function Input({
 
       <input
         id={id}
+        aria-invalid={!!error}
+        aria-describedby={error ? errorId : undefined}
         className={`
           rounded-md
           border-2
-          border-rosewood-ink
+          ${error ? "border-rosewood-accent" : "border-rosewood-ink"}
           bg-rosewood-surface
           px-3
           py-2
@@ -47,6 +53,16 @@ export function Input({
         `}
         {...props}
       />
+
+      {error && (
+        <span
+          id={errorId}
+          role="alert"
+          className="text-sm font-bold text-rosewood-accent"
+        >
+          {error}
+        </span>
+      )}
     </div>
   );
 }

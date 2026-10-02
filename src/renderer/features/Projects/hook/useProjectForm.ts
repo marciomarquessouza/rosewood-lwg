@@ -9,6 +9,8 @@ import { LANGUAGE_DETAILS } from "../../../../constants";
 import { Level, SUPPORTED_LEVELS } from "../../../../schemas/level";
 import { useProjectContent } from "../../../contexts/ProjectContentContext";
 import { createProjectFormState } from "../helpers/createProjectFormState";
+import { projectContentSchema } from "../../../../schemas/project";
+import z from "zod";
 
 interface ProjectFormOptions {
   projectLng?: Language | null;
@@ -85,6 +87,36 @@ export function useProjectForm({
     });
   }, [isUpdate, projectContent, projectLng, projectLevel]);
 
+  const validate = () => {
+    const result = projectContentSchema.safeParse(state);
+
+    if (result.success) {
+      dispatch({ type: "SET_ERRORS", errors: {} });
+      return true;
+    }
+
+    const { fieldErrors } = z.flattenError(result.error);
+
+    const errors = Object.fromEntries(
+      Object.entries(fieldErrors).map(([field, messages]) => [
+        field,
+        (messages as Array<string>)?.[0],
+      ]),
+    ) as ProjectFormState["errors"];
+
+    dispatch({ type: "SET_ERRORS", errors });
+
+    return false;
+  };
+
+  const handleSubmit = () => {
+    if (!validate()) {
+      return;
+    }
+
+    // save...
+  };
+
   return {
     state,
     setField,
@@ -93,5 +125,6 @@ export function useProjectForm({
     supportedLanguages,
     supportedLocales,
     supportedLevels,
+    handleSubmit,
   };
 }
