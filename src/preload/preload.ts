@@ -10,6 +10,10 @@ const api: Rosewood = {
     ipcRenderer.invoke("project:save-content", path, content),
   deleteProjectContent: (path, language, level) =>
     ipcRenderer.invoke("project:delete-content", path, language, level),
+  pullProjectContent: (path) =>
+    ipcRenderer.invoke("project:pull-content", path),
+  pushProjectContent: (path) =>
+    ipcRenderer.invoke("project:push-content", path),
   getSettings: () => ipcRenderer.invoke("settings:get"),
   updateSettings: (updates) => ipcRenderer.invoke("settings:update", updates),
 };

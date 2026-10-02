@@ -79,6 +79,14 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle("project:pull-content", async (_, targetPath: string) => {
+  return projectServices.pullProjectContent(targetPath);
+});
+
+ipcMain.handle("project:push-content", async (_, targetPath: string) => {
+  return projectServices.pushProjectContent(targetPath);
+});
+
 ipcMain.handle("settings:get", async () => {
   return settingsServices.getSettings();
 });

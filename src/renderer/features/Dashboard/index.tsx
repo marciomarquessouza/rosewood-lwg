@@ -18,7 +18,10 @@ export function Dashboard() {
   const { connected } = useProjectInfo();
   const { projectContent, error } = useProjectContent();
   const { loadProjectContent } = useProjectContent();
-  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionsLoading] = useState<
+    "pull" | "push" | "delete" | null
+  >(null);
+  const isLoading = Boolean(actionLoading);
   const { projectPath } = useProjectInfo();
   const [feedback, setFeedback] = useState<{
     type: FeedbackTypes;
@@ -34,7 +37,7 @@ export function Dashboard() {
       return;
     }
     setFeedback(null);
-    setLoading(true);
+    setActionsLoading("delete");
 
     try {
       await window.rosewood.deleteProjectContent(projectPath, language, level);
@@ -52,7 +55,28 @@ export function Dashboard() {
         message,
       });
     } finally {
-      setLoading(false);
+      setActionsLoading(null);
+    }
+  };
+
+  const handlePullPushContent = async (action: "pull" | "push") => {
+    setFeedback(null);
+    try {
+      const result =
+        action === "pull"
+          ? await window.rosewood.pullProjectContent(projectPath)
+          : await window.rosewood.pushProjectContent(projectPath);
+      setFeedback({
+        type: "success",
+        message: `${JSON.stringify(result)}`,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "unexpected error";
+      setFeedback({
+        type: "error",
+        message,
+      });
     }
   };
 
@@ -72,8 +96,30 @@ export function Dashboard() {
         className="flex min-h-0 flex-1 flex-col"
         header={<DashboardHeader lines={projectContent?.lines.length ?? 0} />}
         footer={
-          <div className="flex flex-1 items-end justify-end">
-            <Button variant="dark" onClick={() => navigate("/project/new")}>
+          <div className="flex flex-1 items-end justify-between">
+            <div className="flex gap-4">
+              <Button
+                variant="light"
+                loading={actionLoading === "pull"}
+                disabled={isLoading}
+                onClick={() => handlePullPushContent("pull")}
+              >
+                Pull Project
+              </Button>
+              <Button
+                variant="accent"
+                loading={actionLoading === "push"}
+                disabled={isLoading}
+                onClick={() => handlePullPushContent("push")}
+              >
+                Push Project
+              </Button>
+            </div>
+            <Button
+              variant="dark"
+              disabled={isLoading}
+              onClick={() => navigate("/project/new")}
+            >
               Add New Language/Level
             </Button>
           </div>
@@ -105,7 +151,7 @@ export function Dashboard() {
                 <li key={`${line.language}-${line.level}`}>
                   <DashboardItem
                     {...line}
-                    loading={loading}
+                    loading={actionLoading === "delete"}
                     onDelete={handleDelete}
                   />
                 </li>
