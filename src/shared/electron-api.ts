@@ -4,6 +4,8 @@ import { ProjectContent } from "../schemas/project";
 import { ProjectContentLines, ProjectInfo } from "./project";
 import { AppSettings } from "./settings";
 
+export type PushResponseType = "empty-tree" | "pushed";
+
 export interface Rosewood {
   getAppVersion(): Promise<string>;
   selectProjectDirectory(): Promise<string | null>;
@@ -15,7 +17,7 @@ export interface Rosewood {
   getProjectContent(path: string): Promise<ProjectContentLines>;
   saveProjectContent(path: string, content: ProjectContent): Promise<void>;
   pullProjectContent(path: string): Promise<string>;
-  pushProjectContent(path: string): Promise<string>;
+  pushProjectContent(path: string): Promise<PushResponseType>;
   deleteProjectContent(
     path: string,
     language: Language,

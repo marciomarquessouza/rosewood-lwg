@@ -2,10 +2,13 @@ import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
 import { openProject } from "./openProject";
+import { PushResponseType } from "../../../shared/electron-api";
 
 const execFileAsync = promisify(execFile);
 
-export async function pushProjectContent(targetPath: string) {
+export async function pushProjectContent(
+  targetPath: string,
+): Promise<PushResponseType> {
   const { contentPath } = await openProject(targetPath);
 
   const { stdout } = await execFileAsync(
@@ -17,7 +20,7 @@ export async function pushProjectContent(targetPath: string) {
   );
 
   if (!stdout.trim()) {
-    throw new Error("There are no content changes to push.");
+    return "empty-tree";
   }
 
   await execFileAsync("git", ["add", "--", "."], {
@@ -36,5 +39,5 @@ export async function pushProjectContent(targetPath: string) {
     cwd: contentPath,
   });
 
-  return "updated";
+  return "pushed";
 }

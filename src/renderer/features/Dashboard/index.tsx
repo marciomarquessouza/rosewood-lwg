@@ -59,16 +59,23 @@ export function Dashboard() {
     }
   };
 
+  const pushContent = async (projectPath: string): Promise<string> => {
+    const result = await window.rosewood.pushProjectContent(projectPath);
+    return result === "empty-tree"
+      ? "No changes to publish"
+      : "Content published successfully";
+  };
+
   const handlePullPushContent = async (action: "pull" | "push") => {
     setFeedback(null);
     try {
       const result =
         action === "pull"
           ? await window.rosewood.pullProjectContent(projectPath)
-          : await window.rosewood.pushProjectContent(projectPath);
+          : await pushContent(projectPath);
       setFeedback({
         type: "success",
-        message: `${JSON.stringify(result)}`,
+        message: `◆ ${result}`,
       });
     } catch (error) {
       const message =
