@@ -1,0 +1,98 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { LANGUAGE_DETAILS } from "../../../constants";
+import { Language } from "../../../schemas/language";
+import { Level } from "../../../schemas/level";
+import { Panel } from "../../components/Panel";
+import { Feedback, useFeedback } from "../../components/Feedback";
+import { Collapsible } from "../../components/Collapsible";
+import { TextArea } from "../../components/TextArea";
+import { useProjectContent } from "../../contexts/ProjectContentContext";
+import { Pill } from "../../components/Pill";
+import { Button } from "../../components/Button";
+
+export function DayList() {
+  const { language: languageParam, level: levelParam } = useParams();
+  const { feedback } = useFeedback();
+  const { projectContent } = useProjectContent();
+  const navigate = useNavigate();
+
+  const language = languageParam as Language | undefined;
+  const level = levelParam as Level | undefined;
+
+  const projectDetails = projectContent?.lines.find(
+    (line) => line.language === language && line.level === level,
+  );
+
+  if (!projectDetails) {
+    return (
+      <Feedback variant="error">
+        {`Project content not available - ${language}|${level}`}
+      </Feedback>
+    );
+  }
+
+  return (
+    <Panel
+      className="flex min-h-0 flex-1 flex-col overflow-hidden"
+      header={
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-2xl font-bold">
+            {`Days: ${level} ${LANGUAGE_DETAILS[language as Language].name} [${language}]`}
+          </p>
+          <Pill variant="accent">
+            {`Planned: ${projectDetails.plannedDays}`}
+          </Pill>
+        </div>
+      }
+      footer={
+        <div className="flex flex-1 justify-end">
+          <Button variant="dark" onClick={() => navigate("/project/new")}>
+            Add New Lesson Day
+          </Button>
+        </div>
+      }
+    >
+      <div className="h-full overflow-y-auto">
+        <div className="flex flex-col gap-4">
+          {feedback && (
+            <Feedback variant={feedback.type}>{feedback.message}</Feedback>
+          )}
+          <Collapsible title="Details">
+            <div className="flex flex-col gap-3 pl-4">
+              <TextArea
+                id="lesson-plan"
+                readOnly
+                placeholder="Write overview outline here..."
+                value={`PLANNED LESSONS: \n${projectDetails.lessonPlan}`}
+              />
+
+              <TextArea
+                id="lore"
+                readOnly
+                placeholder="Write overview outline here..."
+                value={`PLANNED LORE: \n${projectDetails.lore}`}
+              />
+            </div>
+          </Collapsible>
+          <Collapsible title={`Lesson Days`}>
+            <>
+              <div className="flex flex-row pl-4 items-center pb-2">
+                <p className="pr-2 text-sm">Locales:</p>
+                {projectDetails.locales.map((locale) => (
+                  <Pill variant="info">{locale}</Pill>
+                ))}
+              </div>
+              {projectDetails.days.length === 0 ? (
+                <div className="pl-4">
+                  <Feedback variant="warning">No Lesson Days</Feedback>
+                </div>
+              ) : (
+                <div>Day List</div>
+              )}
+            </>
+          </Collapsible>
+        </div>
+      </div>
+    </Panel>
+  );
+}

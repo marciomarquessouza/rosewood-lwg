@@ -47,7 +47,12 @@ export function DashboardItem({
             Edit
           </Button>
 
-          <Button variant="light">Day List</Button>
+          <Button
+            variant="light"
+            onClick={() => navigate(`/project/${language}/${level}/days`)}
+          >
+            Day List
+          </Button>
 
           <Button
             variant="accent"
