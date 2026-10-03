@@ -1,12 +1,15 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 
 export type FeedbackTypes = "error" | "warning" | "info" | "success";
+
+export type FeedbackState = {
+  type: FeedbackTypes;
+  message: string;
+};
 
 interface FeedbackProps extends PropsWithChildren {
   variant?: FeedbackTypes;
   className?: string;
-  onTimeout?: () => void;
-  timeout?: number;
 }
 
 const variants: Record<FeedbackTypes, string> = {
@@ -24,14 +27,7 @@ export function Feedback({
   children,
   variant = "error",
   className = "",
-  timeout,
-  onTimeout,
 }: FeedbackProps) {
-  useEffect(() => {
-    if (!onTimeout || !timeout) return;
-    setTimeout(onTimeout, timeout);
-  }, [onTimeout, timeout]);
-
   return (
     <div
       role={variant === "error" ? "alert" : "status"}
@@ -46,4 +42,26 @@ export function Feedback({
       {children}
     </div>
   );
+}
+
+export function useFeedback(timeout = 5000) {
+  const [feedback, setFeedback] = useState<FeedbackState | null>(null);
+
+  const clearFeedback = useCallback(() => {
+    setFeedback(null);
+  }, []);
+
+  useEffect(() => {
+    if (!feedback || !timeout) return;
+
+    const timer = setTimeout(clearFeedback, timeout);
+
+    return () => clearTimeout(timer);
+  }, [feedback, timeout, clearFeedback]);
+
+  return {
+    feedback,
+    setFeedback,
+    clearFeedback,
+  };
 }

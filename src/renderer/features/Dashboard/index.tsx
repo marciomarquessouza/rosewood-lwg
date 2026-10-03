@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
-import { Feedback, FeedbackTypes } from "../../components/Feedback";
+import { Feedback, useFeedback } from "../../components/Feedback";
 import { Panel } from "../../components/Panel";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
@@ -23,10 +23,7 @@ export function Dashboard() {
   >(null);
   const isLoading = Boolean(actionLoading);
   const { projectPath } = useProjectInfo();
-  const [feedback, setFeedback] = useState<{
-    type: FeedbackTypes;
-    message: string;
-  } | null>(null);
+  const { feedback, setFeedback, clearFeedback } = useFeedback(6_000);
 
   const handleDelete = async (language: Language, level: Level) => {
     const confirmed = window.confirm(
@@ -36,7 +33,7 @@ export function Dashboard() {
     if (!confirmed) {
       return;
     }
-    setFeedback(null);
+    clearFeedback();
     setActionsLoading("delete");
 
     try {
@@ -67,7 +64,7 @@ export function Dashboard() {
   };
 
   const handlePullPushContent = async (action: "pull" | "push") => {
-    setFeedback(null);
+    clearFeedback();
     try {
       const result =
         action === "pull"
@@ -143,12 +140,7 @@ export function Dashboard() {
         ) : (
           <>
             {feedback && (
-              <Feedback
-                variant={feedback.type}
-                className="mb-2"
-                timeout={8_000}
-                onTimeout={() => setFeedback(null)}
-              >
+              <Feedback variant={feedback.type} className="mb-2">
                 {feedback.message}
               </Feedback>
             )}
