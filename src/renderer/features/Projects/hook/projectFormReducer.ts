@@ -6,7 +6,6 @@ export type ProjectFormField = Exclude<keyof ProjectFormState, "errors">;
 export type ProjectFormState = {
   language: Language;
   level: Level;
-  description: string;
   lore: string;
   lessonPlan: string;
   plannedDays: number;
@@ -18,7 +17,6 @@ export type ProjectFormState = {
 export const initialState: ProjectFormState = {
   language: "de-DE",
   level: "A1-1",
-  description: "",
   lore: "",
   lessonPlan: "",
   plannedDays: 20,

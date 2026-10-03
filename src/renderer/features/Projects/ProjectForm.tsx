@@ -124,25 +124,6 @@ export function ProjectForm() {
                   />
                 </div>
               </div>
-
-              <TextArea
-                id="description"
-                label="Description"
-                placeholder="Write overview outline here..."
-                value={state.description}
-                error={state.errors.description}
-                onChange={(event) =>
-                  setField("description", event.target.value)
-                }
-              />
-              <TextArea
-                id="lore"
-                label="Lore"
-                placeholder="Write overview outline here..."
-                value={state.lore}
-                error={state.errors.lore}
-                onChange={(event) => setField("lore", event.target.value)}
-              />
               <TextArea
                 id="lesson-plan"
                 label="Planned Lessons"
@@ -150,6 +131,15 @@ export function ProjectForm() {
                 value={state.lessonPlan}
                 error={state.errors.lessonPlan}
                 onChange={(event) => setField("lessonPlan", event.target.value)}
+              />
+
+              <TextArea
+                id="lore"
+                label="Lore"
+                placeholder="Write overview outline here..."
+                value={state.lore}
+                error={state.errors.lore}
+                onChange={(event) => setField("lore", event.target.value)}
               />
             </div>
           </Collapsible>
