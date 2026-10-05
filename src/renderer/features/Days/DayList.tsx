@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { LANGUAGE_DETAILS } from "../../../constants";
-import { Language } from "../../../schemas/language";
-import { Level } from "../../../schemas/level";
+import { Language, languageSchema } from "../../../schemas/language";
+import { levelSchema } from "../../../schemas/level";
 import { Panel } from "../../components/Panel";
 import { Feedback, useFeedback } from "../../components/Feedback";
 import { Collapsible } from "../../components/Collapsible";
@@ -9,24 +9,41 @@ import { TextArea } from "../../components/TextArea";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { Pill } from "../../components/Pill";
 import { Button } from "../../components/Button";
+import { useEffect } from "react";
+import { useDaysContent } from "../../contexts/DaysContentContext";
+import { getNextDay } from "./utils/getNextDay";
+import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 
 export function DayList() {
+  const { projectPath } = useProjectInfo();
   const { language: languageParam, level: levelParam } = useParams();
   const { feedback } = useFeedback();
-  const { projectContent } = useProjectContent();
+  const { findProjectLine } = useProjectContent();
   const navigate = useNavigate();
+  const { daysContent, loadDaysContent } = useDaysContent();
 
-  const language = languageParam as Language | undefined;
-  const level = levelParam as Level | undefined;
+  const language = languageSchema.parse(languageParam);
+  const level = levelSchema.parse(levelParam);
 
-  const projectDetails = projectContent?.lines.find(
-    (line) => line.language === language && line.level === level,
-  );
+  useEffect(() => {
+    if (projectPath) {
+      loadDaysContent(projectPath, { language, level });
+    }
+  }, [language, level, projectPath]);
 
-  if (!projectDetails) {
+  if (!language || !level) {
+    return (
+      <Feedback variant="error">{`Language/Level not available`}</Feedback>
+    );
+  }
+
+  const project = findProjectLine({ language, level });
+  const nextDay = getNextDay(project?.days);
+
+  if (!project || !daysContent) {
     return (
       <Feedback variant="error">
-        {`Project content not available - ${language}|${level}`}
+        {`${!project ? "Project" : "Day"} content not available - ${language}|${level}`}
       </Feedback>
     );
   }
@@ -39,15 +56,18 @@ export function DayList() {
           <p className="text-2xl font-bold">
             {`Days: ${level} ${LANGUAGE_DETAILS[language as Language].name} [${language}]`}
           </p>
-          <Pill variant="accent">
-            {`Planned: ${projectDetails.plannedDays}`}
-          </Pill>
+          <Pill variant="accent">{`Planned: ${project.plannedDays}`}</Pill>
         </div>
       }
       footer={
         <div className="flex flex-1 justify-end">
-          <Button variant="dark" onClick={() => navigate("/project/new")}>
-            Add New Lesson Day
+          <Button
+            variant="dark"
+            onClick={() =>
+              navigate(`/project/${language}/${level}/days/${nextDay}`)
+            }
+          >
+            Add New Day
           </Button>
         </div>
       }
@@ -63,14 +83,14 @@ export function DayList() {
                 id="lesson-plan"
                 readOnly
                 placeholder="Write overview outline here..."
-                value={`PLANNED LESSONS: \n${projectDetails.lessonPlan}`}
+                value={`PLANNED LESSONS: \n${project.lessonPlan}`}
               />
 
               <TextArea
                 id="lore"
                 readOnly
                 placeholder="Write overview outline here..."
-                value={`PLANNED LORE: \n${projectDetails.lore}`}
+                value={`PLANNED LORE: \n${project.lore}`}
               />
             </div>
           </Collapsible>
@@ -78,11 +98,11 @@ export function DayList() {
             <>
               <div className="flex flex-row pl-4 items-center pb-2">
                 <p className="pr-2 text-sm">Locales:</p>
-                {projectDetails.locales.map((locale) => (
+                {project.locales.map((locale) => (
                   <Pill variant="info">{locale}</Pill>
                 ))}
               </div>
-              {projectDetails.days.length === 0 ? (
+              {daysContent.days.length === 0 ? (
                 <div className="pl-4">
                   <Feedback variant="warning">No Lesson Days</Feedback>
                 </div>

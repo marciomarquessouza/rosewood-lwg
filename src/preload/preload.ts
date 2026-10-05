@@ -14,6 +14,8 @@ const api: Rosewood = {
     ipcRenderer.invoke("project:pull-content", path),
   pushProjectContent: (path) =>
     ipcRenderer.invoke("project:push-content", path),
+  getDaysContent: (path, options) =>
+    ipcRenderer.invoke("days:get-content", path, options),
   getSettings: () => ipcRenderer.invoke("settings:get"),
   updateSettings: (updates) => ipcRenderer.invoke("settings:update", updates),
 };

@@ -1,7 +1,9 @@
+import { DaysContentProvider } from "./contexts/DaysContentContext";
 import { ProjectContentProvider } from "./contexts/ProjectContentContext";
 import { ProjectInfoProvider } from "./contexts/ProjectInfoContext";
 import { Dashboard } from "./features/Dashboard";
-import { DayList } from "./features/LessonDay/DaysList";
+import { DayForm } from "./features/Days/DayForm";
+import { DayList } from "./features/Days/DayList";
 import { ProjectForm } from "./features/Projects/ProjectForm";
 import { AppLayout } from "./layouts/AppLayout";
 import { HashRouter, Route, Routes } from "react-router-dom";
@@ -19,10 +21,16 @@ export function App() {
                 path="/project/:language/:level"
                 element={<ProjectForm />}
               />
-              <Route
-                path="/project/:language/:level/days"
-                element={<DayList />}
-              />
+              <Route element={<DaysContentProvider />}>
+                <Route
+                  path="/project/:language/:level/days"
+                  element={<DayList />}
+                />
+                <Route
+                  path="/project/:language/:level/days/:day"
+                  element={<DayForm />}
+                />
+              </Route>
             </Route>
           </Routes>
         </ProjectContentProvider>

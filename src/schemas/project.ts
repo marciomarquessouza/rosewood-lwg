@@ -2,6 +2,13 @@ import { z } from "zod";
 import { levelSchema } from "./level";
 import { languageSchema } from "./language";
 
+const projectOptionsSchema = z.object({
+  language: languageSchema,
+  level: levelSchema,
+});
+
+export type ProjectOptions = z.infer<typeof projectOptionsSchema>;
+
 export const projectContentSchema = z.object({
   language: languageSchema,
   level: levelSchema,

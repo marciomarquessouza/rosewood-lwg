@@ -4,7 +4,7 @@ import { LANGUAGE_DETAILS } from "../../../constants";
 import { Language } from "../../../schemas/language";
 import { TextArea } from "../../components/TextArea";
 import { Level } from "../../../schemas/level";
-import { useProjectForm } from "./hook/useProjectForm";
+import { useProjectForm } from "./hooks/useProjectForm";
 import { Button } from "../../components/Button";
 import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";

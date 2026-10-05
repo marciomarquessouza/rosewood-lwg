@@ -1,6 +1,7 @@
 import { Language } from "../schemas/language";
 import { Level } from "../schemas/level";
-import { ProjectContent } from "../schemas/project";
+import { ProjectContent, ProjectOptions } from "../schemas/project";
+import { DaysContent } from "./day";
 import { ProjectContentLines, ProjectInfo } from "./project";
 import { AppSettings } from "./settings";
 
@@ -23,4 +24,6 @@ export interface Rosewood {
     language: Language,
     level: Level,
   ): Promise<void>;
+  // Days
+  getDaysContent(path: string, options: ProjectOptions): Promise<DaysContent>;
 }

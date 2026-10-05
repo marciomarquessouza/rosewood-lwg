@@ -16,7 +16,7 @@ import {
   initialState,
   projectFormReducer,
   ProjectFormState,
-} from "./projectFormReducer";
+} from "../reducers/projectFormReducer";
 import { getSupportedLevels } from "../helpers/getSupportedLevels";
 
 interface ProjectFormOptions {

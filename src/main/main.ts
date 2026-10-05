@@ -5,9 +5,10 @@ import { createSplashWindow } from "./windows/createSplashWindow";
 import { createMainWindow } from "./windows/createMainWindow";
 import { settingsServices } from "./services/settings";
 import { projectServices } from "./services/project";
-import { ProjectContent } from "../schemas/project";
+import { ProjectContent, ProjectOptions } from "../schemas/project";
 import { Level } from "../schemas/level";
 import { Language } from "../schemas/language";
+import { daysService } from "./services/days";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -86,6 +87,13 @@ ipcMain.handle("project:pull-content", async (_, targetPath: string) => {
 ipcMain.handle("project:push-content", async (_, targetPath: string) => {
   return projectServices.pushProjectContent(targetPath);
 });
+
+ipcMain.handle(
+  "days:get-content",
+  async (_, targetPath: string, options: ProjectOptions) => {
+    return daysService.getDaysContent(targetPath, options);
+  },
+);
 
 ipcMain.handle("settings:get", async () => {
   return settingsServices.getSettings();

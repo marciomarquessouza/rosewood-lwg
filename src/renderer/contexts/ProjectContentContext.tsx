@@ -8,11 +8,13 @@ import {
 
 import type { ProjectContentLines } from "../../shared/project";
 import { useProjectInfo } from "./ProjectInfoContext";
+import { ProjectContent, ProjectOptions } from "../../schemas/project";
 
 interface ProjectContentContextValue {
   loading: boolean;
   projectContent: ProjectContentLines | null;
   loadProjectContent: () => Promise<void>;
+  findProjectLine: (options: ProjectOptions) => ProjectContent | undefined;
   error: string | null;
 }
 
@@ -65,12 +67,18 @@ export function ProjectContentProvider({
     }
   };
 
+  const findProjectLine = ({ language, level }: ProjectOptions) =>
+    projectContent?.lines.find(
+      (line) => line.language === language && line.level === level,
+    );
+
   return (
     <ProjectContentContext.Provider
       value={{
         loading,
         projectContent,
         loadProjectContent,
+        findProjectLine,
         error,
       }}
     >

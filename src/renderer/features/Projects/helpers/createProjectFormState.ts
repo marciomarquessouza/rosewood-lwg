@@ -1,5 +1,5 @@
 import { ProjectContent } from "../../../../schemas/project";
-import { ProjectFormState } from "../hook/projectFormReducer";
+import { ProjectFormState } from "../reducers/projectFormReducer";
 
 export const createProjectFormState = (
   project: ProjectContent,
