@@ -3,15 +3,11 @@ import { useState } from "react";
 import { Button } from "../../components/Button";
 import { EntryFormRow } from "./EntryFormRow";
 import { getNextId } from "./utils/getNextId";
-
-export interface LessonEntry {
-  sequence: number;
-  target: string;
-}
+import { LessonEntryBase } from "../../../schemas/lesson";
 
 interface LessonEntriesProps {
-  entries: Record<string, LessonEntry>;
-  onChange: (entries: Record<string, LessonEntry>) => void;
+  entries: Record<string, LessonEntryBase> | null;
+  onChange: (entries: Record<string, LessonEntryBase>) => void;
 }
 
 export type EntryForm = {
@@ -20,12 +16,12 @@ export type EntryForm = {
   target: string;
 };
 
-export function LessonEntries({ entries, onChange }: LessonEntriesProps) {
+export function LessonEntries({ entries = {}, onChange }: LessonEntriesProps) {
   const [form, setForm] = useState<EntryForm | null>(null);
 
-  const sortedEntries = Object.entries(entries).sort(
+  const sortedEntries = entries ? Object.entries(entries).sort(
     ([, a], [, b]) => a.sequence - b.sequence,
-  );
+  ) : [];
 
   function handleAdd() {
     setForm({
@@ -35,7 +31,7 @@ export function LessonEntries({ entries, onChange }: LessonEntriesProps) {
     });
   }
 
-  function handleEdit(id: string, entry: LessonEntry) {
+  function handleEdit(id: string, entry: LessonEntryBase) {
     setForm({
       id,
       sequence: entry.sequence,
@@ -44,7 +40,7 @@ export function LessonEntries({ entries, onChange }: LessonEntriesProps) {
   }
 
   function handleSave() {
-    if (!form || !form.target.trim()) {
+    if (!form || !form.target.trim() || !entries) {
       return;
     }
 

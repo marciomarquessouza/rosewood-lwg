@@ -7,8 +7,9 @@ import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
 import { useState } from "react";
-import { LessonEntry, LessonEntryBase } from "../../../schemas/lesson";
+import { LessonEntryBase } from "../../../schemas/lesson";
 import { LessonEntries } from "../LessonEntries/LessonEntries";
+import { DialogueList } from "../Dialogues/DialogueList";
 
 export function DayForm() {
   const { day: dayParam } = useParams();
@@ -16,20 +17,7 @@ export function DayForm() {
   const day = dayDirectoryToNumber(dayDirectory);
   const isUpdate = false;
 
-  const [entries, setEntries] = useState<Record<string, LessonEntryBase>>({
-    "1": {
-      sequence: 0,
-      target: "Hallo",
-    },
-    "2": {
-      sequence: 1,
-      target: "Guten Tag",
-    },
-    "3": {
-      sequence: 2,
-      target: "Guten Abend",
-    },
-  });
+  const [entries, setEntries] = useState<Record<string, LessonEntryBase>>({});
 
   return (
     <Panel
@@ -138,6 +126,11 @@ export function DayForm() {
         <Collapsible title="Lesson Entries">
           <div className="pl-4">
             <LessonEntries entries={entries} onChange={setEntries} />
+          </div>
+        </Collapsible>
+        <Collapsible title="Lesson Entries">
+          <div className="pl-4">
+            <DialogueList />
           </div>
         </Collapsible>
       </div>
