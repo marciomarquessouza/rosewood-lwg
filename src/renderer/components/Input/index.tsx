@@ -1,7 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 
 type LabelVariant = "dark" | "accent";
-type InputVariant = "default" | "light";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

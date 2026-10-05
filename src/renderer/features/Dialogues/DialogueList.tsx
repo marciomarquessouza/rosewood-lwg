@@ -1,38 +1,54 @@
 import { useState } from "react";
 import { DEFAULT_DIALOGUES, GameScene } from "../../../constants/dialogues";
 import { DialogueKey } from "../../../schemas/dialogues";
-import { Button } from "../../components/Button";
 import { Select } from "../../components/Select";
+import { capitalize } from "../../../utils/string";
+import { Checkbox } from "../../components/Checkbox";
 
 const defaultDialogueList = Object.keys(DEFAULT_DIALOGUES).map((key) => ({
-    key,
-    ...DEFAULT_DIALOGUES[key as DialogueKey],
-  }))
+  key,
+  ...DEFAULT_DIALOGUES[key as DialogueKey],
+  skip: false,
+}));
 
+const FILTER_OPTIONS = ["CELL", "DREAM", "TRAIN", "ALL"] as const;
+
+type SceneFilter = GameScene | "ALL";
 
 export function DialogueList() {
-  const [filter, setFilter] = useState<GameScene & "ALL">(
-    "ALL",
-  );
-  useState(defaultDialogueList)
+  const [filter, setFilter] = useState<SceneFilter>("ALL");
+  const [dialogueList, setDialogueList] = useState(defaultDialogueList);
+
+  const filteredDialogueList =
+    filter === "ALL"
+      ? dialogueList
+      : dialogueList.filter((dialogue) => dialogue.scene === filter);
+
+  const handleSkipChange = (key: string, skip: boolean) => {
+    setDialogueList((current) =>
+      current.map((dialogue) =>
+        dialogue.key === key ? { ...dialogue, skip } : dialogue,
+      ),
+    );
+  };
 
   return (
     <section className="flex flex-col gap-3">
       <header className="flex items-center justify-between">
         <h2 className="font-bold text-rosewood-ink">Dialogues</h2>
 
-        <Button
-          variant="light"
-          onClick={handleAdd}
-          disabled={form !== null}
-        ></Button>
         <Select
           id="filter"
-          label="Filter By"
-          value={state.language}
+          label="Filter By Scene"
+          value={filter}
           className="w-38"
-          onChange={(event) => setLanguage(event.target.value as Language)}
-          options={supportedLanguages}
+          onChange={(event) =>
+            setFilter(event.target.value as SceneFilter)
+          }
+          options={FILTER_OPTIONS.map((option) => ({
+            value: option,
+            label: capitalize(option),
+          }))}
         />
       </header>
 
@@ -47,7 +63,7 @@ export function DialogueList() {
           </thead>
 
           <tbody>
-            {dialogueList.map((dialogue) => (
+            {filteredDialogueList.map((dialogue) => (
               <tr
                 key={dialogue.key}
                 className="border-b border-rosewood-ink last:border-b-0"
@@ -62,9 +78,16 @@ export function DialogueList() {
 
                 <td className="px-3 py-2">
                   <div className="flex justify-end gap-2">
-                    <Button variant="light">Edit</Button>
-
-                    <Button variant="accent">Delete</Button>
+                    <Checkbox
+                      label="Skip"
+                      checked={dialogue.skip}
+                      onChange={(event) =>
+                        handleSkipChange(
+                          dialogue.key,
+                          event.target.checked,
+                        )
+                      }
+                    />
                   </div>
                 </td>
               </tr>
