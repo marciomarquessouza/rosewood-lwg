@@ -8,7 +8,7 @@ import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
 import { useState } from "react";
 import { LessonEntry, LessonEntryBase } from "../../../schemas/lesson";
-import { LessonEntries } from "./LessonEntries";
+import { LessonEntries } from "../LessonEntries/LessonEntries";
 
 export function DayForm() {
   const { day: dayParam } = useParams();
