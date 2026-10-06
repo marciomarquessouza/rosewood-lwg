@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 import { ProjectOptions } from "../../../schemas/project";
-import { DayLessonContent } from "../../../shared/day";
 import { openProject } from "../project/openProject";
+import { DayLessonContent } from "../../../schemas/day";
 
 export async function createDayContent(
   targetPath: string,

@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useState } from "react";
-import { DaysContent } from "../../shared/day";
 import { ProjectOptions } from "../../schemas/project";
 import { Outlet } from "react-router-dom";
+import { DaysContent } from "../../schemas/day";
 
 interface DaysContentContextValue {
   daysContent: DaysContent | null;

@@ -1,5 +1,5 @@
+import { DaysContent } from "../../../../schemas/day";
 import { ProjectOptions } from "../../../../schemas/project";
-import { DaysContent } from "../../../../shared/day";
 
 export function createDefaultDaysContent({
   language,

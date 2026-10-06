@@ -9,7 +9,7 @@ import { ProjectContent, ProjectOptions } from "../schemas/project";
 import { Level } from "../schemas/level";
 import { Language } from "../schemas/language";
 import { daysService } from "./services/days";
-import { DayLessonContent } from "../shared/day";
+import { DayLessonContent } from "../schemas/day";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {

@@ -1,5 +1,5 @@
+import { DaysContent } from "../../../schemas/day";
 import { ProjectOptions } from "../../../schemas/project";
-import { DaysContent } from "../../../shared/day";
 import { openProject } from "../project/openProject";
 
 export async function getDaysContent(

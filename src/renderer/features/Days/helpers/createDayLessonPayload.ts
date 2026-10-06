@@ -1,5 +1,4 @@
-import { DayDirectory } from "../../../../schemas/day";
-import { DayLessonContent } from "../../../../shared/day";
+import { DayDirectory, DayLessonContent } from "../../../../schemas/day";
 import { DayFormState } from "../reducers/dayFormReducer";
 
 export function createDayLessonPayload(
