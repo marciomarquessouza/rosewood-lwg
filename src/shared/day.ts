@@ -1,7 +1,11 @@
 import { DayDirectory } from "../schemas/day";
-import { DialogueKey, InteractionLine } from "../schemas/dialogues";
+import {
+  DialogueKey,
+  DialoguesBase,
+  InteractionLine,
+} from "../schemas/dialogues";
 import { Language } from "../schemas/language";
-import { Lesson, LessonEntry } from "../schemas/lesson";
+import { LessonBase, LessonEntry } from "../schemas/lesson";
 import { Level } from "../schemas/level";
 
 export interface DayLessonLocale {
@@ -20,7 +24,18 @@ export interface DayLessonLocale {
 export interface DayLessonContent {
   day: number;
   dayDirectory: DayDirectory;
-  lesson: Omit<Lesson, "entries">;
+  code: string;
+  lessonTargets: string;
+  loreTargets: string;
+  lesson: LessonBase;
+  dialogues: DialoguesBase;
+  locales: Partial<Record<Language, DayLessonLocale>>;
+}
+
+export interface DayLessonBaseContent {
+  day: number;
+  dayDirectory: DayDirectory;
+  lesson: LessonBase;
   locales: Partial<Record<Language, DayLessonLocale>>;
 }
 

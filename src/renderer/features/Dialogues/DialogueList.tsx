@@ -1,35 +1,43 @@
 import { useState } from "react";
-import { DEFAULT_DIALOGUES, GameScene } from "../../../constants/dialogues";
-import { DialogueKey } from "../../../schemas/dialogues";
+import { GameScene } from "../../../constants/dialogues";
+import { DialogueKey, DialoguesBase } from "../../../schemas/dialogues";
 import { Select } from "../../components/Select";
 import { capitalize } from "../../../utils/string";
 import { Checkbox } from "../../components/Checkbox";
 
-const defaultDialogueList = Object.keys(DEFAULT_DIALOGUES).map((key) => ({
-  key,
-  ...DEFAULT_DIALOGUES[key as DialogueKey],
-  skip: false,
-}));
+interface DialogueListProps {
+  dialogues: DialoguesBase;
+  onChange: (dialogues: DialoguesBase) => void;
+}
+
+const transformDialoguesToList = (dialogues: DialoguesBase) =>
+  Object.entries(dialogues).map(([key, dialogue]) => ({
+    key: key as DialogueKey,
+    ...dialogue,
+  }));
 
 const FILTER_OPTIONS = ["CELL", "DREAM", "TRAIN", "ALL"] as const;
 
 type SceneFilter = GameScene | "ALL";
 
-export function DialogueList() {
+export function DialogueList({ dialogues, onChange }: DialogueListProps) {
   const [filter, setFilter] = useState<SceneFilter>("ALL");
-  const [dialogueList, setDialogueList] = useState(defaultDialogueList);
+
+  const dialogueList = transformDialoguesToList(dialogues);
 
   const filteredDialogueList =
     filter === "ALL"
       ? dialogueList
       : dialogueList.filter((dialogue) => dialogue.scene === filter);
 
-  const handleSkipChange = (key: string, skip: boolean) => {
-    setDialogueList((current) =>
-      current.map((dialogue) =>
-        dialogue.key === key ? { ...dialogue, skip } : dialogue,
-      ),
-    );
+  const handleSkipChange = (key: DialogueKey, skip: boolean) => {
+    onChange({
+      ...dialogues,
+      [key]: {
+        ...dialogues[key],
+        skip,
+      },
+    });
   };
 
   return (
@@ -42,9 +50,7 @@ export function DialogueList() {
           label="Filter By Scene"
           value={filter}
           className="w-38"
-          onChange={(event) =>
-            setFilter(event.target.value as SceneFilter)
-          }
+          onChange={(event) => setFilter(event.target.value as SceneFilter)}
           options={FILTER_OPTIONS.map((option) => ({
             value: option,
             label: capitalize(option),
@@ -82,10 +88,7 @@ export function DialogueList() {
                       label="Skip"
                       checked={dialogue.skip}
                       onChange={(event) =>
-                        handleSkipChange(
-                          dialogue.key,
-                          event.target.checked,
-                        )
+                        handleSkipChange(dialogue.key, event.target.checked)
                       }
                     />
                   </div>

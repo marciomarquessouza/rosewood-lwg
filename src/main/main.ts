@@ -9,6 +9,7 @@ import { ProjectContent, ProjectOptions } from "../schemas/project";
 import { Level } from "../schemas/level";
 import { Language } from "../schemas/language";
 import { daysService } from "./services/days";
+import { DayLessonContent } from "../shared/day";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -92,6 +93,18 @@ ipcMain.handle(
   "days:get-content",
   async (_, targetPath: string, options: ProjectOptions) => {
     return daysService.getDaysContent(targetPath, options);
+  },
+);
+
+ipcMain.handle(
+  "days:create-content",
+  async (
+    _,
+    targetPath: string,
+    options: ProjectContent,
+    content: DayLessonContent,
+  ) => {
+    daysService.createDayContent(targetPath, options, content);
   },
 );
 
