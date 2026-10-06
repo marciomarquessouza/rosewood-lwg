@@ -25,34 +25,32 @@ export async function createDayContent(
   );
 
   try {
+    const dayMetaContent = dayLessonMetaSchema.parse(content);
+    const lessonContent = lessonBaseSchema.parse(content.lesson);
+    const dialoguesContent = dialogueBaseSchema.parse(content.dialogues);
+
     await fs.mkdir(projectPath, { recursive: true });
 
-    const dayMetaPath = path.join(projectPath, "meta.json");
-    const dayMetaContent = dayLessonMetaSchema.parse(content);
-    await fs.writeFile(
-      dayMetaPath,
-      JSON.stringify(dayMetaContent, null, 2),
-      "utf-8",
-    );
-
-    const lessonPath = path.join(projectPath, "lesson.json");
-    const lessonContent = lessonBaseSchema.parse(content.lesson);
-
-    await fs.writeFile(
-      lessonPath,
-      JSON.stringify(lessonContent, null, 2),
-      "utf-8",
-    );
-
-    const dialoguesPath = path.join(projectPath, "dialogues.json");
-    const dialoguesContent = dialogueBaseSchema.parse(content.dialogues);
-    await fs.writeFile(
-      dialoguesPath,
-      JSON.stringify(dialoguesContent, null, 2),
-      "utf-8",
-    );
+    await Promise.all([
+      fs.writeFile(
+        path.join(projectPath, "meta.json"),
+        JSON.stringify(dayMetaContent, null, 2),
+        "utf-8",
+      ),
+      fs.writeFile(
+        path.join(projectPath, "lesson.json"),
+        JSON.stringify(lessonContent, null, 2),
+        "utf-8",
+      ),
+      fs.writeFile(
+        path.join(projectPath, "dialogues.json"),
+        JSON.stringify(dialoguesContent, null, 2),
+        "utf-8",
+      ),
+    ]);
   } catch (error) {
     console.error(error);
+
     const message =
       error instanceof Error
         ? error.message
