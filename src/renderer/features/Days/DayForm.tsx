@@ -39,6 +39,7 @@ export function DayForm() {
 
   const handleSaveDay = async () => {
     const dayLessonContent = createDayLessonPayload(day, dayDirectory, state);
+
     try {
       setApiError(null);
       await window.rosewood.createDayContent(

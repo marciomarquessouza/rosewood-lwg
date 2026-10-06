@@ -149,12 +149,12 @@ export type DialogueEntry = z.infer<typeof DialogueEntrySchema>;
 // export const DialoguesBaseSchema = z.record()
 export const DialoguesSchema = z.record(dialogueKeySchema, DialogueEntrySchema);
 
-export const DialogueBaseSchema = z.record(
+export const dialogueBaseSchema = z.record(
   dialogueKeySchema,
   DialogueEntryBaseSchema,
 );
 
-export type DialoguesBase = z.infer<typeof DialogueBaseSchema>;
+export type DialoguesBase = z.infer<typeof dialogueBaseSchema>;
 
 export type Dialogues = Record<DialogueKey, DialogueEntry>;
 

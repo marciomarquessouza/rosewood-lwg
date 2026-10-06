@@ -122,7 +122,7 @@ export const LessonEntrySchema = z.object({
   audio: z.string().optional(),
 });
 
-export const LessonBaseSchema = z.object({
+export const lessonBaseSchema = z.object({
   id: z.string(),
   limits: LessonChallengeLimitsSchema.optional(),
   entries: z.record(z.string(), LessonEntryBaseSchema),
@@ -138,7 +138,7 @@ export type LessonEntryStep = z.infer<typeof LessonEntryStepSchema>;
 
 export type LessonEntry = z.infer<typeof LessonEntrySchema>;
 
-export type LessonBase = z.infer<typeof LessonBaseSchema>;
+export type LessonBase = z.infer<typeof lessonBaseSchema>;
 
 export type Lesson = z.infer<typeof LessonSchema>;
 

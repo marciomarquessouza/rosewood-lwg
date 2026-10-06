@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { LessonBaseSchema } from "./lesson";
-import { DialogueBaseSchema } from "./dialogues";
+import { lessonBaseSchema } from "./lesson";
+import { dialogueBaseSchema } from "./dialogues";
 import { languageSchema } from "./language";
 import { dayLessonLocalesScheme } from "./locales";
 import { levelSchema } from "./level";
@@ -15,8 +15,8 @@ export const dayLessonContentSchema = z.object({
   code: z.string().min(1),
   lessonTargets: z.string().min(1),
   loreTargets: z.string().min(1),
-  lesson: LessonBaseSchema,
-  dialogues: DialogueBaseSchema,
+  lesson: lessonBaseSchema,
+  dialogues: dialogueBaseSchema,
   locales: z.partialRecord(languageSchema, dayLessonLocalesScheme),
 });
 

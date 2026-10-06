@@ -3,7 +3,9 @@ import path from "node:path";
 
 import { ProjectOptions } from "../../../schemas/project";
 import { openProject } from "../project/openProject";
-import { DayLessonContent } from "../../../schemas/day";
+import { DayLessonContent, dayLessonMetaSchema } from "../../../schemas/day";
+import { lessonBaseSchema } from "../../../schemas/lesson";
+import { dialogueBaseSchema } from "../../../schemas/dialogues";
 
 export async function createDayContent(
   targetPath: string,
@@ -24,6 +26,31 @@ export async function createDayContent(
 
   try {
     await fs.mkdir(projectPath, { recursive: true });
+
+    const dayMetaPath = path.join(projectPath, "meta.json");
+    const dayMetaContent = dayLessonMetaSchema.parse(content);
+    await fs.writeFile(
+      dayMetaPath,
+      JSON.stringify(dayMetaContent, null, 2),
+      "utf-8",
+    );
+
+    const lessonPath = path.join(projectPath, "lesson.json");
+    const lessonContent = lessonBaseSchema.parse(content.lesson);
+
+    await fs.writeFile(
+      lessonPath,
+      JSON.stringify(lessonContent, null, 2),
+      "utf-8",
+    );
+
+    const dialoguesPath = path.join(projectPath, "dialogues.json");
+    const dialoguesContent = dialogueBaseSchema.parse(content.dialogues);
+    await fs.writeFile(
+      dialoguesPath,
+      JSON.stringify(dialoguesContent, null, 2),
+      "utf-8",
+    );
   } catch (error) {
     console.error(error);
     const message =

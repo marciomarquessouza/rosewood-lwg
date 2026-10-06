@@ -13,7 +13,7 @@ export function createDayLessonPayload(
     lessonTargets: form.lessonTargets,
     loreTargets: form.loreTargets,
     lesson: {
-      id: String(day),
+      id: dayDirectory,
       limits: form.limits,
       entries: form.entries,
     },
