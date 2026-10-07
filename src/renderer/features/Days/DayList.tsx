@@ -11,8 +11,8 @@ import { Pill } from "../../components/Pill";
 import { Button } from "../../components/Button";
 import { useEffect } from "react";
 import { useDaysContent } from "../../contexts/DaysContentContext";
-import { getNextDay } from "./utils/getNextDay";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
+import { DayItem } from "./DayItem";
 
 export function DayList() {
   const { projectPath } = useProjectInfo();
@@ -38,7 +38,6 @@ export function DayList() {
   }
 
   const project = findProjectLine({ language, level });
-  const nextDay = getNextDay(project?.days);
 
   if (!project || !daysContent) {
     return (
@@ -64,7 +63,7 @@ export function DayList() {
           <Button
             variant="dark"
             onClick={() =>
-              navigate(`/project/${language}/${level}/days/${nextDay}`)
+              navigate(`/project/${language}/${level}/days/new`)
             }
           >
             Add New Day
@@ -99,7 +98,9 @@ export function DayList() {
               <div className="flex flex-row pl-4 items-center pb-2">
                 <p className="pr-2 text-sm">Locales:</p>
                 {project.locales.map((locale) => (
-                  <Pill variant="info">{locale}</Pill>
+                  <Pill key={locale} variant="info" className="mx-1">
+                    {locale}
+                  </Pill>
                 ))}
               </div>
               {daysContent.days.length === 0 ? (
@@ -107,13 +108,16 @@ export function DayList() {
                   <Feedback variant="warning">No Lesson Days</Feedback>
                 </div>
               ) : (
-                daysContent.days.map((content) => (
-                  <div key={content.dayDirectory}>
-                    <p>{content.day}</p>
-                    <p>{content.label}</p>
-                    <p>{content.description}</p>
-                  </div>
-                ))
+                <div className="pl-2">
+                  {daysContent.days.map((content) => (
+                    <DayItem
+                      language={language}
+                      level={level}
+                      key={content.day}
+                      dayLessonContent={content}
+                    />
+                  ))}
+                </div>
               )}
             </>
           </Collapsible>

@@ -21,6 +21,8 @@ import { dayDirectorySchema } from "../../../schemas/day";
 
 import { dayDirectoryToNumber } from "./utils/transformDays";
 import { createDayLessonPayload } from "./helpers/createDayLessonPayload";
+import { useProjectContent } from "../../contexts/ProjectContentContext";
+import { getNextDay } from "./utils/getNextDay";
 
 export function DayForm() {
   const {
@@ -28,10 +30,16 @@ export function DayForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
+  const { findProjectLine } = useProjectContent();
+
+  const isUpdate = dayParam !== "new";
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
-  const dayDirectory = dayDirectorySchema.parse(dayParam);
+  const project = findProjectLine({ language, level });
+  const dayDirectory = isUpdate
+    ? dayDirectorySchema.parse(dayParam)
+    : getNextDay(project?.days);
 
   const day = dayDirectoryToNumber(dayDirectory);
 
@@ -40,7 +48,7 @@ export function DayForm() {
     level,
   };
 
-  const { state, isUpdate, loading, updateField, updateLimit } = useDayForm(
+  const { state, loading, updateField, updateLimit } = useDayForm(
     projectOptions,
     dayDirectory,
   );

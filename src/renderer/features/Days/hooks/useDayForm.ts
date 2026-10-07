@@ -52,8 +52,6 @@ export function useDayForm(
     );
   }, [daysContent, dayDirectory, isCurrentContent]);
 
-  const isUpdate = currentDay !== null;
-
   useEffect(() => {
     if (!projectPath) return;
 
@@ -124,7 +122,6 @@ export function useDayForm(
 
   return {
     state,
-    isUpdate,
     loading,
 
     updateField,
