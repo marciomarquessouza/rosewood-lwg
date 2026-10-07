@@ -107,7 +107,13 @@ export function DayList() {
                   <Feedback variant="warning">No Lesson Days</Feedback>
                 </div>
               ) : (
-                <div>Day List</div>
+                daysContent.days.map((content) => (
+                  <div key={content.dayDirectory}>
+                    <p>{content.day}</p>
+                    <p>{content.label}</p>
+                    <p>{content.description}</p>
+                  </div>
+                ))
               )}
             </>
           </Collapsible>

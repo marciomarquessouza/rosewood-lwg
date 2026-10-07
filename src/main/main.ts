@@ -108,6 +108,18 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle(
+  "days:updated-content",
+  async (
+    _,
+    targetPath: string,
+    options: ProjectContent,
+    content: DayLessonContent,
+  ) => {
+    daysService.updateDayContent(targetPath, options, content);
+  },
+);
+
 ipcMain.handle("settings:get", async () => {
   return settingsServices.getSettings();
 });

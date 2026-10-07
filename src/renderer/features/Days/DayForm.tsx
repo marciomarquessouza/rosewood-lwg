@@ -1,19 +1,25 @@
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+
 import { Panel } from "../../components/Panel";
 import { Button } from "../../components/Button";
 import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
+import { Feedback } from "../../components/Feedback";
+
 import { LessonEntries } from "../LessonEntries/LessonEntries";
 import { DialogueList } from "../Dialogues/DialogueList";
-import { Feedback } from "../../components/Feedback";
+
 import { useDayForm } from "./hooks/useDayForm";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
-import { useState } from "react";
+import { useDaysContent } from "../../contexts/DaysContentContext";
+
 import { languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
-import { useParams } from "react-router-dom";
-import { dayDirectoryToNumber } from "./utils/transformDays";
 import { dayDirectorySchema } from "../../../schemas/day";
+
+import { dayDirectoryToNumber } from "./utils/transformDays";
 import { createDayLessonPayload } from "./helpers/createDayLessonPayload";
 
 export function DayForm() {
@@ -22,34 +28,55 @@ export function DayForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
-  const dayDirectory = dayDirectorySchema.parse(dayParam);
-  const day = dayDirectoryToNumber(dayDirectory);
-  const { state, updateField, updateLimit } = useDayForm();
-  const { projectPath } = useProjectInfo();
-  const [apiError, setApiError] = useState<string | null>(null);
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
+  const dayDirectory = dayDirectorySchema.parse(dayParam);
+
+  const day = dayDirectoryToNumber(dayDirectory);
 
   const projectOptions = {
     language,
     level,
   };
-  const isUpdate = false;
+
+  const { state, isUpdate, loading, updateField, updateLimit } = useDayForm(
+    projectOptions,
+    dayDirectory,
+  );
+
+  const { projectPath } = useProjectInfo();
+  const { loadDaysContent } = useDaysContent();
+
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const handleSaveDay = async () => {
     const dayLessonContent = createDayLessonPayload(day, dayDirectory, state);
 
     try {
+      setSaving(true);
       setApiError(null);
-      await window.rosewood.createDayContent(
-        projectPath,
-        projectOptions,
-        dayLessonContent,
-      );
+
+      if (isUpdate) {
+        await window.rosewood.updateDayContent(
+          projectPath,
+          projectOptions,
+          dayLessonContent,
+        );
+      } else {
+        await window.rosewood.createDayContent(
+          projectPath,
+          projectOptions,
+          dayLessonContent,
+        );
+      }
+
+      await loadDaysContent(projectPath, projectOptions);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "API Error";
-      setApiError(message);
+      setApiError(error instanceof Error ? error.message : "API Error");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -62,8 +89,12 @@ export function DayForm() {
             {isUpdate ? `Day ${day}` : "New Day"}
           </p>
 
-          <Button variant="accent" onClick={handleSaveDay}>
-            {isUpdate ? "Save Changes" : "Create"}
+          <Button
+            variant="accent"
+            onClick={handleSaveDay}
+            disabled={loading || saving}
+          >
+            {saving ? "Saving..." : isUpdate ? "Save Changes" : "Create"}
           </Button>
         </div>
       }
@@ -87,9 +118,20 @@ export function DayForm() {
               <div className="w-1/4">
                 <Input
                   type="text"
-                  label="Day Code:"
-                  value={state.code}
-                  onChange={(event) => updateField("code", event.target.value)}
+                  label="Label:"
+                  value={state.label}
+                  onChange={(event) => updateField("label", event.target.value)}
+                />
+              </div>
+
+              <div className="w-1/4">
+                <Input
+                  type="text"
+                  label="Description:"
+                  value={state.description}
+                  onChange={(event) =>
+                    updateField("description", event.target.value)
+                  }
                 />
               </div>
             </div>

@@ -18,8 +18,8 @@ export type LessonStepType = z.infer<typeof LessonStepTypeSchema>;
  */
 
 export const PronunciationLimitsSchema = z.object({
-  minimumRecordTime: z.number().nonnegative().optional(),
-  maximumRecordTime: z.number().positive().optional(),
+  minimumRecordTime: z.number().nonnegative(),
+  maximumRecordTime: z.number().positive(),
 });
 
 export const WritingLimitsSchema = z.object({
@@ -28,13 +28,13 @@ export const WritingLimitsSchema = z.object({
 });
 
 export const EntryLimitsSchema = z.object({
-  minimumSuccessPercentage: z.number().min(0).max(100).optional(),
+  minimumSuccessPercentage: z.number().min(0).max(100),
 });
 
 export const LessonChallengeLimitsSchema = z.object({
-  pronunciation: PronunciationLimitsSchema.optional(),
-  writing: WritingLimitsSchema.optional(),
-  entry: EntryLimitsSchema.optional(),
+  pronunciation: PronunciationLimitsSchema,
+  writing: WritingLimitsSchema,
+  entry: EntryLimitsSchema,
 });
 
 export type PronunciationLimits = z.infer<typeof PronunciationLimitsSchema>;
@@ -124,7 +124,7 @@ export const LessonEntrySchema = z.object({
 
 export const lessonBaseSchema = z.object({
   id: z.string(),
-  limits: LessonChallengeLimitsSchema.optional(),
+  limits: LessonChallengeLimitsSchema,
   entries: z.record(z.string(), LessonEntryBaseSchema),
 });
 

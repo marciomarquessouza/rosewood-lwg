@@ -3,7 +3,8 @@ import { DialoguesBase } from "../../../../schemas/dialogues";
 import { LessonEntryBase } from "../../../../schemas/lesson";
 
 export type DayFormState = {
-  code: string;
+  label: string;
+  description: string;
   lessonTargets: string;
   loreTargets: string;
   limits: {
@@ -24,7 +25,8 @@ export type DayFormState = {
 };
 
 export const INITIAL_FORM: DayFormState = {
-  code: "",
+  label: "",
+  description: "",
   lessonTargets: "",
   loreTargets: "",
   limits: {
@@ -46,6 +48,10 @@ export const INITIAL_FORM: DayFormState = {
 
 type Action =
   | {
+      type: "INITIALIZE";
+      payload: DayFormState;
+    }
+  | {
       type: "UPDATE_FIELD";
       field: keyof DayFormState;
       value: DayFormState[keyof DayFormState];
@@ -62,6 +68,11 @@ export function dayFormReducer(
   action: Action,
 ): DayFormState {
   switch (action.type) {
+    case "INITIALIZE":
+      return {
+        ...state,
+        ...action.payload,
+      };
     case "UPDATE_FIELD":
       return {
         ...state,

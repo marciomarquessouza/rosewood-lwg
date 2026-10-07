@@ -18,6 +18,8 @@ const api: Rosewood = {
     ipcRenderer.invoke("days:get-content", path, options),
   createDayContent: (path, options, content) =>
     ipcRenderer.invoke("days:create-content", path, options, content),
+  updateDayContent: (path, options, content) =>
+    ipcRenderer.invoke("days:update-content", path, options, content),
   getSettings: () => ipcRenderer.invoke("settings:get"),
   updateSettings: (updates) => ipcRenderer.invoke("settings:update", updates),
 };

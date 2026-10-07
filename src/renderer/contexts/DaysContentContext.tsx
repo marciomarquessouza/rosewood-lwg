@@ -22,10 +22,10 @@ export function DaysContentProvider() {
 
   const loadDaysContent = useCallback(
     async (projectPath: string, options: ProjectOptions) => {
+      if (!projectPath) return;
+
       setLoading(true);
       setError(null);
-
-      if (!projectPath) return;
 
       try {
         const content = await window.rosewood.getDaysContent(
@@ -36,6 +36,7 @@ export function DaysContentProvider() {
         setDaysContent(content);
       } catch (error) {
         setDaysContent(null);
+
         setError(
           error instanceof Error
             ? error.message

@@ -9,7 +9,8 @@ export function createDayLessonPayload(
   return {
     day,
     dayDirectory,
-    code: form.code,
+    label: form.label,
+    description: form.description,
     lessonTargets: form.lessonTargets,
     loreTargets: form.loreTargets,
     lesson: {

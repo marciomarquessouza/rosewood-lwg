@@ -12,7 +12,8 @@ export type DayDirectory = z.infer<typeof dayDirectorySchema>;
 export const dayLessonContentSchema = z.object({
   day: z.number().int().nonnegative(),
   dayDirectory: dayDirectorySchema,
-  code: z.string().min(1),
+  label: z.string().min(1),
+  description: z.string().min(1),
   lessonTargets: z.string().min(1),
   loreTargets: z.string().min(1),
   lesson: lessonBaseSchema,
@@ -25,7 +26,8 @@ export type DayLessonContent = z.infer<typeof dayLessonContentSchema>;
 export const dayLessonMetaSchema = z.object({
   day: z.number().int().nonnegative(),
   dayDirectory: dayDirectorySchema,
-  code: z.string().min(1),
+  label: z.string().min(1),
+  description: z.string().min(1),
   lessonTargets: z.string().min(1),
   loreTargets: z.string().min(1),
 });
