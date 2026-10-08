@@ -1,5 +1,5 @@
+import { z } from "zod";
 import { useEffect, useReducer, useState } from "react";
-import z from "zod";
 
 import { LANGUAGE_DETAILS } from "../../../../constants";
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
@@ -8,7 +8,6 @@ import {
   ProjectContent,
   projectContentSchema,
 } from "../../../../schemas/project";
-import { FeedbackTypes } from "../../../components/Feedback";
 import { useProjectContent } from "../../../contexts/ProjectContentContext";
 import { useProjectInfo } from "../../../contexts/ProjectInfoContext";
 import { createProjectFormState } from "../helpers/createProjectFormState";
@@ -18,6 +17,8 @@ import {
   ProjectFormState,
 } from "../reducers/projectFormReducer";
 import { getSupportedLevels } from "../helpers/getSupportedLevels";
+import { useFeedback } from "../../../contexts/FeedbackContext";
+import { useNavigate } from "react-router-dom";
 
 interface ProjectFormOptions {
   projectLng?: Language | null;
@@ -48,13 +49,11 @@ export function useProjectForm({
 }: ProjectFormOptions) {
   const { projectPath } = useProjectInfo();
   const { projectContent, loadProjectContent } = useProjectContent();
+  const navigate = useNavigate();
 
   const [state, dispatch] = useReducer(projectFormReducer, initialState);
   const [loading, setLoading] = useState(false);
-  const [apiFeedback, setApiFeedback] = useState<{
-    type: FeedbackTypes;
-    message: string;
-  } | null>(null);
+  const { showFeedback, clearFeedback } = useFeedback();
 
   const supportedLevels = getSupportedLevels({
     language: state.language,
@@ -173,7 +172,7 @@ export function useProjectForm({
     }
 
     try {
-      setApiFeedback(null);
+      clearFeedback();
       setLoading(true);
 
       await window.rosewood.saveProjectContent(projectPath, content);
@@ -181,14 +180,15 @@ export function useProjectForm({
 
       const projectReference = `${content.language}|${content.level}`;
 
-      setApiFeedback({
+      showFeedback({
         type: "success",
         message: `Project ${isUpdate ? "updated" : "created"}: ${projectReference}`,
       });
+      navigate(-1);
     } catch (error) {
       console.error(error);
 
-      setApiFeedback({
+      showFeedback({
         type: "error",
         message: error instanceof Error ? error.message : "Unexpected error",
       });
@@ -200,7 +200,6 @@ export function useProjectForm({
   return {
     state,
     loading,
-    apiFeedback,
     supportedLanguages: SUPPORTED_LANGUAGE_OPTIONS,
     supportedLevels,
     supportedLocales,

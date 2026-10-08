@@ -6,7 +6,6 @@ import { Button } from "../../components/Button";
 import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
-import { Feedback } from "../../components/Feedback";
 
 import { LessonEntries } from "../LessonEntries/LessonEntries";
 import { DialogueList } from "../Dialogues/DialogueList";
@@ -23,6 +22,7 @@ import { dayDirectoryToNumber } from "./utils/transformDays";
 import { createDayLessonPayload } from "./helpers/createDayLessonPayload";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { getNextDay } from "./utils/getNextDay";
+import { useFeedback } from "../../contexts/FeedbackContext";
 
 export function DayForm() {
   const {
@@ -57,7 +57,7 @@ export function DayForm() {
   const { loadDaysContent } = useDaysContent();
   const navigate = useNavigate();
 
-  const [apiError, setApiError] = useState<string | null>(null);
+  const { showFeedback, clearFeedback } = useFeedback();
   const [saving, setSaving] = useState(false);
 
   const handleSaveDay = async () => {
@@ -65,7 +65,7 @@ export function DayForm() {
 
     try {
       setSaving(true);
-      setApiError(null);
+      clearFeedback();
 
       if (isUpdate) {
         await window.rosewood.updateDayContent(
@@ -82,9 +82,11 @@ export function DayForm() {
       }
 
       await loadDaysContent(projectPath, projectOptions);
-      navigate(`/project/:language/:level/days?form-feedback=deleted-success`);
+      showFeedback({ type: "success", message: "Day Created" });
+      navigate(`/project/${language}/${level}/days`);
     } catch (error) {
-      setApiError(error instanceof Error ? error.message : "API Error");
+      const message = error instanceof Error ? error.message : "API Error";
+      showFeedback({ type: "error", message });
     } finally {
       setSaving(false);
     }
@@ -110,8 +112,6 @@ export function DayForm() {
       }
     >
       <div className="flex h-full flex-col gap-4 overflow-y-auto">
-        {apiError && <Feedback variant="error">{apiError}</Feedback>}
-
         <Collapsible title="Day Details">
           <div className="flex flex-col gap-3 pl-4">
             <div className="flex flex-row gap-2">

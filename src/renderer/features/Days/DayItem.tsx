@@ -50,7 +50,7 @@ export function DayItem({
               )
             }
           >
-            Edit
+            Open
           </Button>
           <Button
             variant="accent"

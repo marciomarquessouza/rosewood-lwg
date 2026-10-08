@@ -22,7 +22,6 @@ export function ProjectForm() {
   const {
     state,
     loading,
-    apiFeedback,
     setField,
     setLanguage,
     addLocale,
@@ -42,11 +41,7 @@ export function ProjectForm() {
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
       header={
         <div className="flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold">
-            {isUpdate
-              ? `${level} ${LANGUAGE_DETAILS[language as Language].name} [${language}]`
-              : "New Project"}
-          </p>
+          <p className="text-2xl font-bold">Project</p>
           <div>
             <Button loading={loading} onClick={handleSubmit} variant="accent">
               {isUpdate ? "Save Changes" : "Create"}
@@ -57,11 +52,6 @@ export function ProjectForm() {
     >
       <div className="h-full overflow-y-auto">
         <div className="flex flex-col gap-4">
-          {apiFeedback && (
-            <Feedback variant={apiFeedback.type}>
-              {apiFeedback.message}
-            </Feedback>
-          )}
           <Collapsible title="Details">
             <div className="flex flex-col gap-3 pl-4">
               <div className=" flex flex-row gap-2">

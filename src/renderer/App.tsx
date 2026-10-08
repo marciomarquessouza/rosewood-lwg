@@ -1,4 +1,5 @@
 import { DaysContentProvider } from "./contexts/DaysContentContext";
+import { FeedbackProvider } from "./contexts/FeedbackContext";
 import { ProjectContentProvider } from "./contexts/ProjectContentContext";
 import { ProjectInfoProvider } from "./contexts/ProjectInfoContext";
 import { Dashboard } from "./features/Dashboard";
@@ -11,30 +12,32 @@ import { HashRouter, Route, Routes } from "react-router-dom";
 export function App() {
   return (
     <HashRouter>
-      <ProjectInfoProvider>
-        <ProjectContentProvider>
-          <Routes>
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/project/new" element={<ProjectForm />} />
-              <Route
-                path="/project/:language/:level"
-                element={<ProjectForm />}
-              />
-              <Route element={<DaysContentProvider />}>
+      <FeedbackProvider>
+        <ProjectInfoProvider>
+          <ProjectContentProvider>
+            <Routes>
+              <Route element={<AppLayout />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/project/new" element={<ProjectForm />} />
                 <Route
-                  path="/project/:language/:level/days"
-                  element={<DayList />}
+                  path="/project/:language/:level"
+                  element={<ProjectForm />}
                 />
-                <Route
-                  path="/project/:language/:level/days/:day"
-                  element={<DayForm />}
-                />
+                <Route element={<DaysContentProvider />}>
+                  <Route
+                    path="/project/:language/:level/days"
+                    element={<DayList />}
+                  />
+                  <Route
+                    path="/project/:language/:level/days/:day"
+                    element={<DayForm />}
+                  />
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </ProjectContentProvider>
-      </ProjectInfoProvider>
+            </Routes>
+          </ProjectContentProvider>
+        </ProjectInfoProvider>
+      </FeedbackProvider>
     </HashRouter>
   );
 }

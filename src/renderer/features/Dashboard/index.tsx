@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "../../components/Button";
-import { Feedback, useFeedback } from "../../components/Feedback";
 import { Panel } from "../../components/Panel";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
@@ -12,6 +11,7 @@ import { DashboardItem } from "./DashboardItem";
 import { LANGUAGE_DETAILS } from "../../../constants";
 import { Language } from "../../../schemas/language";
 import { Level } from "../../../schemas/level";
+import { useFeedback } from "../../contexts/FeedbackContext";
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export function Dashboard() {
   >(null);
   const isLoading = Boolean(actionLoading);
   const { projectPath } = useProjectInfo();
-  const { feedback, setFeedback, clearFeedback } = useFeedback(6_000);
+  const { showFeedback, clearFeedback } = useFeedback();
 
   const handleDelete = async (language: Language, level: Level) => {
     const confirmed = window.confirm(
@@ -39,7 +39,7 @@ export function Dashboard() {
     try {
       await window.rosewood.deleteProjectContent(projectPath, language, level);
       await loadProjectContent();
-      setFeedback({
+      showFeedback({
         type: "success",
         message: `Project removed - ${language}|${level}`,
       });
@@ -47,7 +47,7 @@ export function Dashboard() {
       const message =
         error instanceof Error ? error.message : "Unexpected error";
 
-      setFeedback({
+      showFeedback({
         type: "error",
         message,
       });
@@ -70,14 +70,14 @@ export function Dashboard() {
         action === "pull"
           ? await window.rosewood.pullProjectContent(projectPath)
           : await pushContent(projectPath);
-      setFeedback({
+      showFeedback({
         type: "success",
         message: `◆ ${result}`,
       });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "unexpected error";
-      setFeedback({
+      showFeedback({
         type: "error",
         message,
       });
@@ -139,12 +139,6 @@ export function Dashboard() {
           </p>
         ) : (
           <>
-            {feedback && (
-              <Feedback variant={feedback.type} className="mb-2">
-                {feedback.message}
-              </Feedback>
-            )}
-
             <ul className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto">
               {projectContent.lines.map((line) => (
                 <li key={`${line.language}-${line.level}`}>

@@ -104,19 +104,19 @@ ipcMain.handle(
     options: ProjectContent,
     content: DayLessonContent,
   ) => {
-    daysService.createDayContent(targetPath, options, content);
+    return daysService.createDayContent(targetPath, options, content);
   },
 );
 
 ipcMain.handle(
-  "days:updated-content",
+  "days:update-content",
   async (
     _,
     targetPath: string,
     options: ProjectContent,
     content: DayLessonContent,
   ) => {
-    daysService.updateDayContent(targetPath, options, content);
+    return daysService.updateDayContent(targetPath, options, content);
   },
 );
 
@@ -128,7 +128,7 @@ ipcMain.handle(
     options: ProjectOptions,
     dayDirectory: string,
   ) => {
-    daysService.deleteDayContent(targetPath, options, dayDirectory);
+    return daysService.deleteDayContent(targetPath, options, dayDirectory);
   },
 );
 

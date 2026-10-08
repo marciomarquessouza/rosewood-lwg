@@ -3,12 +3,7 @@ import { LANGUAGE_DETAILS } from "../../../constants";
 import { Language, languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
 import { Panel } from "../../components/Panel";
-import {
-  Feedback,
-  FEEDBACK_TYPES,
-  FeedbackTypes,
-  useFeedback,
-} from "../../components/Feedback";
+import { Feedback, FeedbackTypes } from "../../components/Feedback";
 import { Collapsible } from "../../components/Collapsible";
 import { TextArea } from "../../components/TextArea";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
@@ -19,12 +14,13 @@ import { useDaysContent } from "../../contexts/DaysContentContext";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { DayItem } from "./DayItem";
 import { DayDirectory } from "../../../schemas/day";
+import { useFeedback } from "../../contexts/FeedbackContext";
 
 export function DayList() {
   const { projectPath } = useProjectInfo();
   const { language: languageParam, level: levelParam } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { feedback, setFeedback, clearFeedback } = useFeedback();
+  const { showFeedback, clearFeedback } = useFeedback();
   const { findProjectLine } = useProjectContent();
   const navigate = useNavigate();
   const { daysContent, loadDaysContent } = useDaysContent();
@@ -44,7 +40,7 @@ export function DayList() {
     if (message) {
       const type = searchParams.get("form-feedback-status") as
         FeedbackTypes | "info";
-      setFeedback({ type, message });
+      showFeedback({ type, message });
 
       const next = new URLSearchParams(searchParams);
       next.delete("formFeedback");
@@ -77,7 +73,8 @@ export function DayList() {
         projectOptions,
         dayDirectory,
       );
-      setFeedback({
+      await loadDaysContent(projectPath, projectOptions);
+      showFeedback({
         type: "success",
         message: `Day ${dayDirectory} was successfully removed`,
       });
@@ -86,7 +83,7 @@ export function DayList() {
         error instanceof Error
           ? error.message
           : "Error deleting the day's content";
-      setFeedback({ type: "error", message });
+      showFeedback({ type: "error", message });
     }
   };
 
@@ -122,23 +119,20 @@ export function DayList() {
     >
       <div className="h-full overflow-y-auto">
         <div className="flex flex-col gap-4">
-          {feedback && (
-            <Feedback variant={feedback.type}>{feedback.message}</Feedback>
-          )}
           <Collapsible title="Details">
             <div className="flex flex-col gap-3 pl-4">
               <TextArea
                 id="lesson-plan"
                 readOnly
                 placeholder="Write overview outline here..."
-                value={`PLANNED LESSONS: \n${project.lessonPlan}`}
+                value={project.lessonPlan}
               />
 
               <TextArea
                 id="lore"
                 readOnly
                 placeholder="Write overview outline here..."
-                value={`PLANNED LORE: \n${project.lore}`}
+                value={project.lore}
               />
             </div>
           </Collapsible>
