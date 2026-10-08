@@ -120,6 +120,18 @@ ipcMain.handle(
   },
 );
 
+ipcMain.handle(
+  "days:delete-content",
+  async (
+    _,
+    targetPath: string,
+    options: ProjectOptions,
+    dayDirectory: string,
+  ) => {
+    daysService.deleteDayContent(targetPath, options, dayDirectory);
+  },
+);
+
 ipcMain.handle("settings:get", async () => {
   return settingsServices.getSettings();
 });

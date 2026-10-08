@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Panel } from "../../components/Panel";
 import { Button } from "../../components/Button";
@@ -55,6 +55,7 @@ export function DayForm() {
 
   const { projectPath } = useProjectInfo();
   const { loadDaysContent } = useDaysContent();
+  const navigate = useNavigate();
 
   const [apiError, setApiError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -81,6 +82,7 @@ export function DayForm() {
       }
 
       await loadDaysContent(projectPath, projectOptions);
+      navigate(`/project/:language/:level/days?form-feedback=deleted-success`);
     } catch (error) {
       setApiError(error instanceof Error ? error.message : "API Error");
     } finally {

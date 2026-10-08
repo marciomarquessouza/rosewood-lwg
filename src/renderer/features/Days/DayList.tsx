@@ -1,9 +1,14 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { LANGUAGE_DETAILS } from "../../../constants";
 import { Language, languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
 import { Panel } from "../../components/Panel";
-import { Feedback, useFeedback } from "../../components/Feedback";
+import {
+  Feedback,
+  FEEDBACK_TYPES,
+  FeedbackTypes,
+  useFeedback,
+} from "../../components/Feedback";
 import { Collapsible } from "../../components/Collapsible";
 import { TextArea } from "../../components/TextArea";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
@@ -13,11 +18,13 @@ import { useEffect } from "react";
 import { useDaysContent } from "../../contexts/DaysContentContext";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { DayItem } from "./DayItem";
+import { DayDirectory } from "../../../schemas/day";
 
 export function DayList() {
   const { projectPath } = useProjectInfo();
   const { language: languageParam, level: levelParam } = useParams();
-  const { feedback } = useFeedback();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { feedback, setFeedback, clearFeedback } = useFeedback();
   const { findProjectLine } = useProjectContent();
   const navigate = useNavigate();
   const { daysContent, loadDaysContent } = useDaysContent();
@@ -31,6 +38,20 @@ export function DayList() {
     }
   }, [language, level, projectPath]);
 
+  useEffect(() => {
+    const message = searchParams.get("form-feedback-msg");
+
+    if (message) {
+      const type = searchParams.get("form-feedback-status") as
+        FeedbackTypes | "info";
+      setFeedback({ type, message });
+
+      const next = new URLSearchParams(searchParams);
+      next.delete("formFeedback");
+      setSearchParams(next, { replace: true });
+    }
+  }, []);
+
   if (!language || !level) {
     return (
       <Feedback variant="error">{`Language/Level not available`}</Feedback>
@@ -38,6 +59,36 @@ export function DayList() {
   }
 
   const project = findProjectLine({ language, level });
+
+  const onDayDelete = async (dayDirectory: DayDirectory) => {
+    const confirmed = window.confirm(
+      `Remove ${dayDirectory}? This will permanently delete all day content.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    clearFeedback();
+    const projectOptions = { language, level };
+    try {
+      await window.rosewood.deleteDayContent(
+        projectPath,
+        projectOptions,
+        dayDirectory,
+      );
+      setFeedback({
+        type: "success",
+        message: `Day ${dayDirectory} was successfully removed`,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Error deleting the day's content";
+      setFeedback({ type: "error", message });
+    }
+  };
 
   if (!project || !daysContent) {
     return (
@@ -62,9 +113,7 @@ export function DayList() {
         <div className="flex flex-1 justify-end">
           <Button
             variant="dark"
-            onClick={() =>
-              navigate(`/project/${language}/${level}/days/new`)
-            }
+            onClick={() => navigate(`/project/${language}/${level}/days/new`)}
           >
             Add New Day
           </Button>
@@ -115,6 +164,7 @@ export function DayList() {
                       level={level}
                       key={content.day}
                       dayLessonContent={content}
+                      onDelete={onDayDelete}
                     />
                   ))}
                 </div>

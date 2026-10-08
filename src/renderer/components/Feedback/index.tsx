@@ -1,6 +1,8 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from "react";
 
-export type FeedbackTypes = "error" | "warning" | "info" | "success";
+export const FEEDBACK_TYPES = ["success", "error", "warning", "info"] as const;
+
+export type FeedbackTypes = (typeof FEEDBACK_TYPES)[number];
 
 export type FeedbackState = {
   type: FeedbackTypes;

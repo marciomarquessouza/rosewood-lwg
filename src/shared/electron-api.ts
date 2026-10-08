@@ -36,4 +36,9 @@ export interface Rosewood {
     options: ProjectOptions,
     content: DayLessonContent,
   ): Promise<void>;
+  deleteDayContent(
+    targetPath: string,
+    options: ProjectOptions,
+    dayDirectory: string,
+  ): Promise<void>;
 }
