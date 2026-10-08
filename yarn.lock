@@ -3892,6 +3892,11 @@ lru-cache@^7.7.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
   integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
 
+lucide-react@^1.53.0:
+  version "1.53.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-1.53.0.tgz#e187e1cbed728350e9167b7e86c520baa32e2476"
+  integrity sha512-OxJ7elNku+iqVzOolk5caxq2LM8Mck6lhA6uZx3g2PlZ53+FvBnT6PlJxGCukCa6oF5wQwgSatn9cH1b4olWmQ==
+
 magic-string@^0.30.21:
   version "0.30.21"
   resolved "https://registry.yarnpkg.com/magic-string/-/magic-string-0.30.21.tgz#56763ec09a0fa8091df27879fd94d19078c00d91"
