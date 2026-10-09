@@ -72,20 +72,6 @@ export function Header() {
           >
             Push Project
           </Button>
-          <button
-            onClick={isDashboard ? undefined : () => navigate(-1)}
-            className=" bg-rosewood-ink text-rosewood-bg p-2 text-sm min-w-32"
-          >
-            {isDashboard ? (
-              <span>
-                DASHBOARD <span className="text-lg">◆</span>
-              </span>
-            ) : (
-              <span>
-                BACK <span className="text-lg">◆</span>
-              </span>
-            )}
-          </button>
         </div>
       </div>
     </header>

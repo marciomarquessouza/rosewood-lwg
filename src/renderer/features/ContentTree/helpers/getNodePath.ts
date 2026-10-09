@@ -15,10 +15,10 @@ export function getNodePath(node: ProjectTreeNode): string | null {
       return `/project/${language}/${level}/days/${day}`;
 
     case "lesson":
-      return `/days/${language}/${level}/${day}/lesson`;
+      return `/project/${language}/${level}/days/${day}/lesson`;
 
     case "dialogues":
-      return `/days/${language}/${level}/${day}/dialogues`;
+      return `/project/${language}/${level}/days/${day}/dialogues`;
 
     default:
       return null;

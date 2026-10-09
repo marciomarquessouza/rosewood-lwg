@@ -74,7 +74,8 @@ export async function getProjectContent(
 
         const dayFiles = dayFilesResult
           .filter((entry) => entry.isFile())
-          .map((entry) => entry.name);
+          .map((entry) => entry.name)
+          .sort((a, b) => b.localeCompare(a));
 
         const projectDay = projectDaySchema.parse({
           directory: dayDirectory,

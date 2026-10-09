@@ -12,6 +12,8 @@ import { ProjectForm } from "./features/Projects/ProjectForm";
 
 import { AppLayout } from "./layouts/AppLayout";
 import { ProjectLayout } from "./layouts/ProjectLayout";
+import { LessonForm } from "./features/Lesson/LessonForm";
+import { DialoguesForm } from "./features/Dialogues/DialoguesForm";
 
 export function App() {
   return (
@@ -26,10 +28,7 @@ export function App() {
 
                   <Route path="project/new" element={<ProjectForm />} />
 
-                  <Route
-                    path="project/:language"
-                    element={<ProjectForm />}
-                  />
+                  <Route path="project/:language" element={<ProjectForm />} />
 
                   <Route
                     path="project/:language/:level"
@@ -45,6 +44,16 @@ export function App() {
                     <Route
                       path="project/:language/:level/days/:day"
                       element={<DayForm />}
+                    />
+
+                    <Route
+                      path="project/:language/:level/days/:day/lesson"
+                      element={<LessonForm />}
+                    />
+
+                    <Route
+                      path="project/:language/:level/days/:day/dialogues"
+                      element={<DialoguesForm />}
                     />
                   </Route>
                 </Route>

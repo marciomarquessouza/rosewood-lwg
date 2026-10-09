@@ -7,7 +7,7 @@ import { Collapsible } from "../../components/Collapsible";
 import { Input } from "../../components/Input";
 import { TextArea } from "../../components/TextArea";
 
-import { LessonEntries } from "../LessonEntries/LessonEntries";
+import { LessonEntries } from "../Lesson/LessonEntries";
 import { DialogueList } from "../Dialogues/DialogueList";
 
 import { useDayForm } from "./hooks/useDayForm";
