@@ -6,6 +6,7 @@ import { openProject } from "../project/openProject";
 import { DayLessonContent, dayLessonMetaSchema } from "../../../schemas/day";
 import { lessonBaseSchema } from "../../../schemas/lesson";
 import { dialogueBaseSchema } from "../../../schemas/dialogues";
+import { Language } from "../../../schemas/language";
 
 export async function createDayContent(
   targetPath: string,
@@ -48,6 +49,17 @@ export async function createDayContent(
         "utf-8",
       ),
     ]);
+
+    const localesPath = path.join(projectPath, "locales");
+    await fs.mkdir(localesPath, { recursive: true });
+
+    for (const locale of Object.keys(content.locales)) {
+      await fs.writeFile(
+        path.join(localesPath, `${locale}.json`),
+        JSON.stringify(content.locales[locale as Language], null, 2),
+        "utf-8",
+      );
+    }
   } catch (error) {
     console.error(error);
 

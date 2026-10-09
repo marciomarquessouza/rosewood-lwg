@@ -61,7 +61,12 @@ export function DayForm() {
   const [saving, setSaving] = useState(false);
 
   const handleSaveDay = async () => {
-    const dayLessonContent = createDayLessonPayload(day, dayDirectory, state);
+    const dayLessonContent = createDayLessonPayload({
+      day,
+      dayDirectory,
+      form: state,
+      project,
+    });
 
     try {
       setSaving(true);
