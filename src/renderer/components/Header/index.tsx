@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 
 export function Header() {
+  const { connected, contentPath, loading } = useProjectInfo();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -13,9 +15,19 @@ export function Header() {
           ROSEWOOD -{" "}
           <span className=" text-rosewood-accent">CONTENT MANAGER</span>
         </h1>
-        <p className=" font-light text-sm">
-          Learning with Ghosts ◆ Lesson Day Editor
-        </p>
+        <div className=" flex flex-row font-light text-sm">
+          <span>Learning with Ghosts</span>
+          <span className=" font-bold mx-1">◆ Status:</span>
+          <span>
+            {loading
+              ? "◆ Loading..."
+              : connected
+                ? "CONNECTED:"
+                : "DISCONNECTED:"}
+          </span>
+          <span className=" font-bold mx-1">◆ Path:</span>
+          <span>{contentPath}</span>
+        </div>
       </div>
       <div>
         <button
