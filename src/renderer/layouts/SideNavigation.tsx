@@ -6,7 +6,7 @@ export function SideNavigation({ children }: React.PropsWithChildren) {
   const { connected, connect, loading } = useProjectInfo();
   
   return (
-    <aside className="w-68 shrink-0 pb-4">
+    <aside className=" w-80 shrink-0 pb-4">
       <Panel
         variant="support"
         header={

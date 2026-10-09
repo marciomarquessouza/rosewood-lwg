@@ -1,6 +1,6 @@
-import { ContentTreeNode } from "../ContentNode";
+import { ProjectTreeNode } from "./buildProjectTreeNodes";
 
-export function getNodePath(node: ContentTreeNode): string | null {
+export function getNodePath(node: ProjectTreeNode): string | null {
   const { type, id } = node;
 
   if (type === "root") return "/";

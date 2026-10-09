@@ -1,12 +1,40 @@
 import { Tree } from "react-arborist";
-import { ContentNode, ContentTreeNode } from "./ContentNode";
-import { mockedData } from "./data/data";
+import { ContentNode } from "./ContentNode";
+import { useProjectContent } from "../../contexts/ProjectContentContext";
+import { buildProjectTreeNodes, ProjectTreeNode } from "./helpers/buildProjectTreeNodes";
+import { Feedback } from "../../components/Feedback";
 
 export function ContentTree() {
+  const { projectContent, loading, error} = useProjectContent()
+
+  if (!projectContent) {
+    return (
+      <Feedback variant="info">
+        Empty project
+      </Feedback>
+    )
+  }
+
+  if (error) {
+    return (
+      <Feedback variant="error">
+        Error loading the content tree
+      </Feedback>
+    )
+  }
+
+  if (loading) {
+    return (
+      <p>Loading Content Tree...</p>
+    )
+  }
+
+  const data = buildProjectTreeNodes(projectContent)
+
   return (
     <div className="w-full overflow-hidden">
-      <Tree<ContentTreeNode>
-        initialData={mockedData}
+      <Tree<ProjectTreeNode>
+        initialData={data}
         width="100%"
         height={450}
         rowHeight={36}

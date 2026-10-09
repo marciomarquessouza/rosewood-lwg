@@ -6,7 +6,11 @@ import { openProject } from "./openProject";
 import { languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
 import { dayDirectorySchema } from "../../../schemas/day";
-import { projectContentSchema } from "../../../schemas/project";
+import {
+  projectContentSchema,
+  ProjectDay,
+  projectDaySchema,
+} from "../../../schemas/project";
 
 export async function getProjectContent(
   projectPath: string,
@@ -53,19 +57,40 @@ export async function getProjectContent(
         withFileTypes: true,
       });
 
-      const days = dayEntries
-        .filter((entry) => entry.isDirectory())
-        .map((entry) => dayDirectorySchema.safeParse(entry.name))
-        .filter((result) => result.success)
-        .map((result) => result.data)
-        .sort();
+      const projectDays: ProjectDay[] = [];
+
+      for (const dayEntry of dayEntries) {
+        if (!dayEntry.isDirectory()) continue;
+        const dayResult = dayDirectorySchema.safeParse(dayEntry.name);
+
+        if (!dayResult.success) continue;
+
+        const dayDirectory = dayResult.data;
+        const dayDirectoryPath = path.join(daysPath, dayDirectory);
+
+        const dayFilesResult = await fs.readdir(dayDirectoryPath, {
+          withFileTypes: true,
+        });
+
+        const dayFiles = dayFilesResult
+          .filter((entry) => entry.isFile())
+          .map((entry) => entry.name);
+
+        const projectDay = projectDaySchema.parse({
+          directory: dayDirectory,
+          files: dayFiles,
+          path: dayDirectoryPath,
+        });
+
+        projectDays.push(projectDay);
+      }
 
       const projectContent = projectContentSchema.parse({
         language,
         level,
         ...meta,
-        days,
-        createdDays: days.length,
+        days: projectDays,
+        createdDays: projectDays.length,
       });
 
       lines.push(projectContent);

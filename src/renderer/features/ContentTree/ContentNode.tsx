@@ -3,18 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getCreatePath } from "./helpers/getCreatePath";
 import { BookOpen, ChevronDown, ChevronRight, Folder, FolderOpen, Globe2, GraduationCap, LayoutDashboard, MessageSquare, Plus } from "lucide-react";
 import { getNodePath } from "./helpers/getNodePath";
+import { ProjectTreeNode } from "./helpers/buildProjectTreeNodes";
 
-export type ContentNodeType =
-  "root" | "language" | "level" | "day" | "lesson" | "dialogues";
-
-export interface ContentTreeNode {
-  id: string;
-  name: string;
-  type: ContentNodeType;
-  children?: ContentTreeNode[];
-}
-
-export function ContentNode({ node, style }: NodeRendererProps<ContentTreeNode>) {
+export function ContentNode({ node, style }: NodeRendererProps<ProjectTreeNode>) {
   const navigate = useNavigate();
   const location = useLocation();
   const createPath = getCreatePath(node.data);
