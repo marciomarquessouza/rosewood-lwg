@@ -27,6 +27,11 @@ export function App() {
                   <Route path="project/new" element={<ProjectForm />} />
 
                   <Route
+                    path="project/:language"
+                    element={<ProjectForm />}
+                  />
+
+                  <Route
                     path="project/:language/:level"
                     element={<ProjectForm />}
                   />

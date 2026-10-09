@@ -2,7 +2,11 @@ import { z } from "zod";
 import { useEffect, useReducer, useState } from "react";
 
 import { LANGUAGE_DETAILS } from "../../../../constants";
-import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
+import {
+  Language,
+  languageSchema,
+  SUPPORTED_LANGUAGES,
+} from "../../../../schemas/language";
 import { Level } from "../../../../schemas/level";
 import {
   ProjectContent,
@@ -127,8 +131,9 @@ export function useProjectForm({
   };
 
   useEffect(() => {
-    if (!isUpdate || !projectContent || !projectLng || !projectLevel) {
-      setLanguage("de-DE");
+    if (!isUpdate || !projectContent || !projectLevel) {
+      const language = languageSchema.safeParse(projectLng);
+      setLanguage(language.success ? language.data : "de-DE");
       return;
     }
 
