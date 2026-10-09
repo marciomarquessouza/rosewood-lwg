@@ -1,12 +1,44 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
+import { useFeedback } from "../../contexts/FeedbackContext";
+import { Button } from "../Button";
 
 export function Header() {
   const { connected, contentPath, loading } = useProjectInfo();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { projectPath } = useProjectInfo();
+  const { showFeedback, clearFeedback } = useFeedback();
 
   const isDashboard = pathname === "/";
+
+  const pushContent = async (projectPath: string): Promise<string> => {
+    const result = await window.rosewood.pushProjectContent(projectPath);
+    return result === "empty-tree"
+      ? "No changes to publish"
+      : "Content published successfully";
+  };
+
+  const handlePullPushContent = async (action: "pull" | "push") => {
+    clearFeedback();
+    try {
+      const result =
+        action === "pull"
+          ? await window.rosewood.pullProjectContent(projectPath)
+          : await pushContent(projectPath);
+      showFeedback({
+        type: "success",
+        message: `◆ ${result}`,
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "unexpected error";
+      showFeedback({
+        type: "error",
+        message,
+      });
+    }
+  };
 
   return (
     <header className="p-6 flex flex-row justify-between">
@@ -30,20 +62,31 @@ export function Header() {
         </div>
       </div>
       <div>
-        <button
-          onClick={isDashboard ? undefined : () => navigate(-1)}
-          className=" bg-rosewood-ink text-rosewood-bg p-2 text-sm min-w-32"
-        >
-          {isDashboard ? (
-            <span>
-              DASHBOARD <span className="text-lg">◆</span>
-            </span>
-          ) : (
-            <span>
-              BACK <span className="text-lg">◆</span>
-            </span>
-          )}
-        </button>
+        <div className="flex gap-4">
+          <Button variant="light" onClick={() => handlePullPushContent("pull")}>
+            Pull Project
+          </Button>
+          <Button
+            variant="accent"
+            onClick={() => handlePullPushContent("push")}
+          >
+            Push Project
+          </Button>
+          <button
+            onClick={isDashboard ? undefined : () => navigate(-1)}
+            className=" bg-rosewood-ink text-rosewood-bg p-2 text-sm min-w-32"
+          >
+            {isDashboard ? (
+              <span>
+                DASHBOARD <span className="text-lg">◆</span>
+              </span>
+            ) : (
+              <span>
+                BACK <span className="text-lg">◆</span>
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
