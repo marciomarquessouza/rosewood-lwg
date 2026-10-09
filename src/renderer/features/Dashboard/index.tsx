@@ -93,66 +93,62 @@ export function Dashboard() {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-row gap-16">
-      <SourcePanel />
-
-      <Panel
-        className="flex min-h-0 flex-1 flex-col"
-        header={<DashboardHeader lines={projectContent?.lines.length ?? 0} />}
-        footer={
-          <div className="flex flex-1 items-end justify-between">
-            <div className="flex gap-4">
-              <Button
-                variant="light"
-                loading={actionLoading === "pull"}
-                disabled={isLoading}
-                onClick={() => handlePullPushContent("pull")}
-              >
-                Pull Project
-              </Button>
-              <Button
-                variant="accent"
-                loading={actionLoading === "push"}
-                disabled={isLoading}
-                onClick={() => handlePullPushContent("push")}
-              >
-                Push Project
-              </Button>
-            </div>
+    <Panel
+      className="flex min-h-0 flex-1 flex-col"
+      header={<DashboardHeader lines={projectContent?.lines.length ?? 0} />}
+      footer={
+        <div className="flex flex-1 items-end justify-between">
+          <div className="flex gap-4">
             <Button
-              variant="dark"
+              variant="light"
+              loading={actionLoading === "pull"}
               disabled={isLoading}
-              onClick={() => navigate("/project/new")}
+              onClick={() => handlePullPushContent("pull")}
             >
-              Add New Language/Level
+              Pull Project
+            </Button>
+            <Button
+              variant="accent"
+              loading={actionLoading === "push"}
+              disabled={isLoading}
+              onClick={() => handlePullPushContent("push")}
+            >
+              Push Project
             </Button>
           </div>
-        }
-      >
-        {!connected ? (
-          <p className="text-md">
-            <span className="text-rosewood-accent">◆</span> Not Connected
-          </p>
-        ) : !projectContent ? (
-          <p className="text-md">
-            <span className="text-rosewood-accent">◆</span> Loading...
-          </p>
-        ) : (
-          <>
-            <ul className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto">
-              {projectContent.lines.map((line) => (
-                <li key={`${line.language}-${line.level}`}>
-                  <DashboardItem
-                    {...line}
-                    loading={actionLoading === "delete"}
-                    onDelete={handleDelete}
-                  />
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </Panel>
-    </div>
+          <Button
+            variant="dark"
+            disabled={isLoading}
+            onClick={() => navigate("/project/new")}
+          >
+            Add New Language/Level
+          </Button>
+        </div>
+      }
+    >
+      {!connected ? (
+        <p className="text-md">
+          <span className="text-rosewood-accent">◆</span> Not Connected
+        </p>
+      ) : !projectContent ? (
+        <p className="text-md">
+          <span className="text-rosewood-accent">◆</span> Loading...
+        </p>
+      ) : (
+        <>
+          <ul className="flex h-full min-h-0 flex-col gap-4 overflow-y-auto">
+            {projectContent.lines.map((line) => (
+              <li key={`${line.language}-${line.level}`}>
+                <DashboardItem
+                  {...line}
+                  loading={actionLoading === "delete"}
+                  onDelete={handleDelete}
+                />
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Panel>
   );
 }

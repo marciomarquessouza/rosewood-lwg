@@ -1,13 +1,17 @@
+import { HashRouter, Route, Routes, Outlet } from "react-router-dom";
+
 import { DaysContentProvider } from "./contexts/DaysContentContext";
 import { FeedbackProvider } from "./contexts/FeedbackContext";
 import { ProjectContentProvider } from "./contexts/ProjectContentContext";
 import { ProjectInfoProvider } from "./contexts/ProjectInfoContext";
+
 import { Dashboard } from "./features/Dashboard";
 import { DayForm } from "./features/Days/DayForm";
 import { DayList } from "./features/Days/DayList";
 import { ProjectForm } from "./features/Projects/ProjectForm";
+
 import { AppLayout } from "./layouts/AppLayout";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { ProjectLayout } from "./layouts/ProjectLayout";
 
 export function App() {
   return (
@@ -17,21 +21,27 @@ export function App() {
           <ProjectContentProvider>
             <Routes>
               <Route element={<AppLayout />}>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/project/new" element={<ProjectForm />} />
-                <Route
-                  path="/project/:language/:level"
-                  element={<ProjectForm />}
-                />
-                <Route element={<DaysContentProvider />}>
+                <Route element={<ProjectLayout />}>
+                  <Route index element={<Dashboard />} />
+
+                  <Route path="project/new" element={<ProjectForm />} />
+
                   <Route
-                    path="/project/:language/:level/days"
-                    element={<DayList />}
+                    path="project/:language/:level"
+                    element={<ProjectForm />}
                   />
-                  <Route
-                    path="/project/:language/:level/days/:day"
-                    element={<DayForm />}
-                  />
+
+                  <Route element={<DaysContentProvider />}>
+                    <Route
+                      path="project/:language/:level/days"
+                      element={<DayList />}
+                    />
+
+                    <Route
+                      path="project/:language/:level/days/:day"
+                      element={<DayForm />}
+                    />
+                  </Route>
                 </Route>
               </Route>
             </Routes>
