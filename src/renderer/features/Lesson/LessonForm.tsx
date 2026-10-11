@@ -71,7 +71,7 @@ export function LessonForm() {
       }
     >
       <p>Lesson Content</p>
-      <MillerColumns root={nodes} />
+      <MillerColumns root={nodes} creatableNodeTypes={["entry"]} />
     </Panel>
   );
 }

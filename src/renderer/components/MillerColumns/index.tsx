@@ -1,6 +1,8 @@
 import { useState, type ReactNode } from "react";
 import { ChevronRight, FolderOpen } from "lucide-react";
 import { NodeColumnTitle } from "./NodeColumnTitle";
+import { canCreateNode } from "./utils/canCreateNode";
+import { NodeInlineInput } from "./NodeInlineInput";
 
 export type MillerNode<T extends string = string> = {
   id: string;
@@ -12,8 +14,14 @@ export type MillerNode<T extends string = string> = {
 interface MillerColumnsProps<T extends string> {
   root: MillerNode<T>[];
   className?: string;
+  creatableNodeTypes?: T[];
   onSelect?: (node: MillerNode<T>, path: MillerNode<T>[]) => void;
   renderItem?: (node: MillerNode<T>) => ReactNode;
+  onCreateNode?: (
+    nodeType: T,
+    value: string,
+    parentPath: MillerNode<T>[],
+  ) => void | Promise<void>;
 }
 
 export function MillerColumns<T extends string>({
@@ -21,6 +29,8 @@ export function MillerColumns<T extends string>({
   className = "",
   onSelect,
   renderItem,
+  creatableNodeTypes,
+  onCreateNode,
 }: MillerColumnsProps<T>) {
   const [path, setPath] = useState<MillerNode<T>[]>([]);
 
@@ -120,6 +130,18 @@ export function MillerColumns<T extends string>({
                   </button>
                 );
               })}
+              {canCreateNode(items, creatableNodeTypes) && (
+                <NodeInlineInput
+                  placeholder={`New ${items[0].type}...`}
+                  onSubmit={(value) =>
+                    onCreateNode?.(
+                      items[0].type,
+                      value,
+                      path.slice(0, columnIndex),
+                    )
+                  }
+                />
+              )}
             </div>
           </div>
         </div>
