@@ -7,9 +7,10 @@ import {
   Type,
 } from "lucide-react";
 import { ContentNodeType } from "../../../schemas/lesson";
-import { MillerColumns } from "../../components/MillerColumns";
+import { MillerColumns, MillerNode } from "../../components/MillerColumns";
 import { Panel } from "../../components/Panel";
 import { lessonContent } from "./data/lesson";
+import { LessonTitleForm } from "./forms/LessonTitleForm";
 
 export function LessonForm() {
   const nodeIcons: Partial<Record<ContentNodeType, LucideIcon>> = {
@@ -19,6 +20,19 @@ export function LessonForm() {
     entry: LayoutList,
     step: Footprints,
   };
+
+  const handleRenderForm = (parentNode: MillerNode<ContentNodeType>) => {
+    console.log("#HERE parentNode.type", parentNode.type);
+    switch (parentNode.type) {
+      case "title":
+        return (
+          <LessonTitleForm locale="en-UK" onSave={() => console.log("HERE")} />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Panel
       className="flex min-h-0 flex-1 flex-col overflow-hidden pb-4"
@@ -33,6 +47,8 @@ export function LessonForm() {
         root={lessonContent}
         creatableNodeTypes={["entry"]}
         nodeIcons={nodeIcons}
+        renderForm={handleRenderForm}
+        isFormNode={(node) => node.type === "form"}
       />
     </Panel>
   );

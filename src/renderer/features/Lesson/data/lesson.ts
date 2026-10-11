@@ -11,6 +11,13 @@ export const lessonContent: MillerNode<ContentNodeType>[] = [
         id: "title",
         name: "Title",
         type: "title",
+        children: [
+          {
+            id: "title-form",
+            name: "Title Form",
+            type: "form",
+          },
+        ],
       },
       {
         id: "entries",

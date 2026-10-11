@@ -6,6 +6,7 @@ export const ContentNodeTypeSchema = z.enum([
   "entries",
   "entry",
   "step",
+  "form",
 ]);
 
 export type ContentNodeType = z.infer<typeof ContentNodeTypeSchema>;

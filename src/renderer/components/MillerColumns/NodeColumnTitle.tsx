@@ -1,13 +1,9 @@
-import type { MillerNode } from ".";
-import { getNodeTypeLabel } from "./utils/getNodeTypeLabel";
-
-interface NodeColumnTitleProps<T extends string> {
-  nodes: MillerNode<T>[];
+interface NodeColumnTitleProps {
+  title: string;
+  counter?: number;
 }
 
-export function NodeColumnTitle<T extends string>({
-  nodes,
-}: NodeColumnTitleProps<T>) {
+export function NodeColumnTitle({ title, counter }: NodeColumnTitleProps) {
   return (
     <div
       className={[
@@ -23,12 +19,14 @@ export function NodeColumnTitle<T extends string>({
           "text-rosewood-ink/70",
         ].join(" ")}
       >
-        {getNodeTypeLabel(nodes)}
+        {title}
       </h3>
 
-      <span className="ml-2 shrink-0 text-xs font-medium tabular-nums text-rosewood-ink/40">
-        {nodes.length}
-      </span>
+      {counter && (
+        <span className="ml-2 shrink-0 text-xs font-medium tabular-nums text-rosewood-ink/40">
+          {counter}
+        </span>
+      )}
     </div>
   );
 }
