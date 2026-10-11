@@ -12,7 +12,7 @@ import { Panel } from "../../components/Panel";
 import { lessonContent } from "./data/lesson";
 
 export function LessonForm() {
-  const iconsMap: Partial<Record<ContentNodeType, LucideIcon>> = {
+  const nodeIcons: Partial<Record<ContentNodeType, LucideIcon>> = {
     locale: MapPin,
     title: Type,
     entries: NotebookDot,
@@ -32,7 +32,7 @@ export function LessonForm() {
       <MillerColumns
         root={lessonContent}
         creatableNodeTypes={["entry"]}
-        iconsMap={iconsMap}
+        nodeIcons={nodeIcons}
       />
     </Panel>
   );

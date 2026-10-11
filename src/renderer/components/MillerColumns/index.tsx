@@ -15,9 +15,9 @@ export interface MillerColumnsProps<T extends string> {
   root: MillerNode<T>[];
   className?: string;
   creatableNodeTypes?: T[];
-  iconsMap?: Partial<Record<T, LucideIcon>>;
+  nodeIcons?: Partial<Record<T, LucideIcon>>;
   onSelect?: (node: MillerNode<T>, path: MillerNode<T>[]) => void;
-  renderItem?: (node: MillerNode<T>, isSelected?: boolean) => ReactNode;
+  renderNode?: (node: MillerNode<T>, isSelected: boolean) => ReactNode;
   onCreateNode?: (
     nodeType: T,
     value: string,
@@ -28,9 +28,9 @@ export interface MillerColumnsProps<T extends string> {
 export function MillerColumns<T extends string>({
   root,
   className = "",
-  iconsMap,
+  nodeIcons,
   onSelect,
-  renderItem,
+  renderNode,
   creatableNodeTypes,
   onCreateNode,
 }: MillerColumnsProps<T>) {
@@ -108,13 +108,13 @@ export function MillerColumns<T extends string>({
                             ].join(" "),
                       ].join(" ")}
                     >
-                      {renderItem ? (
-                        renderItem(item, isSelected)
+                      {renderNode ? (
+                        renderNode(item, isSelected)
                       ) : (
                         <MillerDefaultRow
                           name={item.name}
                           isSelected={isSelected}
-                          icon={iconsMap?.[item.type]}
+                          icon={nodeIcons?.[item.type]}
                         />
                       )}
 
