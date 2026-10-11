@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const ContentNodeTypeSchema = z.enum([
+  "locale",
+  "title",
+  "entries",
+  "entry",
+  "step",
+]);
+
+export type ContentNodeType = z.infer<typeof ContentNodeTypeSchema>;
+
 /**
  * Step
  */

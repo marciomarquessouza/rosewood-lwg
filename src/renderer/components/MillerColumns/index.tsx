@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { ChevronRight, FolderOpen } from "lucide-react";
+import { ChevronRight, LucideIcon } from "lucide-react";
 import { NodeColumnTitle } from "./NodeColumnTitle";
 import { NodeInlineInput } from "./NodeInlineInput";
+import { MillerDefaultRow } from "./MillerDefaultRow";
 
 export type MillerNode<T extends string = string> = {
   id: string;
@@ -10,12 +11,13 @@ export type MillerNode<T extends string = string> = {
   children?: MillerNode<T>[];
 };
 
-interface MillerColumnsProps<T extends string> {
+export interface MillerColumnsProps<T extends string> {
   root: MillerNode<T>[];
   className?: string;
   creatableNodeTypes?: T[];
+  iconsMap?: Partial<Record<T, LucideIcon>>;
   onSelect?: (node: MillerNode<T>, path: MillerNode<T>[]) => void;
-  renderItem?: (node: MillerNode<T>) => ReactNode;
+  renderItem?: (node: MillerNode<T>, isSelected?: boolean) => ReactNode;
   onCreateNode?: (
     nodeType: T,
     value: string,
@@ -26,6 +28,7 @@ interface MillerColumnsProps<T extends string> {
 export function MillerColumns<T extends string>({
   root,
   className = "",
+  iconsMap,
   onSelect,
   renderItem,
   creatableNodeTypes,
@@ -105,19 +108,15 @@ export function MillerColumns<T extends string>({
                             ].join(" "),
                       ].join(" ")}
                     >
-                      <FolderOpen
-                        size={16}
-                        className={[
-                          "shrink-0",
-                          isSelected
-                            ? "text-rosewood-accent"
-                            : "text-rosewood-ink/50",
-                        ].join(" ")}
-                      />
-
-                      <span className="min-w-0 flex-1 truncate">
-                        {renderItem ? renderItem(item) : item.name}
-                      </span>
+                      {renderItem ? (
+                        renderItem(item, isSelected)
+                      ) : (
+                        <MillerDefaultRow
+                          name={item.name}
+                          isSelected={isSelected}
+                          icon={iconsMap?.[item.type]}
+                        />
+                      )}
 
                       {hasChildren && (
                         <ChevronRight
