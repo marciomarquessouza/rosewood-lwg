@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { ChevronRight, FolderOpen } from "lucide-react";
 import { NodeColumnTitle } from "./NodeColumnTitle";
-import { canCreateNode } from "./utils/canCreateNode";
 import { NodeInlineInput } from "./NodeInlineInput";
 
 export type MillerNode<T extends string = string> = {
@@ -58,94 +57,99 @@ export function MillerColumns<T extends string>({
         className,
       ].join(" ")}
     >
-      {columns.map((items, columnIndex) => (
-        <div
-          key={columnIndex}
-          className={[
-            "flex h-full min-h-0 w-64 shrink-0 flex-col",
-            "border-r border-dashed border-rosewood-ink/30",
-          ].join(" ")}
-        >
-          <NodeColumnTitle nodes={items} />
+      {columns.map((items, columnIndex) => {
+        const nodeType = items[0]?.type;
+        const canCreateNode =
+          nodeType !== undefined && creatableNodeTypes?.includes(nodeType);
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-2">
-            <div className="flex flex-col gap-1">
-              {items.map((item) => {
-                const isSelected = path[columnIndex]?.id === item.id;
+        return (
+          <div
+            key={columnIndex}
+            className={[
+              "flex h-full min-h-0 w-64 shrink-0 flex-col",
+              "border-r border-dashed border-rosewood-ink/30",
+            ].join(" ")}
+          >
+            <NodeColumnTitle nodes={items} />
 
-                const hasChildren = Boolean(item.children?.length);
+            <div className="min-h-0 flex-1 overflow-y-auto p-2">
+              <div className="flex flex-col gap-1">
+                {items.map((item) => {
+                  const isSelected = path[columnIndex]?.id === item.id;
+                  const hasChildren = Boolean(item.children?.length);
 
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleSelect(columnIndex, item)}
-                    aria-selected={isSelected}
-                    className={[
-                      "group flex w-full items-center gap-2",
-                      "rounded-sm border border-transparent",
-                      "px-3 py-2 text-left text-sm",
-                      "transition-colors duration-150",
-                      "cursor-pointer",
-                      "focus-visible:outline-2",
-                      "focus-visible:outline-rosewood-accent",
-                      isSelected
-                        ? [
-                            "border-rosewood-accent",
-                            "bg-rosewood-accent/10",
-                            "font-bold text-rosewood-accent",
-                          ].join(" ")
-                        : [
-                            "text-rosewood-ink",
-                            "hover:bg-rosewood-accent/5",
-                            "hover:text-rosewood-accent",
-                          ].join(" "),
-                    ].join(" ")}
-                  >
-                    <FolderOpen
-                      size={16}
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleSelect(columnIndex, item)}
+                      aria-selected={isSelected}
                       className={[
-                        "shrink-0",
+                        "group flex w-full items-center gap-2",
+                        "rounded-sm border border-transparent",
+                        "px-3 py-2 text-left text-sm",
+                        "transition-colors duration-150",
+                        "cursor-pointer",
+                        "focus-visible:outline-2",
+                        "focus-visible:outline-rosewood-accent",
                         isSelected
-                          ? "text-rosewood-accent"
-                          : "text-rosewood-ink/50",
+                          ? [
+                              "border-rosewood-accent",
+                              "bg-rosewood-accent/10",
+                              "font-bold text-rosewood-accent",
+                            ].join(" ")
+                          : [
+                              "text-rosewood-ink",
+                              "hover:bg-rosewood-accent/5",
+                              "hover:text-rosewood-accent",
+                            ].join(" "),
                       ].join(" ")}
-                    />
-
-                    <span className="min-w-0 flex-1 truncate">
-                      {renderItem ? renderItem(item) : item.name}
-                    </span>
-
-                    {hasChildren && (
-                      <ChevronRight
+                    >
+                      <FolderOpen
                         size={16}
                         className={[
                           "shrink-0",
                           isSelected
                             ? "text-rosewood-accent"
-                            : "text-rosewood-ink/40",
+                            : "text-rosewood-ink/50",
                         ].join(" ")}
                       />
-                    )}
-                  </button>
-                );
-              })}
-              {canCreateNode(items, creatableNodeTypes) && (
-                <NodeInlineInput
-                  placeholder={`New ${items[0].type}...`}
-                  onSubmit={(value) =>
-                    onCreateNode?.(
-                      items[0].type,
-                      value,
-                      path.slice(0, columnIndex),
-                    )
-                  }
-                />
-              )}
+
+                      <span className="min-w-0 flex-1 truncate">
+                        {renderItem ? renderItem(item) : item.name}
+                      </span>
+
+                      {hasChildren && (
+                        <ChevronRight
+                          size={16}
+                          className={[
+                            "shrink-0",
+                            isSelected
+                              ? "text-rosewood-accent"
+                              : "text-rosewood-ink/40",
+                          ].join(" ")}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+                {canCreateNode && (
+                  <NodeInlineInput
+                    placeholder={`New ${nodeType}...`}
+                    onSubmit={(value) =>
+                      onCreateNode?.(
+                        nodeType,
+                        value,
+                        path.slice(0, columnIndex),
+                      )
+                    }
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
