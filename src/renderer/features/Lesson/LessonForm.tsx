@@ -22,7 +22,6 @@ export function LessonForm() {
   };
 
   const handleRenderForm = (parentNode: MillerNode<ContentNodeType>) => {
-    console.log("#HERE parentNode.type", parentNode.type);
     switch (parentNode.type) {
       case "title":
         return (
@@ -42,7 +41,6 @@ export function LessonForm() {
         </div>
       }
     >
-      <p>Lesson Content</p>
       <MillerColumns
         root={lessonContent}
         creatableNodeTypes={["entry"]}
