@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import { ProjectOptions } from "../../schemas/project";
 import { Outlet } from "react-router-dom";
-import { DaysContent } from "../../schemas/day";
+import { DayDirectory, DayLessonContent, DaysContent } from "../../schemas/day";
 
 interface DaysContentContextValue {
   daysContent: DaysContent | null;
@@ -11,6 +11,7 @@ interface DaysContentContextValue {
     projectPath: string,
     options: ProjectOptions,
   ) => Promise<void>;
+  findDayContent: (day: DayDirectory) => DayLessonContent | undefined;
 }
 
 const DaysContentContext = createContext<DaysContentContextValue | null>(null);
@@ -49,6 +50,12 @@ export function DaysContentProvider() {
     [],
   );
 
+  const findDayContent = (
+    dayDirectory: DayDirectory,
+  ): DayLessonContent | undefined => {
+    return daysContent?.days.find((day) => day.dayDirectory === dayDirectory);
+  };
+
   return (
     <DaysContentContext.Provider
       value={{
@@ -56,6 +63,7 @@ export function DaysContentProvider() {
         loading,
         error,
         loadDaysContent,
+        findDayContent,
       }}
     >
       <Outlet />

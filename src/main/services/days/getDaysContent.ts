@@ -11,6 +11,11 @@ import { dialogueBaseSchema } from "../../../schemas/dialogues";
 import { lessonBaseSchema } from "../../../schemas/lesson";
 import { ProjectOptions } from "../../../schemas/project";
 import { openProject } from "../project/openProject";
+import {
+  DayLessonLocales,
+  dayLessonLocalesScheme,
+} from "../../../schemas/locales";
+import { Language, languageSchema } from "../../../schemas/language";
 
 export async function getDaysContent(
   targetPath: string,
@@ -36,23 +41,45 @@ export async function getDaysContent(
       validDayDirectories.map(
         async (dayDirectory): Promise<DayLessonContent> => {
           const dayPath = path.join(projectPath, dayDirectory);
+          const localesPath = path.join(dayPath, "locales");
 
-          const [metaRaw, lessonRaw, dialoguesRaw] = await Promise.all([
-            fs.readFile(path.join(dayPath, "meta.json"), "utf-8"),
-            fs.readFile(path.join(dayPath, "lesson.json"), "utf-8"),
-            fs.readFile(path.join(dayPath, "dialogues.json"), "utf-8"),
-          ]);
+          const [metaRaw, lessonRaw, dialoguesRaw, localeEntries] =
+            await Promise.all([
+              fs.readFile(path.join(dayPath, "meta.json"), "utf-8"),
+              fs.readFile(path.join(dayPath, "lesson.json"), "utf-8"),
+              fs.readFile(path.join(dayPath, "dialogues.json"), "utf-8"),
+              fs.readdir(localesPath, { withFileTypes: true }),
+            ]);
 
           const meta = dayLessonMetaSchema.parse(JSON.parse(metaRaw));
           const lesson = lessonBaseSchema.parse(JSON.parse(lessonRaw));
           const dialogues = dialogueBaseSchema.parse(JSON.parse(dialoguesRaw));
+
+          const localesFiles = localeEntries
+            .filter((entry) => entry.isFile() && entry.name.includes(".json"))
+            .map((entry) => entry.name);
+
+          const localesMap = new Map<Language, DayLessonLocales>();
+
+          for (const file of localesFiles) {
+            const localeRaw = await fs.readFile(
+              path.join(localesPath, file),
+              "utf-8",
+            );
+            const language = languageSchema.parse(file.replace(".json", ""));
+            const locale = dayLessonLocalesScheme.parse(JSON.parse(localeRaw));
+
+            localesMap.set(language, locale);
+          }
+
+          const locales = Object.fromEntries(localesMap);
 
           return {
             ...meta,
             dayDirectory,
             lesson,
             dialogues,
-            locales: {},
+            locales,
           };
         },
       ),
