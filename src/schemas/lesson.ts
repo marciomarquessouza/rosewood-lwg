@@ -5,6 +5,8 @@ export const ContentNodeTypeSchema = z.enum([
   "title",
   "entries",
   "entry",
+  "audio",
+  "steps",
   "step",
   "form",
 ]);
@@ -15,12 +17,14 @@ export type ContentNodeType = z.infer<typeof ContentNodeTypeSchema>;
  * Step
  */
 
-export const LessonStepTypeSchema = z.enum([
+export const LESSON_STEPS = [
   "introduction",
   "listening",
   "pronunciation",
   "writing",
-]);
+];
+
+export const LessonStepTypeSchema = z.enum(LESSON_STEPS);
 
 export type LessonStepType = z.infer<typeof LessonStepTypeSchema>;
 

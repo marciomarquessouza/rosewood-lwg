@@ -3,6 +3,8 @@ import { DayLessonContent } from "../../../../schemas/day";
 import { Language } from "../../../../schemas/language";
 import { ContentNodeType } from "../../../../schemas/lesson";
 import { MillerNode } from "../../../components/MillerColumns";
+import { createLessonEntryTree } from "./createLessonEntryTree";
+import { createLessonTitleTree } from "./createLessonTitleTree";
 
 export function buildLessonContentTree(
   dayLessonContent: DayLessonContent,
@@ -16,18 +18,7 @@ export function buildLessonContentTree(
       children: [],
     };
 
-    const title: MillerNode<ContentNodeType> = {
-      id: "title",
-      name: "Title",
-      type: "title",
-      children: [
-        {
-          id: "title-form",
-          name: "Title Form",
-          type: "form",
-        },
-      ],
-    };
+    const title = createLessonTitleTree();
 
     const entries: MillerNode<ContentNodeType> = {
       id: "entries",
@@ -50,7 +41,9 @@ export function buildLessonContentTree(
     root.children = [title, entries];
 
     if (entryNodes.length > 0) {
-      dayLessonContent.locales[locale]?.lesson.entries;
+      entryNodes.forEach((node) => {
+        node.children = createLessonEntryTree(node);
+      });
     }
 
     return root;
