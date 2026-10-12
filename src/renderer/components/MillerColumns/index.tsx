@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
 import { NodeColumnTitle } from "./NodeColumnTitle";
@@ -48,11 +48,19 @@ export function MillerColumns<T extends string>({
   renderForm,
 }: MillerColumnsProps<T>) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const columns: MillerColumn<T>[] = [];
   const path: MillerNode<T>[] = [];
 
   let items = root;
+
+  useLayoutEffect(() => {
+    containerRef.current?.scrollTo({
+      left: containerRef.current.scrollWidth,
+      behavior: "smooth",
+    });
+  }, [path]);
 
   columns.push({
     id: "root",
@@ -90,6 +98,7 @@ export function MillerColumns<T extends string>({
 
   return (
     <div
+      ref={containerRef}
       className={[
         "flex h-full min-h-0 overflow-x-auto",
         "rounded-md border-2 border-rosewood-ink",
