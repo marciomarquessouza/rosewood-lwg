@@ -1,15 +1,9 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
-import { AppSettings } from "../shared/settings";
+
 import { createSplashWindow } from "./windows/createSplashWindow";
 import { createMainWindow } from "./windows/createMainWindow";
-import { settingsServices } from "./services/settings";
-import { projectServices } from "./services/project";
-import { ProjectContent, ProjectOptions } from "../schemas/project";
-import { Level } from "../schemas/level";
-import { Language } from "../schemas/language";
-import { daysService } from "./services/days";
-import { DayLessonContent } from "../schemas/day";
+import { registerIpcHandlers } from "./ipc";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -43,107 +37,11 @@ app.on("window-all-closed", () => {
   }
 });
 
-ipcMain.handle("app:get-version", () => {
-  return app.getVersion();
-});
-
-ipcMain.handle("app:select-directory", async () => {
-  const result = await dialog.showOpenDialog({
-    properties: ["openDirectory"],
-  });
-
-  if (result.canceled) {
-    return null;
-  }
-
-  return result.filePaths[0] ?? null;
-});
-
-ipcMain.handle("project:open", async (_, projectPath: string) => {
-  return projectServices.openProject(projectPath);
-});
-
-ipcMain.handle("project:get-content", async (_, projectPath: string) => {
-  return projectServices.getProjectContent(projectPath);
-});
-
-ipcMain.handle(
-  "project:save-content",
-  async (_, targetPath: string, content: ProjectContent) => {
-    return projectServices.saveProjectContent(targetPath, content);
-  },
-);
-
-ipcMain.handle(
-  "project:delete-content",
-  async (_, targetPath: string, language: Language, level: Level) => {
-    return projectServices.deleteProjectContent(targetPath, language, level);
-  },
-);
-
-ipcMain.handle("project:pull-content", async (_, targetPath: string) => {
-  return projectServices.pullProjectContent(targetPath);
-});
-
-ipcMain.handle("project:push-content", async (_, targetPath: string) => {
-  return projectServices.pushProjectContent(targetPath);
-});
-
-ipcMain.handle(
-  "days:get-content",
-  async (_, targetPath: string, options: ProjectOptions) => {
-    return daysService.getDaysContent(targetPath, options);
-  },
-);
-
-ipcMain.handle(
-  "days:create-content",
-  async (
-    _,
-    targetPath: string,
-    options: ProjectContent,
-    content: DayLessonContent,
-  ) => {
-    return daysService.createDayContent(targetPath, options, content);
-  },
-);
-
-ipcMain.handle(
-  "days:update-content",
-  async (
-    _,
-    targetPath: string,
-    options: ProjectContent,
-    content: DayLessonContent,
-  ) => {
-    return daysService.updateDayContent(targetPath, options, content);
-  },
-);
-
-ipcMain.handle(
-  "days:delete-content",
-  async (
-    _,
-    targetPath: string,
-    options: ProjectOptions,
-    dayDirectory: string,
-  ) => {
-    return daysService.deleteDayContent(targetPath, options, dayDirectory);
-  },
-);
-
-ipcMain.handle("settings:get", async () => {
-  return settingsServices.getSettings();
-});
-
-ipcMain.handle("settings:update", async (_, updates: Partial<AppSettings>) => {
-  return settingsServices.updateSettings(updates);
-});
-
 app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
+    registerIpcHandlers();
     createWindow();
   }
 });
