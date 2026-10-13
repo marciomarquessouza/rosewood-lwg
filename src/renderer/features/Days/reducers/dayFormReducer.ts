@@ -1,6 +1,6 @@
 import { DEFAULT_DIALOGUES } from "../../../../constants/dialogues";
 import { DialoguesBase } from "../../../../schemas/dialogues";
-import { LessonEntryBase } from "../../../../schemas/lesson";
+import { LessonEntry } from "../../../../schemas/lesson";
 
 export type DayFormState = {
   label: string;
@@ -20,7 +20,7 @@ export type DayFormState = {
       minimumSuccessPercentage: number;
     };
   };
-  entries: Record<string, LessonEntryBase>;
+  entries: Record<string, LessonEntry>;
   dialogues: DialoguesBase;
 };
 

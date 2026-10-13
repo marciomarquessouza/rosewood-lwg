@@ -15,6 +15,8 @@ export type StepTypes = z.infer<typeof stepTypesSchema>;
 export const localeStepSchema = z.object({
   text: z.string(),
   instruction: z.string(),
+  meanings: z.array(z.string()).optional(),
+  gender: z.string().optional(),
 });
 
 export type LocaleStep = z.infer<typeof localeStepSchema>;

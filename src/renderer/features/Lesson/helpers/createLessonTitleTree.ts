@@ -1,7 +1,7 @@
-import { ContentNodeType } from "../../../../schemas/lesson";
+import { LessonContentNodeType } from "../../../../schemas/lesson";
 import { MillerNode } from "../../../components/MillerColumns";
 
-export const createLessonTitleTree = (): MillerNode<ContentNodeType> => ({
+export const createLessonTitleTree = (): MillerNode<LessonContentNodeType> => ({
   id: "title",
   name: "Title",
   type: "title",

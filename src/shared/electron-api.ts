@@ -1,5 +1,6 @@
 import { DayLessonContent, DaysContent } from "../schemas/day";
 import { Language } from "../schemas/language";
+import { LessonBase, LessonContentOptions } from "../schemas/lesson";
 import { Level } from "../schemas/level";
 import { DayLessonLocales, LocaleContentOptions } from "../schemas/locales";
 import { ProjectContent, ProjectOptions } from "../schemas/project";
@@ -12,9 +13,11 @@ export interface Rosewood {
   // api
   getAppVersion(): Promise<string>;
   selectProjectDirectory(): Promise<string | null>;
+
   // settings
   getSettings(): Promise<AppSettings>;
   updateSettings(updates: Partial<AppSettings>): Promise<AppSettings>;
+
   // projects
   openProject(path: string): Promise<ProjectInfo>;
   getProjectContent(path: string): Promise<ProjectContentLines>;
@@ -26,6 +29,7 @@ export interface Rosewood {
     language: Language,
     level: Level,
   ): Promise<void>;
+
   // days
   getDaysContent(path: string, options: ProjectOptions): Promise<DaysContent>;
   createDayContent(
@@ -43,6 +47,14 @@ export interface Rosewood {
     options: ProjectOptions,
     dayDirectory: string,
   ): Promise<void>;
+
+  // lesson
+  updateLessonContent(
+    targetPath: string,
+    options: LessonContentOptions,
+    lessonBase: LessonBase,
+  ): Promise<void>;
+
   // locales
   updateLocaleContent(
     targetPath: string,

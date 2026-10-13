@@ -1,7 +1,7 @@
-import { ContentNodeType } from "../../../../schemas/lesson";
+import { LessonContentNodeType } from "../../../../schemas/lesson";
 import { MillerNode } from "../../../components/MillerColumns";
 
-export const lessonContent: MillerNode<ContentNodeType>[] = [
+export const lessonContent: MillerNode<LessonContentNodeType>[] = [
   {
     id: "en-UK",
     name: "English",

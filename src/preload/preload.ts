@@ -28,6 +28,10 @@ const api: Rosewood = {
   deleteDayContent: (path, options, dayDirectory) =>
     ipcRenderer.invoke("days:delete-content", path, options, dayDirectory),
 
+  // lesson
+  updateLessonContent: (path, options, lessonBase) =>
+    ipcRenderer.invoke("lesson:update", path, options, lessonBase),
+
   // locales
   updateLocaleContent: (path, options, content) =>
     ipcRenderer.invoke("locales:update", path, options, content),

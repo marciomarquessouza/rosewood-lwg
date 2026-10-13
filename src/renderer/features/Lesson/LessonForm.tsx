@@ -7,7 +7,7 @@ import {
   NotebookDot,
   Type,
 } from "lucide-react";
-import { ContentNodeType } from "../../../schemas/lesson";
+import { LessonContentNodeType } from "../../../schemas/lesson";
 import {
   MillerColumns,
   MillerNode,
@@ -26,8 +26,9 @@ import { Feedback } from "../../components/Feedback";
 import { getTitleFromDayContent } from "./helpers/getTitleFromDayContent";
 import { useLessonTitle } from "./hooks/useLessonTitle";
 import { dayDirectoryToNumber } from "../Days/utils/transformDays";
+import { useLessonEntry } from "./hooks/useLessonEntry";
 
-const nodeIcons: Partial<Record<ContentNodeType, LucideIcon>> = {
+const nodeIcons: Partial<Record<LessonContentNodeType, LucideIcon>> = {
   locale: MapPin,
   title: Type,
   entries: NotebookDot,
@@ -44,6 +45,7 @@ export function LessonForm() {
     day: dayParam,
   } = useParams();
   const { saveTitle, saving } = useLessonTitle();
+  const { createEntry } = useLessonEntry();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -59,7 +61,7 @@ export function LessonForm() {
   const dayContent = findDayContent(dayDirectory);
 
   const getNodeActions = (
-    node: MillerNode<ContentNodeType>,
+    node: MillerNode<LessonContentNodeType>,
   ): Array<"create" | "edit" | "remove"> => {
     switch (node.type) {
       case "entries":
@@ -76,12 +78,15 @@ export function LessonForm() {
   const handleNodeAction = async ({
     type,
     node,
-    path,
     value,
-  }: MillerNodeAction<ContentNodeType>) => {
+  }: MillerNodeAction<LessonContentNodeType>) => {
+    const options = { language, level, dayDirectory };
+
+    if (!value || !dayContent) return;
+
     switch (type) {
       case "create":
-        console.log("Create child of:", node.id, value);
+        createEntry(options, value, dayContent);
         break;
 
       case "edit":
@@ -95,7 +100,7 @@ export function LessonForm() {
   };
 
   const handleRenderForm = (
-    parentNode: MillerNode<ContentNodeType>,
+    parentNode: MillerNode<LessonContentNodeType>,
     selectedIds: string[],
   ) => {
     if (!dayContent) return;

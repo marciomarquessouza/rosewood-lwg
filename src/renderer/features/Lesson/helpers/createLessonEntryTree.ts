@@ -1,9 +1,12 @@
-import { ContentNodeType, LESSON_STEPS } from "../../../../schemas/lesson";
+import {
+  LessonContentNodeType,
+  LESSON_STEPS,
+} from "../../../../schemas/lesson";
 import { MillerNode } from "../../../components/MillerColumns";
 
 export function createLessonEntryTree(
-  node: MillerNode<ContentNodeType>,
-): MillerNode<ContentNodeType>[] {
+  node: MillerNode<LessonContentNodeType>,
+): MillerNode<LessonContentNodeType>[] {
   return [
     {
       id: node.id,

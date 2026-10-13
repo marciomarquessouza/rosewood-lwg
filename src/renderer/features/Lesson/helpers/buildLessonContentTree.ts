@@ -1,17 +1,17 @@
 import { LANGUAGE_DETAILS } from "../../../../constants";
 import { DayLessonContent } from "../../../../schemas/day";
 import { Language } from "../../../../schemas/language";
-import { ContentNodeType } from "../../../../schemas/lesson";
+import { LessonContentNodeType } from "../../../../schemas/lesson";
 import { MillerNode } from "../../../components/MillerColumns";
 import { createLessonEntryTree } from "./createLessonEntryTree";
 import { createLessonTitleTree } from "./createLessonTitleTree";
 
 export function buildLessonContentTree(
   dayLessonContent: DayLessonContent,
-): MillerNode<ContentNodeType>[] {
+): MillerNode<LessonContentNodeType>[] {
   return Object.keys(dayLessonContent.locales).map((key) => {
     const locale = key as Language;
-    const root: MillerNode<ContentNodeType> = {
+    const root: MillerNode<LessonContentNodeType> = {
       id: locale,
       name: LANGUAGE_DETAILS[locale].name,
       type: "locale",
@@ -20,7 +20,7 @@ export function buildLessonContentTree(
 
     const title = createLessonTitleTree();
 
-    const entries: MillerNode<ContentNodeType> = {
+    const entries: MillerNode<LessonContentNodeType> = {
       id: "entries",
       name: "Entries",
       type: "entries",
@@ -28,7 +28,7 @@ export function buildLessonContentTree(
     };
 
     const lessonEntries = dayLessonContent.lesson.entries;
-    const entryNodes: MillerNode<ContentNodeType>[] = lessonEntries
+    const entryNodes: MillerNode<LessonContentNodeType>[] = lessonEntries
       ? Object.keys(lessonEntries).map((entryKey) => ({
           id: `${lessonEntries[entryKey].sequence}`,
           name: lessonEntries[entryKey].target,
