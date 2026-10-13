@@ -8,7 +8,11 @@ import {
   Type,
 } from "lucide-react";
 import { ContentNodeType } from "../../../schemas/lesson";
-import { MillerColumns, MillerNode } from "../../components/MillerColumns";
+import {
+  MillerColumns,
+  MillerNode,
+  MillerNodeAction,
+} from "../../components/MillerColumns";
 import { Panel } from "../../components/Panel";
 import { LessonTitleForm } from "./forms/LessonTitleForm";
 import { useParams } from "react-router-dom";
@@ -53,6 +57,42 @@ export function LessonForm() {
   }, [projectPath, language, level, loadDaysContent]);
 
   const dayContent = findDayContent(dayDirectory);
+
+  const getNodeActions = (
+    node: MillerNode<ContentNodeType>,
+  ): Array<"create" | "edit" | "remove"> => {
+    switch (node.type) {
+      case "entries":
+        return ["create"];
+
+      case "entry":
+        return ["edit", "remove"];
+
+      default:
+        return [];
+    }
+  };
+
+  const handleNodeAction = async ({
+    type,
+    node,
+    path,
+    value,
+  }: MillerNodeAction<ContentNodeType>) => {
+    switch (type) {
+      case "create":
+        console.log("Create child of:", node.id, value);
+        break;
+
+      case "edit":
+        console.log("Edit:", node.id, value);
+        break;
+
+      case "remove":
+        console.log("Remove:", node.id);
+        break;
+    }
+  };
 
   const handleRenderForm = (
     parentNode: MillerNode<ContentNodeType>,
@@ -101,11 +141,11 @@ export function LessonForm() {
     >
       <MillerColumns
         root={lessonContentTree}
-        creatableNodeTypes={["entry"]}
         nodeIcons={nodeIcons}
         renderForm={handleRenderForm}
         isFormNode={(node) => node.type === "form"}
-        onCreateNode={(value) => console.log(value)}
+        getNodeActions={getNodeActions}
+        onNodeAction={handleNodeAction}
       />
     </Panel>
   );
