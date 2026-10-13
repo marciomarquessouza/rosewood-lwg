@@ -59,10 +59,11 @@ export function LessonForm() {
     selectedIds: string[],
   ) => {
     if (!dayContent) return;
+    const localeRaw = selectedIds[0];
+    const locale = languageSchema.parse(localeRaw);
+
     switch (parentNode.type) {
       case "title": {
-        const localeRaw = selectedIds[0];
-        const locale = languageSchema.parse(localeRaw);
         const currentTitle = getTitleFromDayContent(locale, dayContent);
         const options = { language, level, dayDirectory, locale };
 

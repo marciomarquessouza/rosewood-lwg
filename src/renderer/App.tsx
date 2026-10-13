@@ -1,4 +1,4 @@
-import { HashRouter, Route, Routes, Outlet } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 
 import { DaysContentProvider } from "./contexts/DaysContentContext";
 import { FeedbackProvider } from "./contexts/FeedbackContext";
