@@ -13,15 +13,21 @@ export type MillerNode<T extends string = string> = {
   children?: MillerNode<T>[];
 };
 
+export type SelectedNode<T extends string> = {
+  node: MillerNode<T>;
+  path: MillerNode<T>[];
+  selectedIds: string[];
+};
+
 export interface MillerColumnsProps<T extends string> {
   root: MillerNode<T>[];
   className?: string;
   creatableNodeTypes?: T[];
   nodeIcons?: Partial<Record<T, LucideIcon>>;
-  onSelect?: (node: MillerNode<T>, path: MillerNode<T>[]) => void;
+  onSelect?: ({ node, path, selectedIds }: SelectedNode<T>) => void;
   renderNode?: (node: MillerNode<T>, isSelected: boolean) => ReactNode;
   isFormNode?: (node: MillerNode<T>) => boolean;
-  renderForm?: (node: MillerNode<T>) => ReactNode;
+  renderForm?: (node: MillerNode<T>, selectedIds: string[]) => ReactNode;
   onCreateNode?: (
     nodeType: T,
     value: string,
@@ -93,7 +99,7 @@ export function MillerColumns<T extends string>({
     const nextPath = [...path.slice(0, columnIndex), node];
 
     setSelectedIds(nextIds);
-    onSelect?.(node, nextPath);
+    onSelect?.({ node, path: nextPath, selectedIds: nextIds });
   };
 
   return (
@@ -123,7 +129,7 @@ export function MillerColumns<T extends string>({
               ].join(" ")}
             >
               <NodeColumnTitle title={formNode.name} />
-              {renderForm(parentNode)}
+              {renderForm(parentNode, selectedIds)}
             </div>
           );
         }

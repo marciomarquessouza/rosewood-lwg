@@ -2,8 +2,11 @@ import { contextBridge, ipcRenderer } from "electron";
 import type { Rosewood } from "../shared/electron-api";
 
 const api: Rosewood = {
+  // app
   getAppVersion: () => ipcRenderer.invoke("app:get-version"),
   selectProjectDirectory: () => ipcRenderer.invoke("app:select-directory"),
+
+  // project
   openProject: (path) => ipcRenderer.invoke("project:open", path),
   getProjectContent: (path) => ipcRenderer.invoke("project:get-content", path),
   saveProjectContent: (path, content) =>
@@ -14,6 +17,8 @@ const api: Rosewood = {
     ipcRenderer.invoke("project:pull-content", path),
   pushProjectContent: (path) =>
     ipcRenderer.invoke("project:push-content", path),
+
+  // days
   getDaysContent: (path, options) =>
     ipcRenderer.invoke("days:get-content", path, options),
   createDayContent: (path, options, content) =>
@@ -22,6 +27,12 @@ const api: Rosewood = {
     ipcRenderer.invoke("days:update-content", path, options, content),
   deleteDayContent: (path, options, dayDirectory) =>
     ipcRenderer.invoke("days:delete-content", path, options, dayDirectory),
+
+  // locales
+  updateLocaleContent: (path, options, content) =>
+    ipcRenderer.invoke("locales:update", path, options, content),
+
+  // settings
   getSettings: () => ipcRenderer.invoke("settings:get"),
   updateSettings: (updates) => ipcRenderer.invoke("settings:update", updates),
 };
