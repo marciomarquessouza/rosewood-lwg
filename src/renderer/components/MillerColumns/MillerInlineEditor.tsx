@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 export interface MillerInlineEditorProps {
   initialValue?: string;
@@ -21,7 +21,7 @@ export function MillerInlineEditor({
   const inputRef = useRef<HTMLInputElement>(null);
   const submittingRef = useRef(false);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     inputRef.current?.focus();
     inputRef.current?.select();
   }, []);

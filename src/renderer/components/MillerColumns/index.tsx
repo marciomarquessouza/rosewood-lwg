@@ -296,6 +296,7 @@ export function MillerColumns<T extends string>({
                                   type="button"
                                   aria-label={`Edit ${item.name}`}
                                   title="Edit"
+                                  onMouseDown={(event) => event.preventDefault()}
                                   onClick={() =>
                                     handleStartEditing("edit", item)
                                   }

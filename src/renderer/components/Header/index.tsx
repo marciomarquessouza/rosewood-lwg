@@ -1,16 +1,11 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { useFeedback } from "../../contexts/FeedbackContext";
 import { Button } from "../Button";
 
 export function Header() {
   const { connected, contentPath, loading } = useProjectInfo();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
   const { projectPath } = useProjectInfo();
   const { showFeedback, clearFeedback } = useFeedback();
-
-  const isDashboard = pathname === "/";
 
   const pushContent = async (projectPath: string): Promise<string> => {
     const result = await window.rosewood.pushProjectContent(projectPath);
