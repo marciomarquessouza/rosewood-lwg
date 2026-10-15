@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 export interface MillerInlineEditorProps {
   initialValue?: string;
@@ -76,7 +76,6 @@ export function MillerInlineEditor({
       disabled={isSubmitting}
       onChange={(event) => setValue(event.target.value)}
       onKeyDown={handleKeyDown}
-      onBlur={() => void handleSubmit()}
       onClick={(event) => event.stopPropagation()}
       className={[
         "w-full min-w-0 rounded-sm",

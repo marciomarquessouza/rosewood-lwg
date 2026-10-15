@@ -45,7 +45,7 @@ export function LessonForm() {
     day: dayParam,
   } = useParams();
   const { saveTitle, saving } = useLessonTitle();
-  const { createEntry } = useLessonEntry();
+  const { createEntry, editEntry } = useLessonEntry();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -90,7 +90,7 @@ export function LessonForm() {
         break;
 
       case "edit":
-        console.log("Edit:", node.id, value);
+        editEntry(options, node.id, value, dayContent);
         break;
 
       case "remove":

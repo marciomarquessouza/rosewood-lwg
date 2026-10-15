@@ -4,6 +4,7 @@ import { useDaysContent } from "../../../contexts/DaysContentContext";
 import { useFeedback } from "../../../contexts/FeedbackContext";
 import { useProjectInfo } from "../../../contexts/ProjectInfoContext";
 import { createLessonEntry } from "../actions/createLessonEntry";
+import { editLessonEntry } from "../actions/editLessonEntry";
 
 export function useLessonEntry() {
   const { showFeedback, clearFeedback } = useFeedback();
@@ -28,12 +29,26 @@ export function useLessonEntry() {
     }
   };
 
-  const editEntry = async () => {
+  const editEntry = async (
+    options: LessonContentOptions,
+    entryId: string,
+    target: string,
+    dayContent: DayLessonContent,
+  ) => {
     clearFeedback();
     try {
+      await editLessonEntry(projectPath, options, entryId, target, dayContent);
+      await loadDaysContent(projectPath, {
+        language: options.language,
+        level: options.level,
+      });
       showFeedback({ type: "success", message: "Entry updated" });
     } catch (error) {
-      showFeedback({ type: "error", message: "Error updating the entry" });
+      console.error(error);
+      showFeedback({
+        type: "error",
+        message: `Error updating the entry ${error}`,
+      });
     }
   };
 

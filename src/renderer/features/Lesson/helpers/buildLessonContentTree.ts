@@ -30,7 +30,7 @@ export function buildLessonContentTree(
     const lessonEntries = dayLessonContent.lesson.entries;
     const entryNodes: MillerNode<LessonContentNodeType>[] = lessonEntries
       ? Object.keys(lessonEntries).map((entryKey) => ({
-          id: `${lessonEntries[entryKey].sequence}`,
+          id: `${lessonEntries[entryKey].id}`,
           name: lessonEntries[entryKey].target,
           type: "entry",
         }))

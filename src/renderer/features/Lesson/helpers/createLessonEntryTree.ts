@@ -9,7 +9,7 @@ export function createLessonEntryTree(
 ): MillerNode<LessonContentNodeType>[] {
   return [
     {
-      id: node.id,
+      id: `audio-${node.id}`,
       name: "audio",
       type: "audio",
       children: [
@@ -25,12 +25,12 @@ export function createLessonEntryTree(
       name: "steps",
       type: "steps",
       children: LESSON_STEPS.map((step) => ({
-        id: step,
+        id: `step-${step}`,
         name: step,
         type: "step",
         children: [
           {
-            id: step,
+            id: `form-${step}`,
             name: step,
             type: "form",
           },
