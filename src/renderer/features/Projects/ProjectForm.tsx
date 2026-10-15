@@ -41,7 +41,7 @@ export function ProjectForm() {
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
       header={
         <div className="flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold">Project</p>
+          <p className="text-2xl font-bold">Language/Level</p>
           <div>
             <Button loading={loading} onClick={handleSubmit} variant="accent">
               {isUpdate ? "Save Changes" : "Create"}

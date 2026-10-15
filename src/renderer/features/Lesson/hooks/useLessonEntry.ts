@@ -5,6 +5,7 @@ import { useFeedback } from "../../../contexts/FeedbackContext";
 import { useProjectInfo } from "../../../contexts/ProjectInfoContext";
 import { createLessonEntry } from "../actions/createLessonEntry";
 import { editLessonEntry } from "../actions/editLessonEntry";
+import { removeLessonEntry } from "../actions/removeLessonEntry";
 
 export function useLessonEntry() {
   const { showFeedback, clearFeedback } = useFeedback();
@@ -13,9 +14,11 @@ export function useLessonEntry() {
 
   const createEntry = async (
     options: LessonContentOptions,
-    target: string,
+    target: string | undefined,
     dayContent: DayLessonContent,
   ) => {
+    if (!target) return;
+
     clearFeedback();
     try {
       await createLessonEntry(projectPath, options, target, dayContent);
@@ -32,9 +35,11 @@ export function useLessonEntry() {
   const editEntry = async (
     options: LessonContentOptions,
     entryId: string,
-    target: string,
+    target: string | undefined,
     dayContent: DayLessonContent,
   ) => {
+    if (!target) return;
+
     clearFeedback();
     try {
       await editLessonEntry(projectPath, options, entryId, target, dayContent);
@@ -47,17 +52,38 @@ export function useLessonEntry() {
       console.error(error);
       showFeedback({
         type: "error",
-        message: `Error updating the entry ${error}`,
+        message: `Error updating the entry: ${error}`,
       });
     }
   };
 
-  const removeEntry = async () => {
+  const removeEntry = async (
+    options: LessonContentOptions,
+    entryId: string,
+    dayContent: DayLessonContent,
+  ) => {
     clearFeedback();
     try {
+      const confirmed = window.confirm(
+        `Remove entry ${entryId}? This will permanently delete all its content.`,
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      await removeLessonEntry(projectPath, options, entryId, dayContent);
+      await loadDaysContent(projectPath, {
+        language: options.language,
+        level: options.level,
+      });
       showFeedback({ type: "success", message: "Entry excluded" });
     } catch (error) {
-      showFeedback({ type: "error", message: "Error removing entry" });
+      console.error(error);
+      showFeedback({
+        type: "error",
+        message: `Error removing the entry: ${error}`,
+      });
     }
   };
 

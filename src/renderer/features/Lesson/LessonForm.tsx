@@ -45,7 +45,7 @@ export function LessonForm() {
     day: dayParam,
   } = useParams();
   const { saveTitle, saving } = useLessonTitle();
-  const { createEntry, editEntry } = useLessonEntry();
+  const { createEntry, editEntry, removeEntry } = useLessonEntry();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -82,7 +82,7 @@ export function LessonForm() {
   }: MillerNodeAction<LessonContentNodeType>) => {
     const options = { language, level, dayDirectory };
 
-    if (!value || !dayContent) return;
+    if (!dayContent) return;
 
     switch (type) {
       case "create":
@@ -94,7 +94,7 @@ export function LessonForm() {
         break;
 
       case "remove":
-        console.log("Remove:", node.id);
+        removeEntry(options, node.id, dayContent);
         break;
     }
   };

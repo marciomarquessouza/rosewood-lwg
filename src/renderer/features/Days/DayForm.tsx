@@ -78,17 +78,20 @@ export function DayForm() {
           projectOptions,
           dayLessonContent,
         );
+        await loadDaysContent(projectPath, projectOptions);
+        showFeedback({ type: "success", message: "Day Updated" });
+        navigate(`/project/${language}/${level}/days`);
       } else {
         await window.rosewood.createDayContent(
           projectPath,
           projectOptions,
           dayLessonContent,
         );
+        await loadDaysContent(projectPath, projectOptions);
+        showFeedback({ type: "success", message: "Day Created" });
+        const { dayDirectory } = dayLessonContent;
+        navigate(`/project/${language}/${level}/days/${dayDirectory}/lesson`);
       }
-
-      await loadDaysContent(projectPath, projectOptions);
-      showFeedback({ type: "success", message: "Day Created" });
-      navigate(`/project/${language}/${level}/days`);
     } catch (error) {
       const message = error instanceof Error ? error.message : "API Error";
       showFeedback({ type: "error", message });
@@ -274,24 +277,6 @@ export function DayForm() {
 
               <hr className="my-4 border-dashed" />
             </div>
-          </div>
-        </Collapsible>
-
-        <Collapsible title="Lesson Entries">
-          <div className="pl-4">
-            <LessonEntries
-              entries={state.entries}
-              onChange={(entries) => updateField("entries", entries)}
-            />
-          </div>
-        </Collapsible>
-
-        <Collapsible title="Dialogues">
-          <div className="pl-4">
-            <DialogueList
-              dialogues={state.dialogues}
-              onChange={(dialogues) => updateField("dialogues", dialogues)}
-            />
           </div>
         </Collapsible>
       </div>
