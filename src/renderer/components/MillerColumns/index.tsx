@@ -46,7 +46,7 @@ export interface MillerColumnsProps<T extends string> {
   onSelect?: (selection: SelectedNode<T>) => void;
   renderNode?: (node: MillerNode<T>, isSelected: boolean) => ReactNode;
   isFormNode?: (node: MillerNode<T>) => boolean;
-  renderForm?: (node: MillerNode<T>, selectedIds: string[]) => ReactNode;
+  renderForm?: (node: MillerNode<T>, selectedIds: string[], path: MillerNode<T>[]) => ReactNode;
   getNodeActions?: (node: MillerNode<T>) => NodeActionTypes[];
   onNodeAction?: (action: MillerNodeAction<T>) => void | Promise<void>;
 }
@@ -184,7 +184,7 @@ export function MillerColumns<T extends string>({
               ].join(" ")}
             >
               <NodeColumnTitle title={formNode.name} />
-              {renderForm(parentNode, selectedIds)}
+              {renderForm(parentNode, selectedIds, path)}
             </div>
           );
         }

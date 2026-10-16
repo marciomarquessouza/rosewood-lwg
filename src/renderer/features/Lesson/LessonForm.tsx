@@ -27,6 +27,7 @@ import { getTitleFromDayContent } from "./helpers/getTitleFromDayContent";
 import { useLessonTitle } from "./hooks/useLessonTitle";
 import { dayDirectoryToNumber } from "../Days/utils/transformDays";
 import { useLessonEntry } from "./hooks/useLessonEntry";
+import { LessonAudioForm } from "./forms/LessonAudioForm";
 
 const nodeIcons: Partial<Record<LessonContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -102,6 +103,7 @@ export function LessonForm() {
   const handleRenderForm = (
     parentNode: MillerNode<LessonContentNodeType>,
     selectedIds: string[],
+    path: MillerNode<LessonContentNodeType>[]
   ) => {
     if (!dayContent) return;
     const localeRaw = selectedIds[0];
@@ -120,6 +122,18 @@ export function LessonForm() {
             onSave={(title) => saveTitle(options, title, dayContent)}
           />
         );
+      }
+      case "audio": {
+        const entry = path.find((node) =>  node.type === "entry")
+        if (!entry) return null
+        return (
+          <LessonAudioForm 
+            locale={locale}
+            target={entry.name}
+            generating={false}
+            onGenerate={() => console.log("Generating Audio")}
+          />
+        )
       }
       default:
         return null;

@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import type { Dirent } from "node:fs";
 import path from "node:path";
 
 import { ProjectContentLines } from "../../../shared/project";
@@ -53,9 +54,17 @@ export async function getProjectContent(
 
       const daysPath = path.join(levelPath, "days");
 
-      const dayEntries = await fs.readdir(daysPath, {
-        withFileTypes: true,
-      });
+      let dayEntries: Dirent[] = [];
+
+      try {
+        dayEntries = await fs.readdir(daysPath, {
+          withFileTypes: true,
+        });
+      } catch (error) {
+        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+          throw error;
+        }
+      }
 
       const projectDays: ProjectDay[] = [];
 
