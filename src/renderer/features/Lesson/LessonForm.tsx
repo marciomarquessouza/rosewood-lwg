@@ -46,7 +46,13 @@ export function LessonForm() {
     day: dayParam,
   } = useParams();
   const { saveTitle, saving } = useLessonTitle();
-  const { createEntry, editEntry, removeEntry } = useLessonEntry();
+  const {
+    saving: savingEntry,
+    createEntry,
+    editEntry,
+    removeEntry,
+    generateAudio,
+  } = useLessonEntry();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -103,7 +109,7 @@ export function LessonForm() {
   const handleRenderForm = (
     parentNode: MillerNode<LessonContentNodeType>,
     selectedIds: string[],
-    path: MillerNode<LessonContentNodeType>[]
+    path: MillerNode<LessonContentNodeType>[],
   ) => {
     if (!dayContent) return;
     const localeRaw = selectedIds[0];
@@ -124,16 +130,23 @@ export function LessonForm() {
         );
       }
       case "audio": {
-        const entry = path.find((node) =>  node.type === "entry")
-        if (!entry) return null
+        const entry = path.find((node) => node.type === "entry");
+        if (!entry) return null;
+
+        const options = { language, level, dayDirectory, locale };
+        const lessonEntry = dayContent.lesson.entries?.[entry.id];
+
         return (
-          <LessonAudioForm 
+          <LessonAudioForm
             locale={locale}
             target={entry.name}
-            generating={false}
-            onGenerate={() => console.log("Generating Audio")}
+            generating={savingEntry}
+            audioPath={lessonEntry?.audio}
+            onGenerate={() =>
+              generateAudio(options, entry.id, entry.name, dayContent)
+            }
           />
-        )
+        );
       }
       default:
         return null;

@@ -18,4 +18,16 @@ export function registerLessonHandlers() {
       );
     },
   );
+
+  ipcMain.handle(
+    "lesson:generate-audio",
+    async (
+      _,
+      targetPath: string,
+      options: LessonContentOptions,
+      target: string,
+    ) => {
+      return lessonsServices.generateAudio(targetPath, options, target);
+    },
+  );
 }

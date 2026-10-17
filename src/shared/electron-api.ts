@@ -54,6 +54,11 @@ export interface Rosewood {
     options: LessonContentOptions,
     lessonBase: LessonBase,
   ): Promise<void>;
+  generateAudio(
+    targetPath: string,
+    options: LessonContentOptions,
+    target: string,
+  ): Promise<{ path: string }>;
 
   // locales
   updateLocaleContent(
