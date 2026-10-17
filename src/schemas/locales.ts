@@ -22,8 +22,8 @@ export const localeStepSchema = z.object({
 export type LocaleStep = z.infer<typeof localeStepSchema>;
 
 export const localeEntryScheme = z.object({
-  reference: z.string(),
-  steps: z.object(z.partialRecord(stepTypesSchema, localeStepSchema)),
+  reference: z.string().optional(),
+  steps: z.partialRecord(stepTypesSchema, localeStepSchema),
 });
 
 export type LocaleEntryScheme = z.infer<typeof localeEntryScheme>;

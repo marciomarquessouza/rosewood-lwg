@@ -28,6 +28,10 @@ import { useLessonTitle } from "./hooks/useLessonTitle";
 import { dayDirectoryToNumber } from "../Days/utils/transformDays";
 import { useLessonEntry } from "./hooks/useLessonEntry";
 import { LessonAudioForm } from "./forms/LessonAudioForm";
+import { LocaleStepForm } from "./forms/LessonStepForm";
+import { useLessonStep } from "./hooks/useLessonStep";
+import { stepTypesSchema } from "../../../schemas/locales";
+import { getStepContent } from "./helpers/getStepContent";
 
 const nodeIcons: Partial<Record<LessonContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -53,6 +57,7 @@ export function LessonForm() {
     removeEntry,
     generateAudio,
   } = useLessonEntry();
+  const { saving: savingStep, updateStep } = useLessonStep();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -148,13 +153,42 @@ export function LessonForm() {
           />
         );
       }
+      case "step": {
+        const entry = path.find((node) => node.type === "entry");
+        if (!entry) return null;
+        const options = { language, level, dayDirectory, locale };
+        const stepType = stepTypesSchema.parse(parentNode.id);
+
+        return (
+          <LocaleStepForm
+            locale={locale}
+            saving={savingStep}
+            initialValue={getStepContent(
+              locale,
+              entry.id,
+              stepType,
+              dayContent,
+            )}
+            onSave={(stepContent) =>
+              updateStep(options, entry.id, stepType, stepContent, dayContent)
+            }
+          />
+        );
+      }
       default:
         return null;
     }
   };
 
   if (!dayContent) {
-    return <Feedback variant="info">No Content available</Feedback>;
+    return (
+      <Feedback
+        className=" w-full flex justify-center items-center"
+        variant="info"
+      >
+        No Content available
+      </Feedback>
+    );
   }
 
   const lessonContentTree = buildLessonContentTree(dayContent);

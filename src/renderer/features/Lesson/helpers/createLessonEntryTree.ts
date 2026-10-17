@@ -25,7 +25,7 @@ export function createLessonEntryTree(
       name: "steps",
       type: "steps",
       children: LESSON_STEPS.map((step) => ({
-        id: `step-${step}`,
+        id: step,
         name: step,
         type: "step",
         children: [
