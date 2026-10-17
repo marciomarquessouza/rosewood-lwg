@@ -30,4 +30,11 @@ export function registerLessonHandlers() {
       return lessonsServices.generateAudio(targetPath, options, target);
     },
   );
+
+  ipcMain.handle(
+    "lesson:load-audio",
+    async (_, targetPath: string, audioPath: string) => {
+      return lessonsServices.loadAudio(targetPath, audioPath);
+    },
+  );
 }

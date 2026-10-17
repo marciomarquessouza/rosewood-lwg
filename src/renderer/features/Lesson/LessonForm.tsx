@@ -32,6 +32,7 @@ import { LocaleStepForm } from "./forms/LessonStepForm";
 import { useLessonStep } from "./hooks/useLessonStep";
 import { stepTypesSchema } from "../../../schemas/locales";
 import { getStepContent } from "./helpers/getStepContent";
+import { useLessonAudio } from "./hooks/useLessonAudio";
 
 const nodeIcons: Partial<Record<LessonContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -49,15 +50,10 @@ export function LessonForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
-  const { saveTitle, saving } = useLessonTitle();
-  const {
-    saving: savingEntry,
-    createEntry,
-    editEntry,
-    removeEntry,
-    generateAudio,
-  } = useLessonEntry();
-  const { saving: savingStep, updateStep } = useLessonStep();
+  const { saveTitle, saving: savingTitle } = useLessonTitle();
+  const { generateAudio, playAudio, saving: savingAudio } = useLessonAudio();
+  const { createEntry, editEntry, removeEntry } = useLessonEntry();
+  const { updateStep, saving: savingStep } = useLessonStep();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -128,7 +124,7 @@ export function LessonForm() {
         return (
           <LessonTitleForm
             locale={locale}
-            saving={saving}
+            saving={savingTitle}
             initialValue={currentTitle}
             onSave={(title) => saveTitle(options, title, dayContent)}
           />
@@ -145,11 +141,12 @@ export function LessonForm() {
           <LessonAudioForm
             locale={locale}
             target={entry.name}
-            generating={savingEntry}
+            generating={savingAudio}
             audioPath={lessonEntry?.audio}
             onGenerate={() =>
               generateAudio(options, entry.id, entry.name, dayContent)
             }
+            onPlay={playAudio}
           />
         );
       }

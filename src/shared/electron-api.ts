@@ -59,6 +59,10 @@ export interface Rosewood {
     options: LessonContentOptions,
     target: string,
   ): Promise<{ path: string }>;
+  loadAudio(
+    targetPath: string,
+    audioPath: string,
+  ): Promise<Buffer<ArrayBuffer>>;
 
   // locales
   updateLocaleContent(

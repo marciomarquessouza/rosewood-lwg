@@ -33,6 +33,8 @@ const api: Rosewood = {
     ipcRenderer.invoke("lesson:update", path, options, lessonBase),
   generateAudio: (path, options, target) =>
     ipcRenderer.invoke("lesson:generate-audio", path, options, target),
+  loadAudio: (path, audioPath) =>
+    ipcRenderer.invoke("lesson:load-audio", path, audioPath),
 
   // locales
   updateLocaleContent: (path, options, content) =>
