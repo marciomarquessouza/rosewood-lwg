@@ -50,15 +50,16 @@ export function LessonForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
-  const { saveTitle, saving: savingTitle } = useLessonTitle();
-  const { generateAudio, playAudio, saving: savingAudio } = useLessonAudio();
-  const { createEntry, editEntry, removeEntry } = useLessonEntry();
-  const { updateStep, saving: savingStep } = useLessonStep();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
   const dayDirectory = dayDirectorySchema.parse(dayParam);
   const dayTitle = `day ${String(dayDirectoryToNumber(dayDirectory)).padStart(2, "0")}`;
+
+  const { saveTitle, saving: savingTitle } = useLessonTitle();
+  const { generateAudio, playAudio, saving: savingAudio } = useLessonAudio();
+  const { createEntry, editEntry, removeEntry } = useLessonEntry();
+  const { updateStep, saving: savingStep } = useLessonStep();
 
   useEffect(() => {
     if (!projectPath) return;

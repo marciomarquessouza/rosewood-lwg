@@ -3,6 +3,17 @@ import { DEFAULT_DIALOGUES } from "../constants/dialogues";
 import { ACTORS, MOODS } from "../constants/actors";
 import { gameSceneSchema } from "./scene";
 
+export const dialoguesContentNodeTypeSchema = z.enum([
+  "locale",
+  "scene",
+  "dialogue",
+  "form",
+]);
+
+export type DialoguesContentNodeType = z.infer<
+  typeof dialoguesContentNodeTypeSchema
+>;
+
 export const MoodSchema = z.enum([
   MOODS.NEUTRAL,
   MOODS.TALKING,
