@@ -7,6 +7,7 @@ import {
 } from "../../../../schemas/dialogues";
 import { Language } from "../../../../schemas/language";
 import { MillerNode } from "../../../components/MillerColumns";
+import { getNodeLineType } from "../utils/getNodeLineType";
 
 export function buildDialoguesContentTree(
   dayLessonContent: DayLessonContent,
@@ -31,12 +32,40 @@ export function buildDialoguesContentTree(
       const dialogue = dayLessonContent.dialogues[dialogueKey];
       const sceneDialogues = sceneMap.get(dialogue.scene) ?? [];
       sceneSet.add(dialogue.scene);
+
+      const dialogueLines: MillerNode<DialoguesContentNodeType>[] =
+        dialogue.lines.map((line, index) => ({
+          id: `dialogue-line-${index}`,
+          name: `${line.type}-${index}`,
+          type: getNodeLineType(line.type),
+          children: [
+            {
+              id: "line-form",
+              name: "Line Form",
+              type: "form",
+            },
+          ],
+        }));
+
       const dialogueNode: MillerNode<DialoguesContentNodeType> = {
         id: key,
         name: dialogue.label,
         type: "dialogue",
+        childrenTitle: "Lines",
         children: [
-          { id: `dialogue-form`, type: "form", name: "Dialogue Form" },
+          {
+            id: "add-line",
+            name: "Add Line",
+            type: "add-line",
+            children: [
+              {
+                id: "line-form",
+                name: "Line Form",
+                type: "form",
+              },
+            ],
+          },
+          ...dialogueLines,
         ],
       };
       sceneDialogues.push(dialogueNode);

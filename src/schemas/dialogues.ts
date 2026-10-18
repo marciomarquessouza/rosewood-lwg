@@ -3,12 +3,18 @@ import { DEFAULT_DIALOGUES } from "../constants/dialogues";
 import { ACTORS, MOODS } from "../constants/actors";
 import { gameSceneSchema } from "./scene";
 
-export const dialoguesContentNodeTypeSchema = z.enum([
+export const DIALOGUE_NODE_TYPES = [
   "locale",
   "scene",
   "dialogue",
+  "line-dialogue",
+  "line-alternatives",
+  "line-input",
+  "add-line",
   "form",
-]);
+] as const;
+
+export const dialoguesContentNodeTypeSchema = z.enum(DIALOGUE_NODE_TYPES);
 
 export type DialoguesContentNodeType = z.infer<
   typeof dialoguesContentNodeTypeSchema
