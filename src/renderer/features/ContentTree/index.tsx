@@ -54,7 +54,7 @@ export function ContentTree() {
         rowHeight={36}
         indent={18}
         padding={0}
-        openByDefault={false}
+        openByDefault
         disableDrag
         disableDrop
         disableEdit

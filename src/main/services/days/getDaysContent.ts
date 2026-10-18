@@ -7,7 +7,7 @@ import {
   dayLessonMetaSchema,
   DaysContent,
 } from "../../../schemas/day";
-import { dialogueBaseSchema } from "../../../schemas/dialogues";
+import { dialoguesSchema } from "../../../schemas/dialogues";
 import { lessonBaseSchema } from "../../../schemas/lesson";
 import { ProjectOptions } from "../../../schemas/project";
 import { openProject } from "../project/openProject";
@@ -53,7 +53,7 @@ export async function getDaysContent(
 
           const meta = dayLessonMetaSchema.parse(JSON.parse(metaRaw));
           const lesson = lessonBaseSchema.parse(JSON.parse(lessonRaw));
-          const dialogues = dialogueBaseSchema.parse(JSON.parse(dialoguesRaw));
+          const dialogues = dialoguesSchema.parse(JSON.parse(dialoguesRaw));
 
           const localesFiles = localeEntries
             .filter((entry) => entry.isFile() && entry.name.includes(".json"))

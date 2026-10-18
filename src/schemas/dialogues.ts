@@ -139,17 +139,10 @@ export type InteractionLine = z.infer<typeof InteractionLineSchema>;
  */
 
 export const DialogueEntrySchema = z.object({
-  scene: z.string().optional(),
-  lines: z.array(InteractionLineSchema),
-});
-
-export const DialogueEntryBaseSchema = z.object({
   label: z.string(),
   scene: gameSceneSchema,
-  skip: z.boolean(),
+  lines: z.array(InteractionLineSchema).default([]),
 });
-
-export type DialogueEntryBase = z.infer<typeof DialogueEntryBaseSchema>;
 
 export type DialogueEntry = z.infer<typeof DialogueEntrySchema>;
 
@@ -158,14 +151,7 @@ export type DialogueEntry = z.infer<typeof DialogueEntrySchema>;
  */
 
 // export const DialoguesBaseSchema = z.record()
-export const DialoguesSchema = z.record(dialogueKeySchema, DialogueEntrySchema);
-
-export const dialogueBaseSchema = z.record(
-  dialogueKeySchema,
-  DialogueEntryBaseSchema,
-);
-
-export type DialoguesBase = z.infer<typeof dialogueBaseSchema>;
+export const dialoguesSchema = z.record(dialogueKeySchema, DialogueEntrySchema);
 
 export type Dialogues = Record<DialogueKey, DialogueEntry>;
 

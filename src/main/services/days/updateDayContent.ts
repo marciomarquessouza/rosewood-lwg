@@ -5,7 +5,7 @@ import { ProjectOptions } from "../../../schemas/project";
 import { openProject } from "../project/openProject";
 import { DayLessonContent, dayLessonMetaSchema } from "../../../schemas/day";
 import { lessonBaseSchema } from "../../../schemas/lesson";
-import { dialogueBaseSchema } from "../../../schemas/dialogues";
+import { dialoguesSchema } from "../../../schemas/dialogues";
 
 export async function updateDayContent(
   targetPath: string,
@@ -29,7 +29,7 @@ export async function updateDayContent(
 
     const dayMetaContent = dayLessonMetaSchema.parse(content);
     const lessonContent = lessonBaseSchema.parse(content.lesson);
-    const dialoguesContent = dialogueBaseSchema.parse(content.dialogues);
+    const dialoguesContent = dialoguesSchema.parse(content.dialogues);
 
     await Promise.all([
       fs.writeFile(
