@@ -17,6 +17,7 @@ export type MillerNode<T extends string = string> = {
   name: string;
   type: T;
   children?: MillerNode<T>[];
+  childrenTitle?: string;
 };
 
 export type SelectedNode<T extends string> = {
@@ -46,9 +47,14 @@ export interface MillerColumnsProps<T extends string> {
   onSelect?: (selection: SelectedNode<T>) => void;
   renderNode?: (node: MillerNode<T>, isSelected: boolean) => ReactNode;
   isFormNode?: (node: MillerNode<T>) => boolean;
-  renderForm?: (node: MillerNode<T>, selectedIds: string[], path: MillerNode<T>[]) => ReactNode;
+  renderForm?: (
+    node: MillerNode<T>,
+    selectedIds: string[],
+    path: MillerNode<T>[],
+  ) => ReactNode;
   getNodeActions?: (node: MillerNode<T>) => NodeActionTypes[];
   onNodeAction?: (action: MillerNodeAction<T>) => void | Promise<void>;
+  requiresCreateInput?: (node: MillerNode<T>) => boolean;
 }
 
 type MillerColumn<T extends string> = {
@@ -67,6 +73,7 @@ export function MillerColumns<T extends string>({
   renderForm,
   getNodeActions,
   onNodeAction,
+  requiresCreateInput,
 }: MillerColumnsProps<T>) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [editingNode, setEditingNode] = useState<EditingNode | null>(null);
@@ -135,6 +142,12 @@ export function MillerColumns<T extends string>({
     mode: EditingNode["mode"],
     node: MillerNode<T>,
   ) => {
+    if (mode === "create" && requiresCreateInput?.(node) === false) {
+      const parentPath = path.slice(0, -1);
+
+      void handleNodeAction("create", node, parentPath);
+      return;
+    }
     setEditingNode({
       mode,
       nodeId: node.id,
@@ -203,9 +216,10 @@ export function MillerColumns<T extends string>({
           >
             <NodeColumnTitle
               title={
-                items.length > 0
+                parentNode?.childrenTitle ??
+                (items.length > 0
                   ? getNodeTypeLabel(items)
-                  : (parentNode?.name ?? "")
+                  : (parentNode?.name ?? ""))
               }
               counter={items.length}
             />

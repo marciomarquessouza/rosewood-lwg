@@ -10,13 +10,26 @@ import { useEffect, useMemo } from "react";
 import { MillerColumns, MillerNode } from "../../components/MillerColumns";
 import { Feedback } from "../../components/Feedback";
 import { buildDialoguesContentTree } from "./helpers/buildDialoguesContentTree";
-import { Clapperboard, LucideIcon, MapPin, MessageSquare } from "lucide-react";
+import {
+  Clapperboard,
+  Compass,
+  LucideIcon,
+  MapPin,
+  MessageCircleCode,
+  MessageSquare,
+  SquareDashedPlus,
+  TextCursor,
+} from "lucide-react";
 import { DialoguesContentNodeType } from "../../../schemas/dialogues";
 
 const nodeIcons: Partial<Record<DialoguesContentNodeType, LucideIcon>> = {
   locale: MapPin,
   scene: Clapperboard,
   dialogue: MessageSquare,
+  "add-line": SquareDashedPlus,
+  "line-alternatives": Compass,
+  "line-dialogue": MessageCircleCode,
+  "line-input": TextCursor,
 };
 
 export function DialoguesForm() {
@@ -63,7 +76,7 @@ export function DialoguesForm() {
   if (!dialoguesContentTree) {
     return (
       <Feedback
-        className=" w-full flex justify-center items-center"
+        className="w-full flex justify-center items-center"
         variant="info"
       >
         No Content available
