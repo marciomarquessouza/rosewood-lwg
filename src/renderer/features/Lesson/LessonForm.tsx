@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   Footprints,
   LayoutList,
@@ -178,7 +178,12 @@ export function LessonForm() {
     }
   };
 
-  if (!dayContent) {
+  const lessonContentTree = useMemo(
+    () => (dayContent ? buildLessonContentTree(dayContent) : null),
+    [dayContent],
+  );
+
+  if (!lessonContentTree) {
     return (
       <Feedback
         className=" w-full flex justify-center items-center"
@@ -188,8 +193,6 @@ export function LessonForm() {
       </Feedback>
     );
   }
-
-  const lessonContentTree = buildLessonContentTree(dayContent);
 
   return (
     <Panel

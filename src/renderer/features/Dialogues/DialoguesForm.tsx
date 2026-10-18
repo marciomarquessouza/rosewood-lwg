@@ -6,7 +6,7 @@ import { languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
 import { dayDirectorySchema } from "../../../schemas/day";
 import { dayDirectoryToNumber } from "../Days/utils/transformDays";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { MillerColumns, MillerNode } from "../../components/MillerColumns";
 import { Feedback } from "../../components/Feedback";
 import { buildDialoguesContentTree } from "./helpers/buildDialoguesContentTree";
@@ -55,7 +55,12 @@ export function DialoguesForm() {
     }
   };
 
-  if (!dayContent) {
+  const dialoguesContentTree = useMemo(
+    () => (dayContent ? buildDialoguesContentTree(dayContent) : null),
+    [dayContent],
+  );
+
+  if (!dialoguesContentTree) {
     return (
       <Feedback
         className=" w-full flex justify-center items-center"
@@ -65,8 +70,6 @@ export function DialoguesForm() {
       </Feedback>
     );
   }
-
-  const dialoguesContentTree = buildDialoguesContentTree(dayContent);
 
   return (
     <Panel
