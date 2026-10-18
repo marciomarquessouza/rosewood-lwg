@@ -30,6 +30,8 @@ export const MoodSchema = z.enum([
   MOODS.FLUSHED,
 ]);
 
+export type Mood = z.infer<typeof MoodSchema>;
+
 export const CharacterSchema = z.enum([
   ACTORS.JAILER,
   ACTORS.TUTOR,

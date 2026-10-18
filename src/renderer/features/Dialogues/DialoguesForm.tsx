@@ -63,6 +63,9 @@ export function DialoguesForm() {
       case "dialogue": {
         return <div>Form</div>;
       }
+      case "add-line": {
+        return <div>Line Form Selector</div>;
+      }
       default:
         return null;
     }
