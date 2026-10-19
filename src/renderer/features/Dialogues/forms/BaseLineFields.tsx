@@ -6,26 +6,22 @@ type BaseLineFieldsProps = {
   text: string;
   character: Character;
   moods: Mood[];
-  speed: string;
   characters: Option<Character>[];
   availableMoods: Option<Mood>[];
   onTextChange: (value: string) => void;
   onCharacterChange: (value: Character) => void;
   onMoodsChange: (value: Mood[]) => void;
-  onSpeedChange: (value: string) => void;
 };
 
 export function BaseLineFields({
   text,
   character,
   moods,
-  speed,
   characters,
   availableMoods,
   onTextChange,
   onCharacterChange,
   onMoodsChange,
-  onSpeedChange,
 }: BaseLineFieldsProps) {
   return (
     <div className="space-y-5">
@@ -84,16 +80,6 @@ export function BaseLineFields({
           </label>
         ))}
       </div>
-
-      <Input
-        label="Speed"
-        type="number"
-        min="0.01"
-        step="0.1"
-        value={speed}
-        onChange={(event) => onSpeedChange(event.target.value)}
-        placeholder="Default speed..."
-      />
     </div>
   );
 }

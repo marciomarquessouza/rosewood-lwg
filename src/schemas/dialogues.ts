@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { DEFAULT_DIALOGUES } from "../constants/dialogues";
-import { ACTORS, MOODS } from "../constants/actors";
 import { gameSceneSchema } from "./scene";
 
 export const DIALOGUE_NODE_TYPES = [
@@ -20,26 +19,32 @@ export type DialoguesContentNodeType = z.infer<
   typeof dialoguesContentNodeTypeSchema
 >;
 
-export const MoodSchema = z.enum([
-  MOODS.NEUTRAL,
-  MOODS.TALKING,
-  MOODS.SAD,
-  MOODS.ANGRY,
-  MOODS.HAPPY,
-  MOODS.SURPRISED,
-  MOODS.FLUSHED,
-]);
+export const MOODS = [
+  "neutral",
+  "talking",
+  "sad",
+  "angry",
+  "happy",
+  "surprised",
+  "flushed",
+] as const;
+
+export const MoodSchema = z.enum(MOODS);
 
 export type Mood = z.infer<typeof MoodSchema>;
 
-export const CharacterSchema = z.enum([
-  ACTORS.JAILER,
-  ACTORS.TUTOR,
-  ACTORS.PLAYER,
-  ACTORS.PUNISHER,
-  ACTORS.LEARNING_NODE,
-  ACTORS.GUARDIAN,
-]);
+export const ACTORS = [
+  "jailer",
+  "tutor",
+  "player",
+  "punisher",
+  "learningNode",
+  "guardian",
+] as const;
+
+export const CharacterSchema = z.enum(ACTORS);
+
+export type Character = z.infer<typeof CharacterSchema>;
 
 export const CharacterMoodSchema = z.object({
   character: CharacterSchema,
@@ -69,12 +74,6 @@ export const InteractionTypeSchema = z.enum([
 export type InteractionTypes = z.infer<typeof InteractionTypeSchema>;
 
 /**
- * Character
- */
-
-export type Character = z.infer<typeof CharacterSchema>;
-
-/**
  * Alternative
  */
 
@@ -93,7 +92,6 @@ export const BaseLineSchema = z.object({
   text: z.string(),
   character: CharacterSchema,
   moods: z.array(CharacterMoodSchema).optional(),
-  speed: z.number().positive().optional(),
 });
 
 export type BaseLine = z.infer<typeof BaseLineSchema>;

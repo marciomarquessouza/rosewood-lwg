@@ -20,7 +20,8 @@ import {
   SquareDashedPlus,
   TextCursor,
 } from "lucide-react";
-import { DialoguesContentNodeType } from "../../../schemas/dialogues";
+import { DialoguesContentNodeType, MOODS } from "../../../schemas/dialogues";
+import { DialogueLineForm } from "./forms/DialogueLineForm";
 
 const nodeIcons: Partial<Record<DialoguesContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -57,14 +58,26 @@ export function DialoguesForm() {
   const handleRenderForm = (
     parentNode: MillerNode<DialoguesContentNodeType>,
     selectedIds: string[],
-    path: MillerNode<DialoguesContentNodeType>[],
   ) => {
+    if (!dayContent) return;
+    const localeRaw = selectedIds[0];
+    const locale = languageSchema.parse(localeRaw);
+
     switch (parentNode.type) {
-      case "dialogue": {
-        return <div>Form</div>;
-      }
       case "add-line": {
-        return <div>Line Form Selector</div>;
+        return (
+          <DialogueLineForm
+            characters={[
+              { label: "Josef", value: "player" },
+              { label: "Nun", value: "tutor" },
+              { label: "Pumpkin", value: "learningNode" },
+              { label: "Marlene", value: "jailer" },
+              { label: "Krampus", value: "punisher" },
+            ]}
+            moods={MOODS.map((mood) => ({ label: mood, value: mood }))}
+            onSave={(line) => console.log({ line, locale, parentNode })}
+          />
+        );
       }
       default:
         return null;

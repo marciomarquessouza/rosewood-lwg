@@ -60,7 +60,6 @@ export function DialogueLineForm({
   const [text, setText] = useState("");
   const [character, setCharacter] = useState<Character>(characters[0]?.value);
   const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
-  const [speed, setSpeed] = useState("");
 
   const [alternativesText, setAlternativesText] = useState("[]");
   const [inputLabel, setInputLabel] = useState("");
@@ -70,7 +69,6 @@ export function DialogueLineForm({
     text,
     character,
     ...(selectedMoods.length > 0 ? { moods: selectedMoods } : {}),
-    ...(speed.trim() ? { speed: Number(speed) } : {}),
   };
 
   const getLine = (): unknown => {
@@ -150,13 +148,11 @@ export function DialogueLineForm({
           text={text}
           character={character}
           moods={selectedMoods}
-          speed={speed}
           characters={characters}
           availableMoods={moods}
           onTextChange={setText}
           onCharacterChange={setCharacter}
           onMoodsChange={setSelectedMoods}
-          onSpeedChange={setSpeed}
         />
 
         {type === "dialogue" && <DialogueFields />}
