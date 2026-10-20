@@ -4,6 +4,7 @@ import {
   AlternativeLine,
   AlternativeLineSchema,
   BaseLine,
+  CharacterMood,
   DialogueLine,
   DialogueLineSchema,
   InputLine,
@@ -61,7 +62,7 @@ export function DialogueLineForm({
 
   const [text, setText] = useState("");
   const [character, setCharacter] = useState<Character>(characters[0]?.value);
-  const [mood, setMood] = useState<Mood>(moods[0]?.value);
+  const [reactions, setReactions] = useState<CharacterMood[]>([]);
 
   const [alternativesText, setAlternativesText] = useState("[]");
   const [inputLabel, setInputLabel] = useState("");
@@ -70,7 +71,7 @@ export function DialogueLineForm({
   const base: BaseLine = {
     text,
     character,
-    moods: [],
+    moods: reactions,
   };
 
   const getLine = (): unknown => {
@@ -152,12 +153,14 @@ export function DialogueLineForm({
         <BaseLineFields
           text={text}
           character={character}
-          mood={mood}
           moods={moods}
           characters={characters}
+          reactions={reactions}
           onTextChange={setText}
           onCharacterChange={setCharacter}
-          onMoodChange={setMood}
+          onReactionChange={(reaction) =>
+            setReactions((values) => [...values, reaction])
+          }
         />
 
         {type === "dialogue" && <DialogueFields />}

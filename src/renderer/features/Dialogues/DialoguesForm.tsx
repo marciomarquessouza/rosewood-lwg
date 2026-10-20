@@ -20,10 +20,14 @@ import {
   SquareDashedPlus,
   TextCursor,
 } from "lucide-react";
-import { DialoguesContentNodeType } from "../../../schemas/dialogues";
+import {
+  dialogueKeySchema,
+  DialoguesContentNodeType,
+} from "../../../schemas/dialogues";
 import { DialogueLineForm } from "./forms/DialogueLineForm";
 import { buildCharacterOptions } from "./helpers/buildCharacterOptions";
 import { buildMoodOptions } from "./helpers/buildMoodOptions";
+import { useDialogues } from "./hooks/useDialogues";
 
 const nodeIcons: Partial<Record<DialoguesContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -43,6 +47,7 @@ export function DialoguesForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
+  const { saving, addDialogueLine } = useDialogues();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -60,10 +65,14 @@ export function DialoguesForm() {
   const handleRenderForm = (
     parentNode: MillerNode<DialoguesContentNodeType>,
     selectedIds: string[],
+    path: MillerNode<DialoguesContentNodeType>[],
   ) => {
     if (!dayContent) return;
     const localeRaw = selectedIds[0];
     const locale = languageSchema.parse(localeRaw);
+    const options = { language, level, dayDirectory, locale };
+    const dialogue = path.find((node) => node.type === "dialogue");
+    const dialogueKey = dialogueKeySchema.parse(dialogue?.id);
 
     switch (parentNode.type) {
       case "add-line": {
@@ -71,7 +80,9 @@ export function DialoguesForm() {
           <DialogueLineForm
             characters={buildCharacterOptions()}
             moods={buildMoodOptions("neutral")}
-            onSave={(line) => console.log({ line, locale, parentNode })}
+            onSave={(line) =>
+              addDialogueLine(options, dialogueKey, line, dayContent)
+            }
           />
         );
       }
