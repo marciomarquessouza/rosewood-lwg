@@ -28,6 +28,7 @@ import { DialogueLineForm } from "./forms/DialogueLineForm";
 import { buildCharacterOptions } from "./helpers/buildCharacterOptions";
 import { buildMoodOptions } from "./helpers/buildMoodOptions";
 import { useDialogues } from "./hooks/useDialogues";
+import { getDialogueLine } from "./utils/getDialogueLine";
 
 const nodeIcons: Partial<Record<DialoguesContentNodeType, LucideIcon>> = {
   locale: MapPin,
@@ -47,7 +48,7 @@ export function DialoguesForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
-  const { saving, addDialogueLine } = useDialogues();
+  const { addDialogueLine } = useDialogues();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -84,6 +85,28 @@ export function DialoguesForm() {
               addDialogueLine(options, dialogueKey, line, dayContent)
             }
           />
+        );
+      }
+      case "line-dialogue": {
+        return (
+          <DialogueLineForm
+            characters={buildCharacterOptions()}
+            moods={buildMoodOptions("neutral")}
+            line={getDialogueLine(
+              options,
+              dialogueKey,
+              dayContent,
+              Number(parentNode.id),
+            )}
+            onSave={(line) => console.log(line)}
+          />
+        );
+      }
+      case "line-alternatives": {
+        return (
+          <div>
+            <p>Line Alternatives</p>
+          </div>
         );
       }
       default:

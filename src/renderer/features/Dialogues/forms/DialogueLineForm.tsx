@@ -34,6 +34,7 @@ type Props = {
   characters: Option<Character>[];
   moods: Option<Mood>[];
   saving?: boolean;
+  line?: InteractionLine;
   onSave: (line: InteractionLine) => void | Promise<void>;
 };
 
@@ -56,13 +57,19 @@ export function DialogueLineForm({
   characters,
   moods,
   saving = false,
+  line,
   onSave,
 }: Props) {
-  const [type, setType] = useState<InteractionTypes>("dialogue");
+  const isUpdate = Boolean(line);
+  const [type, setType] = useState<InteractionTypes>(line?.type ?? "dialogue");
 
-  const [text, setText] = useState("");
-  const [character, setCharacter] = useState<Character>(characters[0]?.value);
-  const [reactions, setReactions] = useState<CharacterMood[]>([]);
+  const [text, setText] = useState(line?.text ?? "");
+  const [character, setCharacter] = useState<Character>(
+    line?.character ?? characters[0]?.value,
+  );
+  const [reactions, setReactions] = useState<CharacterMood[]>(
+    line?.moods ?? [],
+  );
 
   const [alternativesText, setAlternativesText] = useState("[]");
   const [inputLabel, setInputLabel] = useState("");
@@ -124,31 +131,35 @@ export function DialogueLineForm({
           <p className="text-xs font-bold uppercase tracking-wider text-rosewood-ink/50">
             Dialogue Line
           </p>
-          <p className="mt-1 text-xs text-rosewood-ink/60">
-            Select the interaction type and configure its fields.
-          </p>
+          {!isUpdate && (
+            <p className="mt-1 text-xs text-rosewood-ink/60">
+              Select the interaction type and configure its fields.
+            </p>
+          )}
         </div>
 
-        <div className="space-y-2">
-          <label className="text-xs font-bold uppercase tracking-wider text-rosewood-ink/50">
-            Interaction Type
-          </label>
+        {!isUpdate && (
+          <div className="space-y-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-rosewood-ink/50">
+              Interaction Type
+            </label>
 
-          <select
-            value={type}
-            onChange={(event) => {
-              setType(event.target.value as InteractionTypes);
-              setError(null);
-            }}
-            className="w-full rounded border border-rosewood-ink/30 bg-white px-3 py-2 text-sm"
-          >
-            {interactionTypes.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+            <select
+              value={type}
+              onChange={(event) => {
+                setType(event.target.value as InteractionTypes);
+                setError(null);
+              }}
+              className="w-full rounded border border-rosewood-ink/30 bg-white px-3 py-2 text-sm"
+            >
+              {interactionTypes.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <BaseLineFields
           text={text}
@@ -188,7 +199,13 @@ export function DialogueLineForm({
           type="submit"
           disabled={saving || !text.trim() || !characters.length}
         >
-          {saving ? "Creating..." : "Create Line"}
+          {saving
+            ? isUpdate
+              ? "Updating..."
+              : "Creating..."
+            : isUpdate
+              ? "Update Line"
+              : "Create Line"}
         </Button>
       </div>
     </form>

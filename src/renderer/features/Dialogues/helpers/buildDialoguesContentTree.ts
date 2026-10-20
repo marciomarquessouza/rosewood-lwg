@@ -37,7 +37,7 @@ export function buildDialoguesContentTree(
         dayLessonContent.locales[locale]?.dialogues?.[dialogueKey].lines ?? [];
       const dialogueLines: MillerNode<DialoguesContentNodeType>[] =
         localeDialogues.map((line, index) => ({
-          id: `dialogue-line-${index}`,
+          id: `${index}`,
           name: `${index + 1}: ${line.type}-${line.character}`,
           type: getNodeLineType(line.type),
           children: [
