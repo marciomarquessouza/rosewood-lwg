@@ -1,35 +1,49 @@
 import { Character, Mood } from "../../../../schemas/dialogues";
-import { Input } from "../../../components/Input";
+import { Button } from "../../../components/Button";
+import { TextArea } from "../../../components/TextArea";
 import { Option } from "./DialogueLineForm";
 
 type BaseLineFieldsProps = {
   text: string;
   character: Character;
-  moods: Mood[];
+  mood: Mood;
+  moods: Option<Mood>[];
   characters: Option<Character>[];
-  availableMoods: Option<Mood>[];
   onTextChange: (value: string) => void;
   onCharacterChange: (value: Character) => void;
-  onMoodsChange: (value: Mood[]) => void;
+  onMoodChange: (value: Mood) => void;
 };
 
 export function BaseLineFields({
   text,
   character,
-  moods,
   characters,
-  availableMoods,
+  mood,
+  moods,
   onTextChange,
   onCharacterChange,
-  onMoodsChange,
+  onMoodChange,
 }: BaseLineFieldsProps) {
   return (
     <div className="space-y-5">
-      <Input
+      <div className="space-x-2">
+        {characters.map((option) => (
+          <Button
+            key={option.value}
+            variant={character === option.value ? "dark" : "light"}
+            onClick={() => onCharacterChange(option.value)}
+          >
+            {option.label}
+          </Button>
+        ))}
+      </div>
+      <TextArea
+        id="dialogue-text"
         label="Text"
+        placeholder="Dialogue Text"
+        rows={5}
         value={text}
         onChange={(event) => onTextChange(event.target.value)}
-        placeholder="Enter dialogue text..."
       />
 
       <div className="space-y-2">
@@ -55,30 +69,27 @@ export function BaseLineFields({
         </select>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="text-xs font-bold uppercase tracking-wider text-rosewood-ink/50">
           Moods
         </p>
 
-        {availableMoods.map((option) => (
-          <label
-            key={String(option.value)}
-            className="flex items-center gap-2 text-sm"
-          >
-            <input
-              type="checkbox"
-              checked={moods.includes(option.value)}
-              onChange={(event) =>
-                onMoodsChange(
-                  event.target.checked
-                    ? [...moods, option.value]
-                    : moods.filter((mood) => mood !== option.value),
-                )
-              }
-            />
-            {option.label}
-          </label>
-        ))}
+        <select
+          value={String(mood ?? "")}
+          onChange={(event) => {
+            const selected = moods.find(
+              (option) => String(option.value) === event.target.value,
+            );
+            if (selected) onMoodChange(selected.value);
+          }}
+          className="w-full rounded border border-rosewood-ink/30 bg-white px-3 py-2 text-sm"
+        >
+          {moods.map((option) => (
+            <option key={String(option.value)} value={String(option.value)}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

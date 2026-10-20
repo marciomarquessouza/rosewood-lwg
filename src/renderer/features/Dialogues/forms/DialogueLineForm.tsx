@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   AlternativeLine,
   AlternativeLineSchema,
+  BaseLine,
   DialogueLine,
   DialogueLineSchema,
   InputLine,
@@ -25,6 +26,7 @@ type Character = DialogueLine["character"];
 export type Option<T> = {
   label: string;
   value: T;
+  defaultOption?: boolean;
 };
 
 type Props = {
@@ -59,16 +61,16 @@ export function DialogueLineForm({
 
   const [text, setText] = useState("");
   const [character, setCharacter] = useState<Character>(characters[0]?.value);
-  const [selectedMoods, setSelectedMoods] = useState<Mood[]>([]);
+  const [mood, setMood] = useState<Mood>(moods[0]?.value);
 
   const [alternativesText, setAlternativesText] = useState("[]");
   const [inputLabel, setInputLabel] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const base = {
+  const base: BaseLine = {
     text,
     character,
-    ...(selectedMoods.length > 0 ? { moods: selectedMoods } : {}),
+    moods: [],
   };
 
   const getLine = (): unknown => {
@@ -112,7 +114,10 @@ export function DialogueLineForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex h-full min-h-0 flex-col">
+    <form
+      onSubmit={handleSubmit}
+      className="flex h-full min-h-0 flex-col min-w-120"
+    >
       <div className="flex-1 space-y-5 overflow-y-auto p-4">
         <div>
           <p className="text-xs font-bold uppercase tracking-wider text-rosewood-ink/50">
@@ -147,12 +152,12 @@ export function DialogueLineForm({
         <BaseLineFields
           text={text}
           character={character}
-          moods={selectedMoods}
+          mood={mood}
+          moods={moods}
           characters={characters}
-          availableMoods={moods}
           onTextChange={setText}
           onCharacterChange={setCharacter}
-          onMoodsChange={setSelectedMoods}
+          onMoodChange={setMood}
         />
 
         {type === "dialogue" && <DialogueFields />}

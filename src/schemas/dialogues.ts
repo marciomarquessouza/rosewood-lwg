@@ -46,10 +46,12 @@ export const CharacterSchema = z.enum(ACTORS);
 
 export type Character = z.infer<typeof CharacterSchema>;
 
-export const CharacterMoodSchema = z.object({
+export const characterMoodSchema = z.object({
   character: CharacterSchema,
   mood: MoodSchema,
 });
+
+export type CharacterMood = z.infer<typeof characterMoodSchema>;
 
 export const dialogueKeySchema = z.enum(
   Object.keys(DEFAULT_DIALOGUES) as [
@@ -91,7 +93,7 @@ export type Alternative = z.infer<typeof AlternativeSchema>;
 export const BaseLineSchema = z.object({
   text: z.string(),
   character: CharacterSchema,
-  moods: z.array(CharacterMoodSchema).optional(),
+  moods: z.array(characterMoodSchema).optional(),
 });
 
 export type BaseLine = z.infer<typeof BaseLineSchema>;
