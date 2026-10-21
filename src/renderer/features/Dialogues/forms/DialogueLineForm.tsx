@@ -12,13 +12,11 @@ import {
   InteractionTypes,
   Mood,
 } from "../../../../schemas/dialogues";
-import { BaseLineFields } from "./BaseLineFields";
-import {
-  AlternativeFields,
-  DialogueFields,
-  InputFields,
-} from "./DialogueFields";
+import { BaseLineFields } from "./FieldsBaseLine";
+import { DialogueFields } from "./FieldsDialogue";
 import { Button } from "../../../components/Button";
+import { AlternativeFields } from "./FieldsAlternative";
+import { InputFields } from "./FieldsInput";
 
 type InteractionLine = DialogueLine | AlternativeLine | InputLine;
 
@@ -71,8 +69,12 @@ export function DialogueLineForm({
     line?.moods ?? [],
   );
 
-  const [alternativesText, setAlternativesText] = useState("[]");
-  const [inputLabel, setInputLabel] = useState("");
+  const [alternatives, setAlternatives] = useState(
+    line?.type === "alternatives" ? line.alternatives : [],
+  );
+  const [inputLabel, setInputLabel] = useState(
+    line?.type === "input" ? line.inputLabel : "",
+  );
   const [error, setError] = useState<string | null>(null);
 
   const base: BaseLine = {
@@ -87,14 +89,6 @@ export function DialogueLineForm({
         return { ...base, type };
 
       case "alternatives": {
-        let alternatives: unknown;
-
-        try {
-          alternatives = JSON.parse(alternativesText);
-        } catch {
-          throw new Error("Invalid alternatives JSON.");
-        }
-
         return { ...base, type, alternatives };
       }
 
@@ -178,8 +172,8 @@ export function DialogueLineForm({
 
         {type === "alternatives" && (
           <AlternativeFields
-            value={alternativesText}
-            onChange={setAlternativesText}
+            alternatives={alternatives}
+            onChange={setAlternatives}
           />
         )}
 

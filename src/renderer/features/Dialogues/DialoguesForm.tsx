@@ -72,8 +72,9 @@ export function DialoguesForm() {
   ): Array<"create" | "edit" | "remove"> => {
     switch (node.type) {
       case "line-dialogue":
+      case "line-alternatives":
+      case "line-input":
         return ["remove"];
-
       default:
         return [];
     }
@@ -121,7 +122,9 @@ export function DialoguesForm() {
           />
         );
       }
-      case "line-dialogue": {
+      case "line-dialogue":
+      case "line-alternatives":
+      case "line-input": {
         const lineIndex = Number(parentNode.id);
         return (
           <DialogueLineForm
@@ -132,13 +135,6 @@ export function DialoguesForm() {
               updateLine(options, dialogueKey, lineIndex, line, dayContent)
             }
           />
-        );
-      }
-      case "line-alternatives": {
-        return (
-          <div>
-            <p>Line Alternatives</p>
-          </div>
         );
       }
       default:
