@@ -6,6 +6,8 @@ import { LocaleContentOptions } from "../../../../schemas/locales";
 import { DialogueKey, InteractionLine } from "../../../../schemas/dialogues";
 import { createDialogueLine } from "../actions/createDialogueLine";
 import { DayLessonContent } from "../../../../schemas/day";
+import { updateDialogueLine } from "../actions/updateDialogueLine";
+import { removeDialogueLine } from "../actions/removeDialogueLine";
 
 export function useDialogues() {
   const { showFeedback, clearFeedback } = useFeedback();
@@ -13,7 +15,7 @@ export function useDialogues() {
   const { projectPath } = useProjectInfo();
   const [saving, setSaving] = useState(false);
 
-  const addDialogueLine = async (
+  const addLine = async (
     options: LocaleContentOptions,
     dialogueKey: DialogueKey,
     line: InteractionLine,
@@ -41,8 +43,68 @@ export function useDialogues() {
     }
   };
 
+  const updateLine = async (
+    options: LocaleContentOptions,
+    dialogueKey: DialogueKey,
+    lineIndex: number,
+    line: InteractionLine,
+    dayContent: DayLessonContent,
+  ) => {
+    clearFeedback();
+    try {
+      setSaving(true);
+      await updateDialogueLine(
+        projectPath,
+        options,
+        dialogueKey,
+        lineIndex,
+        line,
+        dayContent,
+      );
+      await loadDaysContent(projectPath, {
+        language: options.language,
+        level: options.level,
+      });
+      showFeedback({ type: "success", message: "The step has been updated" });
+    } catch (error) {
+      showFeedback({ type: "error", message: "Error creating dialogue line" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const removeLine = async (
+    options: LocaleContentOptions,
+    dialogueKey: DialogueKey,
+    lineIndex: number,
+    dayContent: DayLessonContent,
+  ) => {
+    clearFeedback();
+    try {
+      setSaving(true);
+      await removeDialogueLine(
+        projectPath,
+        options,
+        dialogueKey,
+        lineIndex,
+        dayContent,
+      );
+      await loadDaysContent(projectPath, {
+        language: options.language,
+        level: options.level,
+      });
+      showFeedback({ type: "success", message: "The step has been updated" });
+    } catch (error) {
+      showFeedback({ type: "error", message: "Error creating dialogue line" });
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return {
     saving,
-    addDialogueLine,
+    addLine,
+    updateLine,
+    removeLine,
   };
 }

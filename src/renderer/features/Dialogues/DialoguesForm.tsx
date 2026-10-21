@@ -7,7 +7,11 @@ import { levelSchema } from "../../../schemas/level";
 import { dayDirectorySchema } from "../../../schemas/day";
 import { dayDirectoryToNumber } from "../Days/utils/transformDays";
 import { useEffect, useMemo } from "react";
-import { MillerColumns, MillerNode } from "../../components/MillerColumns";
+import {
+  MillerColumns,
+  MillerNode,
+  MillerNodeAction,
+} from "../../components/MillerColumns";
 import { Feedback } from "../../components/Feedback";
 import { buildDialoguesContentTree } from "./helpers/buildDialoguesContentTree";
 import {
@@ -48,7 +52,7 @@ export function DialoguesForm() {
     level: levelParam,
     day: dayParam,
   } = useParams();
-  const { addDialogueLine } = useDialogues();
+  const { addLine, updateLine, removeLine } = useDialogues();
 
   const language = languageSchema.parse(languageParam);
   const level = levelSchema.parse(levelParam);
@@ -62,6 +66,33 @@ export function DialoguesForm() {
   }, [projectPath, language, level, loadDaysContent]);
 
   const dayContent = findDayContent(dayDirectory);
+
+  const getNodeActions = (
+    node: MillerNode<DialoguesContentNodeType>,
+  ): Array<"create" | "edit" | "remove"> => {
+    switch (node.type) {
+      case "line-dialogue":
+        return ["remove"];
+
+      default:
+        return [];
+    }
+  };
+
+  const handleNodeAction = async ({
+    type,
+    node,
+    path,
+  }: MillerNodeAction<DialoguesContentNodeType>) => {
+    const options = { language, level, dayDirectory };
+
+    if (!dayContent) return;
+
+    switch (type) {
+      case "remove":
+        break;
+    }
+  };
 
   const handleRenderForm = (
     parentNode: MillerNode<DialoguesContentNodeType>,
@@ -81,24 +112,20 @@ export function DialoguesForm() {
           <DialogueLineForm
             characters={buildCharacterOptions()}
             moods={buildMoodOptions("neutral")}
-            onSave={(line) =>
-              addDialogueLine(options, dialogueKey, line, dayContent)
-            }
+            onSave={(line) => addLine(options, dialogueKey, line, dayContent)}
           />
         );
       }
       case "line-dialogue": {
+        const lineIndex = Number(parentNode.id);
         return (
           <DialogueLineForm
             characters={buildCharacterOptions()}
             moods={buildMoodOptions("neutral")}
-            line={getDialogueLine(
-              options,
-              dialogueKey,
-              dayContent,
-              Number(parentNode.id),
-            )}
-            onSave={(line) => console.log(line)}
+            line={getDialogueLine(options, dialogueKey, dayContent, lineIndex)}
+            onSave={(line) =>
+              updateLine(options, dialogueKey, lineIndex, line, dayContent)
+            }
           />
         );
       }
@@ -147,6 +174,8 @@ export function DialoguesForm() {
         nodeIcons={nodeIcons}
         isFormNode={(node) => node.type === "form"}
         renderForm={handleRenderForm}
+        getNodeActions={getNodeActions}
+        onNodeAction={handleNodeAction}
       />
     </Panel>
   );
