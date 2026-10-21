@@ -25,7 +25,7 @@ export async function removeDialogueLine(
     throw new Error(`Dialogue "${dialogueKey}" not found`);
   }
 
-  const lines = dialogueContent.lines.filter((_, index) => lineIndex === index);
+  const lines = dialogueContent.lines.filter((_, index) => lineIndex !== index);
 
   const updatedLocaleContent: DayLessonLocales = {
     ...localeContent,

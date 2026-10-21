@@ -83,14 +83,19 @@ export function DialoguesForm() {
     type,
     node,
     path,
+    selectedIds,
   }: MillerNodeAction<DialoguesContentNodeType>) => {
-    const options = { language, level, dayDirectory };
-
     if (!dayContent) return;
+    const localeRaw = selectedIds[0];
+    const locale = languageSchema.parse(localeRaw);
+    const options = { language, level, dayDirectory, locale };
+    const dialogue = path.find((node) => node.type === "dialogue");
+    const dialogueKey = dialogueKeySchema.parse(dialogue?.id);
+    const lineIndex = Number(node.id);
 
     switch (type) {
       case "remove":
-        break;
+        removeLine(options, dialogueKey, lineIndex, dayContent);
     }
   };
 

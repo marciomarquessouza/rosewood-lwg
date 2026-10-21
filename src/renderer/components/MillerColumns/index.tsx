@@ -37,6 +37,7 @@ export type MillerNodeAction<T extends string> = {
   type: NodeActionTypes;
   node: MillerNode<T>;
   path: MillerNode<T>[];
+  selectedIds: string[];
   value?: string;
 };
 
@@ -134,6 +135,7 @@ export function MillerColumns<T extends string>({
       type,
       node,
       path: [...parentPath, node],
+      selectedIds,
       value,
     });
   };

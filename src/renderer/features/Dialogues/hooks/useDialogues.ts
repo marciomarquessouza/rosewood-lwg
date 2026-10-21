@@ -81,6 +81,11 @@ export function useDialogues() {
   ) => {
     clearFeedback();
     try {
+      const confirmed = window.confirm(
+        `Remove dialogue line? This will permanently delete all its content.`,
+      );
+
+      if (!confirmed) return;
       setSaving(true);
       await removeDialogueLine(
         projectPath,
