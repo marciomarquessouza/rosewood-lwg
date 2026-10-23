@@ -6,9 +6,11 @@ export function createMainWindow() {
     width: 1280,
     height: 720,
     show: false,
-
+    icon: path.join(__dirname, "../../assets/icons/icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 

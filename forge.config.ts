@@ -9,6 +9,8 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
 const config: ForgeConfig = {
   packagerConfig: {
+    icon: "./assets/icons/icon",
+    name: "Rosewood",
     asar: true,
   },
   rebuildConfig: {},

@@ -68,6 +68,7 @@ export const ProjectInfoProvider = ({ children }: PropsWithChildren) => {
 
     try {
       const project = await window.rosewood.openProject(path);
+      await window.rosewood.updateSettings({ projectPath: project.path });
       setProject(project);
     } catch (error) {
       setError(
