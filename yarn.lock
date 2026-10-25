@@ -5301,6 +5301,10 @@ strip-outer@^1.0.1:
   dependencies:
     escape-string-regexp "^1.0.2"
 
+"sue-tissue-lwg@git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#main":
+  version "1.0.0"
+  resolved "git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#d97ae8dc336f3b97dbb89912c0637570ad4276e2"
+
 sumchecker@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/sumchecker/-/sumchecker-3.0.1.tgz#6377e996795abb0b6d348e9b3e1dfb24345a8e42"
