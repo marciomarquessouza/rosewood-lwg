@@ -1,7 +1,5 @@
 import { app, BrowserWindow } from "electron";
 import started from "electron-squirrel-startup";
-
-import { createSplashWindow } from "./windows/createSplashWindow";
 import { createMainWindow } from "./windows/createMainWindow";
 import { registerIpcHandlers } from "./ipc";
 
@@ -10,15 +8,11 @@ if (started) {
 }
 
 const createWindow = () => {
-  const splashWindow = createSplashWindow();
   const mainWindow = createMainWindow();
 
   mainWindow.once("ready-to-show", () => {
-    setTimeout(() => {
-      mainWindow.maximize();
-      mainWindow.show();
-      splashWindow.close();
-    }, 3000);
+    mainWindow.maximize();
+    mainWindow.show();
   });
 };
 

@@ -56,6 +56,19 @@ const config: ForgeConfig = {
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
   ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        repository: {
+          owner: "marciomarquessouza",
+          name: "rosewood-lwg",
+        },
+        prerelease: false,
+        draft: false,
+      },
+    },
+  ],
 };
 
 export default config;
