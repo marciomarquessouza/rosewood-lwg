@@ -1,10 +1,6 @@
 export {
   stepTypesSchema,
   type StepTypes,
-  localeStepSchema,
-  type LocaleStep,
-  localeEntryScheme,
-  type LocaleEntryScheme,
   dayLessonLocalesScheme,
   type DayLessonLocales,
   localeContentOptionsSchema,

@@ -5303,7 +5303,7 @@ strip-outer@^1.0.1:
 
 "sue-tissue-lwg@git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#main":
   version "1.0.0"
-  resolved "git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#94117b1b7b53db4f4d4b857416d257aac128d34d"
+  resolved "git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#6050296bcc946aca88150caf088a0528262061e2"
 
 sumchecker@^3.0.1:
   version "3.0.1"

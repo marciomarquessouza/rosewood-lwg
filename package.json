@@ -12,7 +12,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
-    "lint": "eslint --ext .ts,.tsx,.mts ."
+    "lint": "eslint --ext .ts,.tsx,.mts .",
+    "upgrade:sue-tissue": "yarn upgrade sue-tissue-lwg"
   },
   "keywords": [],
   "author": {
