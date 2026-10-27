@@ -23,6 +23,7 @@ export interface Rosewood {
   getProjectContent(path: string): Promise<ProjectContentLines>;
   saveProjectContent(path: string, content: ProjectContent): Promise<void>;
   pullProjectContent(path: string): Promise<string>;
+  generateProjectImporters(path: string): Promise<void>;
   pushProjectContent(path: string): Promise<PushResponseType>;
   deleteProjectContent(
     path: string,

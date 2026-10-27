@@ -31,6 +31,13 @@ export function registerProjectHandlers() {
     return projectServices.pullProjectContent(targetPath);
   });
 
+  ipcMain.handle(
+    "project:generate-importers",
+    async (_, targetPath: string) => {
+      return projectServices.generateImporters(targetPath);
+    },
+  );
+
   ipcMain.handle("project:push-content", async (_, targetPath: string) => {
     return projectServices.pushProjectContent(targetPath);
   });

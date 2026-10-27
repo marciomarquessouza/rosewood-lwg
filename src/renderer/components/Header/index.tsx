@@ -7,20 +7,21 @@ export function Header() {
   const { projectPath } = useProjectInfo();
   const { showFeedback, clearFeedback } = useFeedback();
 
-  const pushContent = async (projectPath: string): Promise<string> => {
+  const publishContent = async (projectPath: string): Promise<string> => {
+    await window.rosewood.generateProjectImporters(projectPath);
     const result = await window.rosewood.pushProjectContent(projectPath);
     return result === "empty-tree"
       ? "No changes to publish"
       : "Content published successfully";
   };
 
-  const handlePullPushContent = async (action: "pull" | "push") => {
+  const handlePullPushContent = async (action: "refresh" | "publish") => {
     clearFeedback();
     try {
       const result =
-        action === "pull"
+        action === "refresh"
           ? await window.rosewood.pullProjectContent(projectPath)
-          : await pushContent(projectPath);
+          : await publishContent(projectPath);
       showFeedback({
         type: "success",
         message: `◆ ${result}`,
@@ -58,14 +59,17 @@ export function Header() {
       </div>
       <div>
         <div className="flex gap-4">
-          <Button variant="light" onClick={() => handlePullPushContent("pull")}>
-            Pull Project
+          <Button
+            variant="light"
+            onClick={() => handlePullPushContent("refresh")}
+          >
+            Refresh Project
           </Button>
           <Button
             variant="accent"
-            onClick={() => handlePullPushContent("push")}
+            onClick={() => handlePullPushContent("publish")}
           >
-            Push Project
+            Publish Project
           </Button>
         </div>
       </div>

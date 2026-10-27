@@ -1,3 +1,4 @@
+import { generateImporters } from "./generateImporters";
 import { deleteProjectContent } from "./deleteProjectContent";
 import { getProjectContent } from "./getProjectContent";
 import { openProject } from "./openProject";
@@ -11,5 +12,6 @@ export const projectServices = {
   saveProjectContent,
   deleteProjectContent,
   pullProjectContent,
+  generateImporters,
   pushProjectContent,
 };

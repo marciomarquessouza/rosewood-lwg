@@ -15,6 +15,8 @@ const api: Rosewood = {
     ipcRenderer.invoke("project:delete-content", path, language, level),
   pullProjectContent: (path) =>
     ipcRenderer.invoke("project:pull-content", path),
+  generateProjectImporters: (path) =>
+    ipcRenderer.invoke("project:generate-importers", path),
   pushProjectContent: (path) =>
     ipcRenderer.invoke("project:push-content", path),
 
