@@ -32,35 +32,31 @@ export function ContentTree() {
     tree.select(nodeId, { focus: false });
   }, [pathname, data]);
 
-  if (!projectContent) {
-    return <Feedback variant="info">Empty project</Feedback>;
-  }
-
-  if (error) {
-    return <Feedback variant="error">Error loading the content tree</Feedback>;
-  }
-
-  if (loading) {
-    return <p>Loading Content Tree...</p>;
-  }
-
   return (
-    <div className="w-full overflow-hidden">
-      <Tree<ProjectTreeNode>
-        ref={treeRef}
-        initialData={data}
-        width="100%"
-        height={450}
-        rowHeight={36}
-        indent={18}
-        padding={0}
-        openByDefault
-        disableDrag
-        disableDrop
-        disableEdit
-      >
-        {ContentNode}
-      </Tree>
+    <div className="w-full h-112.5 overflow-hidden">
+      {loading ? (
+        <p>Loading Content Tree...</p>
+      ) : error ? (
+        <Feedback variant="error">Error loading the content tree</Feedback>
+      ) : !projectContent ? (
+        <Feedback variant="info">Empty project</Feedback>
+      ) : (
+        <Tree<ProjectTreeNode>
+          ref={treeRef}
+          data={data}
+          width="100%"
+          height={450}
+          rowHeight={36}
+          indent={18}
+          padding={0}
+          openByDefault
+          disableDrag
+          disableDrop
+          disableEdit
+        >
+          {ContentNode}
+        </Tree>
+      )}
     </div>
   );
 }
