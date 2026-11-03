@@ -11,6 +11,7 @@ import { Select } from "../../components/Select";
 import { Pill } from "../../components/Pill";
 import { Feedback } from "../../components/Feedback";
 import { MarkdownEditor } from "../../components/MarkdownField";
+import { useEffect, useRef } from "react";
 
 export function ProjectForm() {
   const { language: languageParam, level: levelParam } = useParams();
@@ -35,6 +36,29 @@ export function ProjectForm() {
     projectLng: language,
     isUpdate,
   });
+  const submitRef = useRef(handleSubmit);
+
+  useEffect(() => {
+    submitRef.current = handleSubmit;
+  }, [handleSubmit]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+
+        if (!event.repeat && !loading) {
+          void submitRef.current();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [loading]);
 
   return (
     <Panel
