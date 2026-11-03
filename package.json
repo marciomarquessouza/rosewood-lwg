@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@electron-forge/publisher-github": "^8.0.1",
+    "@mdxeditor/editor": "^4.5.0",
     "@tailwindcss/vite": "^4.3.3",
     "electron-squirrel-startup": "^1.0.1",
     "lucide-react": "^1.53.0",

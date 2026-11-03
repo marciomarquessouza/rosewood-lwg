@@ -11,6 +11,7 @@ import { Input } from "../../components/Input";
 import { Select } from "../../components/Select";
 import { Pill } from "../../components/Pill";
 import { Feedback } from "../../components/Feedback";
+import { MarkdownEditor } from "../../components/MarkdownField";
 
 export function ProjectForm() {
   const { language: languageParam, level: levelParam } = useParams();
@@ -114,23 +115,32 @@ export function ProjectForm() {
                   />
                 </div>
               </div>
-              <TextArea
-                id="lesson-plan"
-                label="Planned Lessons"
-                placeholder="Write overview outline here..."
-                value={state.lessonPlan}
-                error={state.errors.lessonPlan}
-                onChange={(event) => setField("lessonPlan", event.target.value)}
-              />
 
-              <TextArea
-                id="lore"
-                label="Lore"
-                placeholder="Write overview outline here..."
-                value={state.lore}
-                error={state.errors.lore}
-                onChange={(event) => setField("lore", event.target.value)}
-              />
+              <div>
+                <label>Planned Lessons</label>
+                {state.errors.lessonPlan && (
+                  <Feedback variant="error">
+                    {state.errors.lessonPlan} =
+                  </Feedback>
+                )}
+                <MarkdownEditor
+                  value={state.lessonPlan}
+                  onChange={(value) => setField("lessonPlan", value)}
+                  placeholder="Write overview outline here..."
+                />
+              </div>
+
+              <div>
+                <label>Lore</label>
+                {state.errors.lore && (
+                  <Feedback variant="error">{state.errors.lore} =</Feedback>
+                )}
+                <MarkdownEditor
+                  value={state.lore}
+                  onChange={(value) => setField("lore", value)}
+                  placeholder="Write overview outline here..."
+                />
+              </div>
             </div>
           </Collapsible>
           <Collapsible title="Locales">

@@ -13,6 +13,14 @@
     "plugin:import/typescript"
   ],
   "parser": "@typescript-eslint/parser",
+  "rules": {
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": ["\\.css$"]
+      }
+    ]
+  },
   "overrides": [
     {
       "files": ["vite.*.config.ts", "vite.*.config.mts"],
