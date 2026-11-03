@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { Panel } from "../../components/Panel";
 import { LANGUAGE_DETAILS } from "../../../constants";
 import { Language } from "../../../schemas/language";
-import { TextArea } from "../../components/TextArea";
 import { Level } from "../../../schemas/level";
 import { useProjectForm } from "./hooks/useProjectForm";
 import { Button } from "../../components/Button";

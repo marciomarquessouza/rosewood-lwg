@@ -34,4 +34,4 @@ jobs:
       - name: Make + Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn publish
+        run: yarn run publish
