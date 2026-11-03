@@ -4,7 +4,7 @@ import { useProjectInfo } from "../contexts/ProjectInfoContext";
 
 export function SideNavigation({ children }: React.PropsWithChildren) {
   const { connected, connect, loading } = useProjectInfo();
-  
+
   return (
     <aside className=" w-80 shrink-0 pb-4">
       <Panel
