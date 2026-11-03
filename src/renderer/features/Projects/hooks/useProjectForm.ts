@@ -189,7 +189,6 @@ export function useProjectForm({
         type: "success",
         message: `Project ${isUpdate ? "updated" : "created"}: ${projectReference}`,
       });
-      navigate(-1);
     } catch (error) {
       console.error(error);
 
