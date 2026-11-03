@@ -1,3 +1,4 @@
+import { DEFAULT_PLANNED_DAYS } from "sue-tissue-lwg/schemas/day";
 import { Language, SUPPORTED_LANGUAGES } from "../../../../schemas/language";
 import { Level } from "../../../../schemas/level";
 
@@ -19,7 +20,7 @@ export const initialState: ProjectFormState = {
   level: "A1-1",
   lore: "",
   lessonPlan: "",
-  plannedDays: 20,
+  plannedDays: DEFAULT_PLANNED_DAYS,
   selectedLocale: SUPPORTED_LANGUAGES[0] ?? null,
   locales: [],
   errors: {},

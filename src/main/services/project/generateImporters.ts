@@ -14,5 +14,9 @@ export async function generateImporters(targetPath: string): Promise<void> {
 
   await execFileAsync(process.execPath, [scriptPath], {
     cwd: targetPath,
+    env: {
+      ...process.env,
+      ELECTRON_RUN_AS_NODE: "1",
+    },
   });
 }

@@ -7,4 +7,5 @@ export {
   type DayLessonMeta,
   DaysContentSchema,
   type DaysContent,
+  DEFAULT_PLANNED_DAYS,
 } from "sue-tissue-lwg/schemas/day";
