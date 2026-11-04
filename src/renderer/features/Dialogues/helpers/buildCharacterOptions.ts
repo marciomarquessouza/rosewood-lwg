@@ -1,4 +1,4 @@
-import { Character } from "../../../../schemas/dialogues";
+import { Character } from "sue-tissue-lwg/schemas/actors";
 import { Option } from "../forms/DialogueLineForm";
 
 export function buildCharacterOptions(): Option<Character>[] {

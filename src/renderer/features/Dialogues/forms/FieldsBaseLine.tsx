@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Character, CharacterMood, Mood } from "../../../../schemas/dialogues";
+import { CharacterMood, Mood } from "../../../../schemas/dialogues";
 import { Button } from "../../../components/Button";
 import { Select } from "../../../components/Select";
 import { TextArea } from "../../../components/TextArea";
 import { Option } from "./DialogueLineForm";
+import { Character } from "sue-tissue-lwg/schemas/actors";
 
 type BaseLineFieldsProps = {
   text: string;

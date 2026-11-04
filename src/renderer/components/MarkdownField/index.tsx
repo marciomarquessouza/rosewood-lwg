@@ -43,7 +43,9 @@ const plugins = [
   tablePlugin(),
   thematicBreakPlugin(),
   markdownShortcutPlugin(),
+];
 
+const toolbar = [
   toolbarPlugin({
     toolbarContents: () => (
       <>
@@ -90,14 +92,16 @@ export function MarkdownEditor({
   }, [value]);
 
   return (
-    <div className={`markdown-editor ${className}`}>
+    <div
+      className={`markdown-editor ${disabled ? "markdown-editor--disabled" : ""} ${className}`}
+    >
       <MDXEditor
         ref={editorRef}
         markdown={value ?? ""}
         onChange={onChange}
         placeholder={placeholder}
         readOnly={disabled}
-        plugins={plugins}
+        plugins={disabled ? plugins : [...plugins, ...toolbar]}
         contentEditableClassName="markdown-editor-content"
       />
     </div>
