@@ -20,6 +20,10 @@ const api: Rosewood = {
   pushProjectContent: (path) =>
     ipcRenderer.invoke("project:push-content", path),
 
+  // characters
+  saveCharacter: (path, character, isUpdate) =>
+    ipcRenderer.invoke("characters:save", path, character, isUpdate),
+
   // days
   getDaysContent: (path, options) =>
     ipcRenderer.invoke("days:get-content", path, options),

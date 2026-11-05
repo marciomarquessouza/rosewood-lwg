@@ -3,6 +3,7 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 
 import { ProjectContentLines } from "../../../shared/project";
+import { getCharacters } from "../characters";
 import { openProject } from "./openProject";
 import { languageSchema } from "../../../schemas/language";
 import { levelSchema } from "../../../schemas/level";
@@ -111,5 +112,6 @@ export async function getProjectContent(
     `${a.language}|${a.level}`.localeCompare(`${b.language}|${b.level}`),
   );
 
-  return { lines };
+  const characters = await getCharacters(projectPath);
+  return { lines, characters };
 }

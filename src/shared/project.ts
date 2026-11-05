@@ -1,3 +1,4 @@
+import type { CharacterProfile } from "../schemas/characterProfile";
 import { ProjectContent } from "../schemas/project";
 
 export interface ProjectInfo {
@@ -7,4 +8,5 @@ export interface ProjectInfo {
 
 export interface ProjectContentLines {
   lines: ProjectContent[];
+  characters: CharacterProfile[];
 }
