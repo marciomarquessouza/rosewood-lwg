@@ -5,6 +5,7 @@ import { Level } from "../schemas/level";
 import { DayLessonLocales, LocaleContentOptions } from "../schemas/locales";
 import { ProjectContent, ProjectOptions } from "../schemas/project";
 import { ProjectContentLines, ProjectInfo } from "./project";
+import type { CharacterProfile } from "../schemas/characterProfile";
 import { AppSettings } from "./settings";
 
 export type PushResponseType = "empty-tree" | "pushed";
@@ -30,6 +31,9 @@ export interface Rosewood {
     language: Language,
     level: Level,
   ): Promise<void>;
+
+  // characters
+  saveCharacter(path: string, character: CharacterProfile, isUpdate: boolean): Promise<void>;
 
   // days
   getDaysContent(path: string, options: ProjectOptions): Promise<DaysContent>;

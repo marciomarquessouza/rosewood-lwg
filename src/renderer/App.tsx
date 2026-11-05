@@ -8,6 +8,7 @@ import { ProjectInfoProvider } from "./contexts/ProjectInfoContext";
 import { Dashboard } from "./features/Dashboard";
 import { DayForm } from "./features/Days/DayForm";
 import { DayList } from "./features/Days/DayList";
+import { CharacterForm } from "./features/Characters/CharacterForm";
 import { ProjectForm } from "./features/Projects/ProjectForm";
 
 import { AppLayout } from "./layouts/AppLayout";
@@ -25,6 +26,9 @@ export function App() {
               <Route element={<AppLayout />}>
                 <Route element={<ProjectLayout />}>
                   <Route index element={<Dashboard />} />
+
+                  <Route path="characters/new" element={<CharacterForm />} />
+                  <Route path="characters/:characterId" element={<CharacterForm />} />
 
                   <Route path="project/new" element={<ProjectForm />} />
 

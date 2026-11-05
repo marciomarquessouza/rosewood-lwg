@@ -2,6 +2,9 @@ import { ProjectTreeNode } from "./buildProjectTreeNodes";
 
 export function getCreatePath(node: ProjectTreeNode): string | null {
   switch (node.type) {
+    case "characters":
+      return "/characters/new";
+
     case "root":
       return "/project/new";
 

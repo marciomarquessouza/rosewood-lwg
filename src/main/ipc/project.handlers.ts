@@ -2,9 +2,15 @@ import { ipcMain } from "electron";
 import { projectServices } from "../services/project";
 import { ProjectContent } from "../../schemas/project";
 import { Language } from "../../schemas/language";
+import { saveCharacter } from "../services/characters";
+import type { CharacterProfile } from "../../schemas/characterProfile";
 import { Level } from "../../schemas/level";
 
 export function registerProjectHandlers() {
+  ipcMain.handle("characters:save", async (_, projectPath: string, character: CharacterProfile, isUpdate: boolean) => {
+    return saveCharacter(projectPath, character, isUpdate);
+  });
+
   ipcMain.handle("project:open", async (_, projectPath: string) => {
     return projectServices.openProject(projectPath);
   });
