@@ -9,6 +9,7 @@ import { Dashboard } from "./features/Dashboard";
 import { DayForm } from "./features/Days/DayForm";
 import { DayList } from "./features/Days/DayList";
 import { CharacterForm } from "./features/Characters/CharacterForm";
+import { CharactersDashboard } from "./features/Characters/CharactersDashboard";
 import { ProjectForm } from "./features/Projects/ProjectForm";
 
 import { AppLayout } from "./layouts/AppLayout";
@@ -28,6 +29,7 @@ export function App() {
                 <Route element={<ProjectLayout />}>
                   <Route index element={<Dashboard />} />
 
+                  <Route path="characters" element={<CharactersDashboard />} />
                   <Route path="characters/new" element={<CharacterForm />} />
                   <Route
                     path="characters/:characterId"
