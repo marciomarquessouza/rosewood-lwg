@@ -4,6 +4,7 @@ export function getNodePath(node: ProjectTreeNode): string | null {
   const { type, id } = node;
 
   if (type === "root") return "/";
+  if (type === "characters") return "/characters";
   if (type === "character")
     return `/characters/${encodeURIComponent(id.slice("characters/".length))}`;
 
