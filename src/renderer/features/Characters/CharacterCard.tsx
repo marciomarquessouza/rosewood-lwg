@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import type { CharacterProfile } from "../../../schemas/characterProfile";
 import { ProfileCard } from "../../components/ProfileCard";
+import { Avatar } from "../../components/Avatar";
 
 interface CharacterCardProps {
   character: CharacterProfile;
@@ -29,6 +30,13 @@ export function CharacterCard({ character, index }: CharacterCardProps) {
       identifier={character.id}
       index={index}
       label="CHARACTER"
+      avatar={
+        <Avatar
+          name={name}
+          src="https://globalzonetoday.com/wp-content/uploads/Scarlett-Rosewood-1.jpg"
+          size="xl"
+        />
+      }
       actionLabel="View profile"
       onClick={() =>
         navigate(`/characters/${encodeURIComponent(character.id)}`)

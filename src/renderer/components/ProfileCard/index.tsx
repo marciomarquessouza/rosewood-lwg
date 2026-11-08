@@ -57,6 +57,8 @@ export function ProfileCard({
     .filter(Boolean)
     .join(" ");
 
+  console.log("#HERE Avatar", avatar);
+
   const content = (
     <>
       <div className="relative flex h-36 shrink-0 items-center justify-center overflow-hidden border-b-2 border-rosewood-ink bg-rosewood-paper">
