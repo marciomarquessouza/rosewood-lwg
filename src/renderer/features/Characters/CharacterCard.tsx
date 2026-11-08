@@ -33,7 +33,7 @@ export function CharacterCard({ character, index }: CharacterCardProps) {
       avatar={
         <Avatar
           name={name}
-          src="https://globalzonetoday.com/wp-content/uploads/Scarlett-Rosewood-1.jpg"
+          src="https://raw.githubusercontent.com/marciomarquessouza/rosewood-lwg/refs/heads/main/src/assets/images/marlene.png"
           size="xl"
         />
       }
