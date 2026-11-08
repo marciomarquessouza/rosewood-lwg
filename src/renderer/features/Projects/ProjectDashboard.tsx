@@ -17,7 +17,6 @@ export function ProjectDashboard() {
   const { connected } = useProjectInfo();
   const { filterProjectLines, error } = useProjectContent();
   const { language: languageParam, level: levelParam } = useParams();
-  console.log("#HERE languageParam", languageParam);
   const language = languageParam
     ? languageSchema.parse(languageParam)
     : undefined;

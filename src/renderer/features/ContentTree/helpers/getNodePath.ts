@@ -13,8 +13,11 @@ export function getNodePath(node: ProjectTreeNode): string | null {
     case "lessons":
       return "/project";
 
+    case "language":
+      return `/project/language/${language}`;
+
     case "level":
-      return `/project/level/${level}`;
+      return `/project/language/${language}`;
 
     case "day":
       return `/project/${language}/${level}/days/${day}`;

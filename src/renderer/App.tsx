@@ -38,7 +38,7 @@ export function App() {
                   <Route path="project/new" element={<ProjectForm />} />
 
                   <Route
-                    path="project/level/:level"
+                    path="project/language/:language"
                     element={<ProjectDashboard />}
                   />
 
