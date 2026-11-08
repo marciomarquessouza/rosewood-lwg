@@ -30,13 +30,7 @@ export function CharacterCard({ character, index }: CharacterCardProps) {
       identifier={character.id}
       index={index}
       label="CHARACTER"
-      avatar={
-        <Avatar
-          name={name}
-          src="https://raw.githubusercontent.com/marciomarquessouza/rosewood-lwg/refs/heads/main/src/assets/images/marlene.png"
-          size="xl"
-        />
-      }
+      avatar={<Avatar name={name} src={character.avatarPath} size="xl" />}
       actionLabel="View profile"
       onClick={() =>
         navigate(`/characters/${encodeURIComponent(character.id)}`)

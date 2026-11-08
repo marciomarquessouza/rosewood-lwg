@@ -49,7 +49,10 @@ function SectionHeading({
           {eyebrow}
         </p>
         <h2 className="font-serif text-2xl font-bold tracking-tight text-rosewood-ink">
-          {title} <span className="align-middle font-sans text-sm font-normal text-rosewood-ink/45">({count})</span>
+          {title}{" "}
+          <span className="align-middle font-sans text-sm font-normal text-rosewood-ink/45">
+            ({count})
+          </span>
         </h2>
       </div>
       <button
@@ -82,7 +85,11 @@ function LessonPreview({
         <span className="inline-flex rounded-sm border border-rosewood-ink bg-rosewood-ink px-2.5 py-1 font-mono text-xs font-bold text-white">
           {lesson.level}
         </span>
-        <ArrowUpRight size={18} className="text-rosewood-ink/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-rosewood-accent" aria-hidden="true" />
+        <ArrowUpRight
+          size={18}
+          className="text-rosewood-ink/50 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-rosewood-accent"
+          aria-hidden="true"
+        />
       </div>
       <div>
         <h3 className="font-serif text-xl font-bold leading-tight text-rosewood-ink">
@@ -133,7 +140,12 @@ function CharacterPreview({
       onClick={onOpen}
       className="group flex w-full items-center gap-4 rounded-lg border border-rosewood-ink/20 bg-rosewood-paper p-3 text-left transition-colors hover:border-rosewood-accent hover:bg-rosewood-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rosewood-accent"
     >
-      <Avatar name={name} size="lg" className="!shadow-none" />
+      <Avatar
+        name={name}
+        src={character.avatarPath}
+        size="lg"
+        className="shadow-none!"
+      />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-serif text-lg font-bold leading-tight text-rosewood-ink">
           {name}
@@ -159,8 +171,14 @@ export function Dashboard() {
   const lessons = projectContent?.lines ?? [];
   const characters = projectContent?.characters ?? [];
   const languages = new Set(lessons.map((lesson) => lesson.language)).size;
-  const createdDays = lessons.reduce((sum, lesson) => sum + lesson.createdDays, 0);
-  const plannedDays = lessons.reduce((sum, lesson) => sum + lesson.plannedDays, 0);
+  const createdDays = lessons.reduce(
+    (sum, lesson) => sum + lesson.createdDays,
+    0,
+  );
+  const plannedDays = lessons.reduce(
+    (sum, lesson) => sum + lesson.plannedDays,
+    0,
+  );
   const completion = progressPercent(createdDays, plannedDays);
   const canOpen = connected && !!projectContent;
 
@@ -168,50 +186,63 @@ export function Dashboard() {
     <Panel className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 pb-3">
-          {/* Opening editorial */}
-          <header className="relative overflow-hidden rounded-lg border-2 border-rosewood-ink bg-rosewood-ink px-6 py-7 text-white sm:px-8 sm:py-9">
-            <span aria-hidden="true" className="pointer-events-none absolute -right-6 -top-20 select-none font-serif text-[270px] font-bold leading-none text-white/5">
-              R
-            </span>
-            <div className="relative">
-              <p className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.3em] text-rosewood-surface/65">
-                Rosewood / Workspace overview
-              </p>
-              <h1 className="max-w-2xl font-serif text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-                Your story, <span className="italic text-rosewood-surface/80">at a glance.</span>
-              </h1>
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/65">
-                One place for your lessons, characters and everything taking shape.
-              </p>
-            </div>
-          </header>
-
           {!connected ? (
             <p className="rounded-lg border border-rosewood-ink/20 bg-rosewood-paper p-6 text-rosewood-ink">
               Connect a project to see its overview.
             </p>
           ) : error ? (
-            <p role="alert" className="rounded-lg border border-rosewood-accent bg-rosewood-paper p-6 text-rosewood-accent">
+            <p
+              role="alert"
+              className="rounded-lg border border-rosewood-accent bg-rosewood-paper p-6 text-rosewood-accent"
+            >
               {error}
             </p>
           ) : !projectContent ? (
             <p className="rounded-lg border border-rosewood-ink/20 bg-rosewood-paper p-6 text-rosewood-ink">
-              {loading ? "Loading your workspace..." : "No project content available."}
+              {loading
+                ? "Loading your workspace..."
+                : "No project content available."}
             </p>
           ) : (
             <>
               {/* Summary strip */}
-              <section aria-label="Project statistics" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <section
+                aria-label="Project statistics"
+                className="grid grid-cols-2 gap-3 lg:grid-cols-4"
+              >
                 {[
                   { label: "Languages", value: languages, icon: Layers3 },
-                  { label: "Lesson tracks", value: lessons.length, icon: BookOpen },
-                  { label: "Characters", value: characters.length, icon: UsersRound },
-                  { label: "Days created", value: createdDays, icon: CalendarDays },
+                  {
+                    label: "Lesson tracks",
+                    value: lessons.length,
+                    icon: BookOpen,
+                  },
+                  {
+                    label: "Characters",
+                    value: characters.length,
+                    icon: UsersRound,
+                  },
+                  {
+                    label: "Days created",
+                    value: createdDays,
+                    icon: CalendarDays,
+                  },
                 ].map(({ label, value, icon: Icon }) => (
-                  <div key={label} className="relative flex min-h-28 flex-col justify-between overflow-hidden rounded-lg border border-rosewood-ink/20 bg-rosewood-paper p-4 sm:p-5">
-                    <Icon size={18} className="absolute right-4 top-4 text-rosewood-accent" aria-hidden="true" />
-                    <p className="pr-6 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-rosewood-ink/60">{label}</p>
-                    <strong className="mt-4 font-serif text-4xl font-bold leading-none text-rosewood-ink">{value}</strong>
+                  <div
+                    key={label}
+                    className="relative flex min-h-28 flex-col justify-between overflow-hidden rounded-lg border border-rosewood-ink/20 bg-rosewood-paper p-4 sm:p-5"
+                  >
+                    <Icon
+                      size={18}
+                      className="absolute right-4 top-4 text-rosewood-accent"
+                      aria-hidden="true"
+                    />
+                    <p className="pr-6 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-rosewood-ink/60">
+                      {label}
+                    </p>
+                    <strong className="mt-4 font-serif text-4xl font-bold leading-none text-rosewood-ink">
+                      {value}
+                    </strong>
                   </div>
                 ))}
               </section>
@@ -231,7 +262,11 @@ export function Dashboard() {
                         <LessonPreview
                           key={`${lesson.language}-${lesson.level}`}
                           lesson={lesson}
-                          onOpen={() => navigate(`/project/${encodeURIComponent(lesson.language)}/${encodeURIComponent(lesson.level)}/days`)}
+                          onOpen={() =>
+                            navigate(
+                              `/project/${encodeURIComponent(lesson.language)}/${encodeURIComponent(lesson.level)}/days`,
+                            )
+                          }
                         />
                       ))}
                     </div>
@@ -263,7 +298,10 @@ export function Dashboard() {
                       <span className="font-mono text-[10px] font-bold uppercase tracking-[0.17em] text-rosewood-ink/55">
                         Character archive
                       </span>
-                      <span className="size-2 rotate-45 bg-rosewood-accent" aria-hidden="true" />
+                      <span
+                        className="size-2 rotate-45 bg-rosewood-accent"
+                        aria-hidden="true"
+                      />
                     </div>
                     {characters.length ? (
                       <div className="flex flex-col gap-3">
@@ -271,7 +309,11 @@ export function Dashboard() {
                           <CharacterPreview
                             key={character.id}
                             character={character}
-                            onOpen={() => navigate(`/characters/${encodeURIComponent(character.id)}`)}
+                            onOpen={() =>
+                              navigate(
+                                `/characters/${encodeURIComponent(character.id)}`,
+                              )
+                            }
                           />
                         ))}
                       </div>
@@ -299,13 +341,28 @@ export function Dashboard() {
                     Curriculum progress
                   </p>
                   <h2 className="mt-2 font-serif text-2xl font-bold text-rosewood-ink">
-                    {createdDays} <span className="font-normal text-rosewood-ink/50">/ {plannedDays} planned days</span>
+                    {createdDays}{" "}
+                    <span className="font-normal text-rosewood-ink/50">
+                      / {plannedDays} planned days
+                    </span>
                   </h2>
-                  <div className="mt-4 h-2.5 w-full max-w-xl overflow-hidden rounded-full bg-rosewood-ink/10" role="progressbar" aria-label="Overall curriculum completion" aria-valuemin={0} aria-valuemax={100} aria-valuenow={completion}>
-                    <div className="h-full rounded-full bg-rosewood-accent" style={{ width: `${completion}%` }} />
+                  <div
+                    className="mt-4 h-2.5 w-full max-w-xl overflow-hidden rounded-full bg-rosewood-ink/10"
+                    role="progressbar"
+                    aria-label="Overall curriculum completion"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-valuenow={completion}
+                  >
+                    <div
+                      className="h-full rounded-full bg-rosewood-accent"
+                      style={{ width: `${completion}%` }}
+                    />
                   </div>
                 </div>
-                <strong className="font-serif text-5xl font-bold text-rosewood-ink sm:text-6xl">{completion}%</strong>
+                <strong className="font-serif text-5xl font-bold text-rosewood-ink sm:text-6xl">
+                  {completion}%
+                </strong>
               </section>
             </>
           )}

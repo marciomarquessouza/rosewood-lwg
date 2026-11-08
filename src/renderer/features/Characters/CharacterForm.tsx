@@ -10,7 +10,11 @@ import { Feedback } from "../../components/Feedback";
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { useFeedback } from "../../contexts/FeedbackContext";
-import { characterProfileSchema, type CharacterProfile } from "../../../schemas/characterProfile";
+import {
+  characterProfileSchema,
+  type CharacterProfile,
+} from "../../../schemas/characterProfile";
+import { Avatar } from "../../components/Avatar";
 
 const initialCharacter: CharacterProfile = {
   id: "",
@@ -22,6 +26,7 @@ const initialCharacter: CharacterProfile = {
   background: "",
   lore: "",
   notes: "",
+  avatarPath: "",
 };
 
 const markdownFields = [
@@ -37,13 +42,22 @@ export function CharacterForm() {
   const { characterId } = useParams();
   const isUpdate = characterId !== undefined;
   const { projectPath } = useProjectInfo();
-  const { projectContent, loadProjectContent, loading: contentLoading } = useProjectContent();
+  const {
+    projectContent,
+    loadProjectContent,
+    loading: contentLoading,
+  } = useProjectContent();
   const { showFeedback, clearFeedback } = useFeedback();
   const navigate = useNavigate();
-  const [character, setCharacter] = useState<CharacterProfile>(initialCharacter);
+  const [character, setCharacter] =
+    useState<CharacterProfile>(initialCharacter);
   const [saving, setSaving] = useState(false);
-  const [errors, setErrors] = useState<Partial<Record<keyof CharacterProfile, string>>>({});
-  const current = projectContent?.characters.find((item) => item.id === characterId);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof CharacterProfile, string>>
+  >({});
+  const current = projectContent?.characters.find(
+    (item) => item.id === characterId,
+  );
 
   useEffect(() => {
     setCharacter(current ?? initialCharacter);
@@ -60,7 +74,9 @@ export function CharacterForm() {
     if (!result.success) {
       const flattened = z.flattenError(result.error);
       const fieldErrors: Partial<Record<keyof CharacterProfile, string>> = {};
-      for (const field of Object.keys(initialCharacter) as (keyof CharacterProfile)[]) {
+      for (const field of Object.keys(
+        initialCharacter,
+      ) as (keyof CharacterProfile)[]) {
         fieldErrors[field] = flattened.fieldErrors[field]?.[0];
       }
       setErrors(fieldErrors);
@@ -72,12 +88,16 @@ export function CharacterForm() {
       clearFeedback();
       await window.rosewood.saveCharacter(projectPath, result.data, isUpdate);
       await loadProjectContent();
-      showFeedback({ type: "success", message: isUpdate ? "Character updated" : "Character created" });
+      showFeedback({
+        type: "success",
+        message: isUpdate ? "Character updated" : "Character created",
+      });
       if (!isUpdate) navigate(`/characters/${result.data.id}`);
     } catch (error) {
       showFeedback({
         type: "error",
-        message: error instanceof Error ? error.message : "Unable to save character",
+        message:
+          error instanceof Error ? error.message : "Unable to save character",
       });
     } finally {
       setSaving(false);
@@ -85,12 +105,15 @@ export function CharacterForm() {
   };
 
   const submitRef = useRef(handleSubmit);
-  useEffect(() => { submitRef.current = handleSubmit; }, [handleSubmit]);
+  useEffect(() => {
+    submitRef.current = handleSubmit;
+  }, [handleSubmit]);
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
         event.preventDefault();
-        if (!event.repeat && !saving && !contentLoading) void submitRef.current();
+        if (!event.repeat && !saving && !contentLoading)
+          void submitRef.current();
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -106,8 +129,15 @@ export function CharacterForm() {
       className="flex min-h-0 flex-1 flex-col overflow-hidden"
       header={
         <div className="flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold">{isUpdate ? "Character" : "New Character"}</p>
-          <Button variant="accent" loading={saving} disabled={saving || contentLoading} onClick={handleSubmit}>
+          <p className="text-2xl font-bold">
+            {isUpdate ? "Character" : "New Character"}
+          </p>
+          <Button
+            variant="accent"
+            loading={saving}
+            disabled={saving || contentLoading}
+            onClick={handleSubmit}
+          >
             {isUpdate ? "Save Changes" : "Create"}
           </Button>
         </div>
@@ -116,21 +146,73 @@ export function CharacterForm() {
       <div className="h-full min-h-0 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-8">
           <Collapsible title="Identity">
-            <div className="grid grid-cols-1 gap-4 px-2 py-3 sm:grid-cols-2">
-              <Input id="character-id" label="ID" value={character.id} readOnly={isUpdate}
-                placeholder="josef-g" error={errors.id}
-                onChange={(event) => setField("id", event.target.value)} />
-              <Input id="character-name" label="Name" value={character.name} error={errors.name}
-                onChange={(event) => setField("name", event.target.value)} />
-              <Input id="character-display-name" label="Display Name" value={character.displayName}
-                onChange={(event) => setField("displayName", event.target.value)} />
+            <div className="flex flex-col gap-6 px-2 py-3 md:flex-row">
+              <div className="flex shrink-0 flex-col items-center gap-3">
+                <Avatar
+                  name={character.displayName || character.name}
+                  src={character.avatarPath || undefined}
+                  size="xl"
+                  shape="square"
+                />
+                <span className="text-xs text-rosewood-ink/60">
+                  Character Avatar
+                </span>
+              </div>
+
+              <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
+                <Input
+                  id="character-id"
+                  label="ID"
+                  value={character.id}
+                  readOnly={isUpdate}
+                  placeholder="josef-g"
+                  error={errors.id}
+                  onChange={(event) => setField("id", event.target.value)}
+                />
+
+                <Input
+                  id="character-name"
+                  label="Name"
+                  value={character.name}
+                  error={errors.name}
+                  onChange={(event) => setField("name", event.target.value)}
+                />
+
+                <Input
+                  id="character-display-name"
+                  label="Display Name"
+                  value={character.displayName}
+                  onChange={(event) =>
+                    setField("displayName", event.target.value)
+                  }
+                />
+
+                <Input
+                  id="character-avatar-path"
+                  label="Avatar Path"
+                  value={character.avatarPath ?? ""}
+                  placeholder="/images/characters/josef.png"
+                  error={errors.avatarPath}
+                  onChange={(event) =>
+                    setField("avatarPath", event.target.value)
+                  }
+                />
+              </div>
             </div>
           </Collapsible>
+
           {markdownFields.map(({ key, label }) => (
-            <Collapsible key={key} title={label} defaultOpen={key === "description"}>
+            <Collapsible
+              key={key}
+              title={label}
+              defaultOpen={key === "description"}
+            >
               <div className="px-2 py-3">
-                <MarkdownEditor value={character[key]} onChange={(value) => setField(key, value)}
-                  placeholder={`Write ${label.toLowerCase()} here...`} />
+                <MarkdownEditor
+                  value={character[key]}
+                  onChange={(value) => setField(key, value)}
+                  placeholder={`Write ${label.toLowerCase()} here...`}
+                />
               </div>
             </Collapsible>
           ))}
