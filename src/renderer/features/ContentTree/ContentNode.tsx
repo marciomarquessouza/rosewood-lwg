@@ -1,11 +1,28 @@
 import { NodeRendererProps } from "react-arborist";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCreatePath } from "./helpers/getCreatePath";
-import { BookOpen, ChevronDown, ChevronRight, Folder, FolderOpen, Globe2, GraduationCap, LayoutDashboard, MessageSquare, Plus, Users, UserRound } from "lucide-react";
+import {
+  BookOpen,
+  ChevronDown,
+  ChevronRight,
+  Folder,
+  FolderOpen,
+  Globe2,
+  GraduationCap,
+  LayoutDashboard,
+  MessageSquare,
+  Plus,
+  Users,
+  UserRound,
+  NotebookTabs,
+} from "lucide-react";
 import { getNodePath } from "./helpers/getNodePath";
 import { ProjectTreeNode } from "./helpers/buildProjectTreeNodes";
 
-export function ContentNode({ node, style }: NodeRendererProps<ProjectTreeNode>) {
+export function ContentNode({
+  node,
+  style,
+}: NodeRendererProps<ProjectTreeNode>) {
   const navigate = useNavigate();
   const location = useLocation();
   const createPath = getCreatePath(node.data);
@@ -101,6 +118,7 @@ const NODE_ICONS = {
   language: Globe2,
   level: GraduationCap,
   day: Folder,
+  lessons: NotebookTabs,
   lesson: BookOpen,
   dialogues: MessageSquare,
 } as const;

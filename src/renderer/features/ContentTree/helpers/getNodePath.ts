@@ -4,13 +4,17 @@ export function getNodePath(node: ProjectTreeNode): string | null {
   const { type, id } = node;
 
   if (type === "root") return "/";
-  if (type === "character") return `/characters/${encodeURIComponent(id.slice("characters/".length))}`;
+  if (type === "character")
+    return `/characters/${encodeURIComponent(id.slice("characters/".length))}`;
 
   const [language, level, , day] = id.split("/");
 
   switch (type) {
+    case "lessons":
+      return "/project";
+
     case "level":
-      return `/project/${language}/${level}`;
+      return `/project/level/${level}`;
 
     case "day":
       return `/project/${language}/${level}/days/${day}`;

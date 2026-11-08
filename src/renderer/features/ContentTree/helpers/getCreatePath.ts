@@ -8,6 +8,9 @@ export function getCreatePath(node: ProjectTreeNode): string | null {
     case "root":
       return "/project/new";
 
+    case "lessons":
+      return "/project/new";
+
     case "language":
       return `/project/${node.id}`;
 

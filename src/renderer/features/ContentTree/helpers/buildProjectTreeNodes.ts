@@ -1,7 +1,15 @@
 import { ProjectContentLines } from "../../../../shared/project";
 
 type ProjectNodeType =
-  "root" | "characters" | "character" | "language" | "level" | "day" | "lesson" | "dialogues";
+  | "root"
+  | "characters"
+  | "character"
+  | "language"
+  | "level"
+  | "day"
+  | "lessons"
+  | "lesson"
+  | "dialogues";
 
 export interface ProjectTreeNode {
   id: string;
@@ -71,11 +79,16 @@ export function buildProjectTreeNodes(
           type: "characters",
           children: data.characters.map((character) => ({
             id: `characters/${character.id}`,
-            name: character.name,
+            name: `[${character.id}]-${character.name}`,
             type: "character" as const,
           })),
         },
-        ...Array.from(languages.values()),
+        {
+          id: "lesson",
+          name: "Lessons",
+          children: Array.from(languages.values()),
+          type: "lessons" as const,
+        },
       ],
     },
   ];

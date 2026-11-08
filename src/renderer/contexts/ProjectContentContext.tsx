@@ -9,12 +9,14 @@ import {
 import type { ProjectContentLines } from "../../shared/project";
 import { useProjectInfo } from "./ProjectInfoContext";
 import { ProjectContent, ProjectOptions } from "../../schemas/project";
+import { ProjectFilters } from "sue-tissue-lwg/schemas/project";
 
 interface ProjectContentContextValue {
   loading: boolean;
   projectContent: ProjectContentLines | null;
   loadProjectContent: () => Promise<void>;
   findProjectLine: (options: ProjectOptions) => ProjectContent | undefined;
+  filterProjectLines: (filters: ProjectFilters) => Array<ProjectContent>;
   error: string | null;
 }
 
@@ -67,6 +69,16 @@ export function ProjectContentProvider({
     }
   };
 
+  const filterProjectLines = ({ language, level }: ProjectFilters) => {
+    if (!projectContent?.lines) return [];
+
+    return projectContent.lines.filter(
+      (line) =>
+        (!language || line.language === language) &&
+        (!level || line.level === level),
+    );
+  };
+
   const findProjectLine = ({ language, level }: ProjectOptions) =>
     projectContent?.lines.find(
       (line) => line.language === language && line.level === level,
@@ -79,6 +91,7 @@ export function ProjectContentProvider({
         projectContent,
         loadProjectContent,
         findProjectLine,
+        filterProjectLines,
         error,
       }}
     >

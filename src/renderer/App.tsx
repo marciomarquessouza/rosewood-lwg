@@ -15,6 +15,7 @@ import { AppLayout } from "./layouts/AppLayout";
 import { ProjectLayout } from "./layouts/ProjectLayout";
 import { LessonForm } from "./features/Lesson/LessonForm";
 import { DialoguesForm } from "./features/Dialogues/DialoguesForm";
+import { ProjectDashboard } from "./features/Projects/ProjectDashboard";
 
 export function App() {
   return (
@@ -28,9 +29,18 @@ export function App() {
                   <Route index element={<Dashboard />} />
 
                   <Route path="characters/new" element={<CharacterForm />} />
-                  <Route path="characters/:characterId" element={<CharacterForm />} />
+                  <Route
+                    path="characters/:characterId"
+                    element={<CharacterForm />}
+                  />
 
+                  <Route path="project" element={<ProjectDashboard />} />
                   <Route path="project/new" element={<ProjectForm />} />
+
+                  <Route
+                    path="project/level/:level"
+                    element={<ProjectDashboard />}
+                  />
 
                   <Route path="project/:language" element={<ProjectForm />} />
 
