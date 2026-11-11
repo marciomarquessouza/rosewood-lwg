@@ -79,7 +79,7 @@ export function buildProjectTreeNodes(
           type: "characters",
           children: data.characters.map((character) => ({
             id: `characters/${character.id}`,
-            name: `[${character.id}]-${character.name}`,
+            name: `${character.displayName} [${character.id}]`,
             type: "character" as const,
           })),
         },
