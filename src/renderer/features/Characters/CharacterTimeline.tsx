@@ -76,8 +76,8 @@ export function CharacterTimeline({ entries, onChange, disabled = false }: Chara
   };
 
   return (
-    <aside className="flex min-h-0 w-full flex-col border-t-2 border-rosewood-ink/15 bg-rosewood-surface/40 pt-5 xl:w-[320px] xl:shrink-0 xl:border-l-2 xl:border-t-0 xl:pl-6 xl:pt-0" aria-label="Character timeline">
-      <div className="mb-5 flex items-start justify-between gap-2">
+    <aside className="flex min-h-0 w-full flex-col overflow-hidden border-t-2 border-rosewood-ink/15 bg-rosewood-surface/40 px-2 pt-6 xl:h-full xl:w-[320px] xl:shrink-0 xl:border-l-2 xl:border-t-0 xl:pl-6 xl:pr-2 xl:pt-3" aria-label="Character timeline">
+      <div className="mb-5 flex shrink-0 items-start justify-between gap-2">
         <div>
           <h2 className="text-lg font-bold text-rosewood-ink">Timeline</h2>
           <p className="mt-1 text-xs text-rosewood-ink/60">{entries.length} {entries.length === 1 ? "event" : "events"} in this character's history</p>
@@ -88,7 +88,7 @@ export function CharacterTimeline({ entries, onChange, disabled = false }: Chara
         </button>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pr-2">
         {entries.length === 0 && !draft && (
           <div className="rounded-md border-2 border-dashed border-rosewood-ink/25 px-4 py-8 text-center text-sm text-rosewood-ink/60">
             No events yet. Add an event to start the character's story.
