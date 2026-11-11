@@ -15,6 +15,7 @@ import {
   type CharacterProfile,
 } from "../../../schemas/characterProfile";
 import { Avatar } from "../../components/Avatar";
+import { CharacterTimeline } from "./CharacterTimeline";
 
 const initialCharacter: CharacterProfile = {
   id: "",
@@ -27,6 +28,7 @@ const initialCharacter: CharacterProfile = {
   lore: "",
   notes: "",
   avatarPath: "",
+  timeline: [],
 };
 
 const markdownFields = [
@@ -60,7 +62,7 @@ export function CharacterForm() {
   );
 
   useEffect(() => {
-    setCharacter(current ?? initialCharacter);
+    setCharacter(current ? { ...current, timeline: current.timeline ?? [] } : initialCharacter);
     setErrors({});
   }, [characterId, current]);
 
@@ -143,8 +145,9 @@ export function CharacterForm() {
         </div>
       }
     >
-      <div className="h-full min-h-0 overflow-y-auto">
-        <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-8">
+      <div className="flex h-full min-h-0 flex-col gap-6 overflow-hidden xl:flex-row">
+        <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain">
+          <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-8">
           <Collapsible title="Identity">
             <div className="flex flex-col gap-6 px-2 py-3 md:flex-row">
               <div className="flex shrink-0 flex-col items-center gap-3">
@@ -216,7 +219,16 @@ export function CharacterForm() {
               </div>
             </Collapsible>
           ))}
+          </div>
         </div>
+        <CharacterTimeline
+          entries={character.timeline}
+          disabled={saving || contentLoading}
+          onChange={(timeline) => {
+            setCharacter((previous) => ({ ...previous, timeline }));
+            setErrors((previous) => ({ ...previous, timeline: undefined }));
+          }}
+        />
       </div>
     </Panel>
   );
