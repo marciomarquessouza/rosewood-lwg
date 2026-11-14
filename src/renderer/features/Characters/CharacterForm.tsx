@@ -62,7 +62,11 @@ export function CharacterForm() {
   );
 
   useEffect(() => {
-    setCharacter(current ? { ...current, timeline: current.timeline ?? [] } : initialCharacter);
+    setCharacter(
+      current
+        ? { ...current, timeline: current.timeline ?? [] }
+        : initialCharacter,
+    );
     setErrors({});
   }, [characterId, current]);
 
@@ -148,79 +152,80 @@ export function CharacterForm() {
       <div className="flex h-full min-h-0 flex-col gap-6 overflow-hidden xl:flex-row">
         <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain">
           <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-8">
-          <Collapsible title="Identity">
-            <div className="flex flex-col gap-6 px-2 py-3 md:flex-row">
-              <div className="flex shrink-0 flex-col items-center gap-3">
-                <Avatar
-                  name={character.displayName || character.name}
-                  src={character.avatarPath || undefined}
-                  size="xl"
-                  shape="square"
-                />
-                <span className="text-xs text-rosewood-ink/60">
-                  Character Avatar
-                </span>
-              </div>
+            <Collapsible title="Identity">
+              <div className="flex flex-col gap-6 px-2 py-3 md:flex-row">
+                <div className="flex shrink-0 flex-col items-center gap-3">
+                  <Avatar
+                    name={character.displayName || character.name}
+                    src={character.avatarPath || undefined}
+                    size="xl"
+                    shape="square"
+                  />
+                  <span className="text-xs text-rosewood-ink/60">
+                    Character Avatar
+                  </span>
+                </div>
 
-              <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
-                <Input
-                  id="character-id"
-                  label="ID"
-                  value={character.id}
-                  readOnly={isUpdate}
-                  placeholder="josef-g"
-                  error={errors.id}
-                  onChange={(event) => setField("id", event.target.value)}
-                />
+                <div className="grid min-w-0 flex-1 grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Input
+                    id="character-id"
+                    label="ID"
+                    value={character.id}
+                    readOnly={isUpdate}
+                    placeholder="josef-g"
+                    error={errors.id}
+                    onChange={(event) => setField("id", event.target.value)}
+                  />
 
-                <Input
-                  id="character-name"
-                  label="Name"
-                  value={character.name}
-                  error={errors.name}
-                  onChange={(event) => setField("name", event.target.value)}
-                />
+                  <Input
+                    id="character-name"
+                    label="Name"
+                    value={character.name}
+                    error={errors.name}
+                    onChange={(event) => setField("name", event.target.value)}
+                  />
 
-                <Input
-                  id="character-display-name"
-                  label="Display Name"
-                  value={character.displayName}
-                  onChange={(event) =>
-                    setField("displayName", event.target.value)
-                  }
-                />
+                  <Input
+                    id="character-display-name"
+                    label="Display Name"
+                    value={character.displayName}
+                    onChange={(event) =>
+                      setField("displayName", event.target.value)
+                    }
+                  />
 
-                <Input
-                  id="character-avatar-path"
-                  label="Avatar Path"
-                  value={character.avatarPath ?? ""}
-                  placeholder="/images/characters/josef.png"
-                  error={errors.avatarPath}
-                  onChange={(event) =>
-                    setField("avatarPath", event.target.value)
-                  }
-                />
-              </div>
-            </div>
-          </Collapsible>
-
-          {markdownFields.map(({ key, label }) => (
-            <Collapsible
-              key={key}
-              title={label}
-              defaultOpen={key === "description"}
-            >
-              <div className="px-2 py-3">
-                <MarkdownEditor
-                  value={character[key]}
-                  onChange={(value) => setField(key, value)}
-                  placeholder={`Write ${label.toLowerCase()} here...`}
-                />
+                  <Input
+                    id="character-avatar-path"
+                    label="Avatar Path"
+                    value={character.avatarPath ?? ""}
+                    placeholder="/images/characters/josef.png"
+                    error={errors.avatarPath}
+                    onChange={(event) =>
+                      setField("avatarPath", event.target.value)
+                    }
+                  />
+                </div>
               </div>
             </Collapsible>
-          ))}
+
+            {markdownFields.map(({ key, label }) => (
+              <Collapsible
+                key={key}
+                title={label}
+                defaultOpen={key === "description"}
+              >
+                <div className="px-2 py-3">
+                  <MarkdownEditor
+                    value={character[key]}
+                    onChange={(value) => setField(key, value)}
+                    placeholder={`Write ${label.toLowerCase()} here...`}
+                  />
+                </div>
+              </Collapsible>
+            ))}
           </div>
         </div>
+
         <CharacterTimeline
           entries={character.timeline}
           disabled={saving || contentLoading}
