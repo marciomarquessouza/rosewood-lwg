@@ -268,9 +268,10 @@ export function LessonForm() {
             initialExamples={localeEntry?.examples}
             saving={savingEntry}
             onSave={(examples) => saveEntryExamples(entry.id, locale, examples)}
-            onGenerateAudio={async (text) => {
+            onGenerateAudio={async (text, exampleId) => {
               const response = await window.rosewood.generateAudio(
                 projectPath, { language, level, dayDirectory }, text,
+                { entryId: entry.id, exampleId, locale },
               );
               return response.path;
             }}

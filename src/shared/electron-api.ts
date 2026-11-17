@@ -63,6 +63,7 @@ export interface Rosewood {
     targetPath: string,
     options: LessonContentOptions,
     target: string,
+    example?: import("../main/services/lessons/generateAudio").ExampleAudioIdentity,
   ): Promise<{ path: string }>;
   loadAudio(
     targetPath: string,

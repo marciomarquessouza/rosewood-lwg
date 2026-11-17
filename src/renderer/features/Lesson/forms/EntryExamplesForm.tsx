@@ -11,7 +11,7 @@ interface Props {
   initialExamples?: LessonLocaleExample[];
   saving: boolean;
   onSave: (examples: LessonLocaleExample[]) => Promise<void>;
-  onGenerateAudio: (text: string) => Promise<string>;
+  onGenerateAudio: (text: string, exampleId: string) => Promise<string>;
   onPlayAudio: (path: string) => Promise<void>;
 }
 
@@ -54,7 +54,7 @@ export function EntryExamplesForm({
     setError("");
     setGeneratingId(example.id);
     try {
-      const audio = await onGenerateAudio(example.text.trim());
+      const audio = await onGenerateAudio(example.text.trim(), example.id);
       patch(example.id, { audio });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
