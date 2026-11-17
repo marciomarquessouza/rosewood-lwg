@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Background,
   Controls,
@@ -8,6 +8,7 @@ import {
   type Edge,
   type Node,
   type NodeProps,
+  useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
@@ -104,6 +105,9 @@ export function CharacterRelationships({
     })),
   ], [characterName, entries, disabled]);
 
+  const [graphNodes, setGraphNodes, onNodesChange] = useNodesState<PersonNode>(nodes);
+  useEffect(() => { setGraphNodes(nodes); }, [nodes, setGraphNodes]);
+
   const edges = useMemo<Edge[]>(() =>
     entries.map((entry) => ({
       id: `relationship-${entry.id}`,
@@ -171,7 +175,8 @@ export function CharacterRelationships({
 
       <div className="h-[270px] shrink-0 overflow-hidden rounded-lg border border-rosewood-ink/20 bg-white">
         <ReactFlow
-          nodes={nodes}
+          nodes={graphNodes}
+          onNodesChange={onNodesChange}
           edges={edges}
           nodeTypes={nodeTypes}
           fitView
