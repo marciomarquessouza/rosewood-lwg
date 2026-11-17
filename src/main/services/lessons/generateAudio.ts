@@ -46,7 +46,28 @@ export async function generateAudio(
     cwd: targetPath,
   });
 
-  const response = JSON.parse(stdout.trim()) as {
+  const jsonLine = stdout
+    .trim()
+    .split(/\r?\n/)
+    .reverse()
+    .find((line) => {
+      try {
+        const value = JSON.parse(line);
+        return (
+          typeof value === "object" &&
+          value !== null &&
+          typeof value.success === "boolean"
+        );
+      } catch {
+        return false;
+      }
+    });
+
+  if (!jsonLine) {
+    throw new Error(`Audio generator returned no valid response: ${stdout}`);
+  }
+
+  const response = JSON.parse(jsonLine) as {
     success: boolean;
     path?: string;
     error?: string;
