@@ -44,7 +44,17 @@ export function EntryExamplesForm({
     setError("");
   }, [entryId, target, legacyAudio, locale, initialExamples]);
   const dirty = JSON.stringify(examples) !== JSON.stringify(initial());
-  const valid = examples.length > 0 && examples.every((e) => !!e.text.trim());
+  const ids = examples.map((e) => e.id.trim());
+  const uniqueIds = new Set(ids).size === ids.length;
+  const valid =
+    examples.length > 0 &&
+    uniqueIds &&
+    examples.every(
+      (e) =>
+        /^[a-zA-Z0-9-]+$/.test(e.id) &&
+        !!e.text.trim() &&
+        !!e.translation.trim(),
+    );
   const patch = (id: string, changes: Partial<LessonLocaleExample>) =>
     setExamples((current) =>
       current.map((e) => (e.id === id ? { ...e, ...changes } : e)),
@@ -177,6 +187,11 @@ export function EntryExamplesForm({
         <Button type="button" disabled={saving || !!generatingId} onClick={add}>
           Add Example
         </Button>
+        {!valid && (
+          <p role="alert" className="text-sm text-rosewood-accent">
+            Every example needs a text, translation and unique ID.
+          </p>
+        )}
         {error && (
           <p role="alert" className="text-sm text-rosewood-accent">
             {error}

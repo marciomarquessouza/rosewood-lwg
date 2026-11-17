@@ -3,9 +3,11 @@ import path from "node:path";
 
 import {
   DayLessonLocales,
+  dayLessonLocalesScheme,
   LocaleContentOptions,
 } from "../../../schemas/locales";
 import { openProject } from "../project/openProject";
+import { validateLocaleExamples } from "./validateLocaleExamples";
 
 export async function updateLocaleContent(
   targetPath: string,
@@ -26,7 +28,9 @@ export async function updateLocaleContent(
   );
 
   try {
-    await fs.writeFile(localePath, JSON.stringify(content, null, 2));
+    const parsed = dayLessonLocalesScheme.parse(content);
+    validateLocaleExamples(parsed);
+    await fs.writeFile(localePath, JSON.stringify(parsed, null, 2));
   } catch (error) {
     console.error(error);
 

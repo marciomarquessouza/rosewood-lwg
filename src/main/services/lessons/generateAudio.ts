@@ -32,6 +32,13 @@ export async function generateAudio(
   ];
 
   if (example) {
+    if (
+      !/^[a-zA-Z0-9-]+$/.test(example.entryId) ||
+      !/^[a-zA-Z0-9-]+$/.test(example.exampleId) ||
+      !/^[a-zA-Z0-9-]+$/.test(example.locale)
+    ) {
+      throw new Error("Invalid example audio identity");
+    }
     args.push(
       "--entry-id",
       example.entryId,
@@ -75,6 +82,18 @@ export async function generateAudio(
 
   if (!response.success || !response.path) {
     throw new Error(response.error ?? "Audio generation failed");
+  }
+
+  if (example) {
+    const expected = [
+      "audio", language, level, dayDirectory, "examples", example.locale,
+      `entry_${example.entryId}_example_${example.exampleId}.mp3`,
+    ].join("/");
+    if (response.path !== expected) {
+      throw new Error(
+        `Audio generator returned a path inconsistent with example identity: ${response.path}`,
+      );
+    }
   }
 
   return { path: response.path };
