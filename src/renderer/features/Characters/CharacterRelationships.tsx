@@ -50,25 +50,86 @@ function PersonCard({ data }: NodeProps<PersonNode>) {
         ? "border-rosewood-accent bg-rosewood-accent/10"
         : "border-rosewood-ink/50 bg-white"}`}
     >
-      <Handle type="target" position={Position.Top} className="!opacity-0" />
+      {(["Top", "Bottom", "Left", "Right"] as const).map((side) => (
+        <Handle
+          key={side}
+          id={side.toLowerCase()}
+          type="source"
+          position={Position[side]}
+          className="!h-1 !w-1 !border-0 !opacity-0"
+        />
+      ))}
+      {(["Top", "Bottom", "Left", "Right"] as const).map((side) => (
+        <Handle
+          key={`target-${side}`}
+          id={`target-${side.toLowerCase()}`}
+          type="target"
+          position={Position[side]}
+          className="!h-1 !w-1 !border-0 !opacity-0"
+        />
+      ))}
       <div className="truncate text-sm font-bold text-rosewood-ink" title={data.name}>
         {data.name}
       </div>
       <div className="truncate text-[11px] text-rosewood-ink/65">{data.subtitle}</div>
-      <Handle type="source" position={Position.Bottom} className="!opacity-0" />
     </div>
   );
 }
 
 const nodeTypes = { person: PersonCard };
 
-function defaultPosition(index: number, count: number) {
-  const angle = -Math.PI / 2 + (index * 2 * Math.PI) / Math.max(count, 1);
-  const radius = Math.max(190, count * 35);
-  return {
-    x: 190 + Math.cos(angle) * radius,
-    y: 190 + Math.sin(angle) * radius,
-  };
+const PARENTS = new Set<CharacterRelationshipType>(["mother", "father", "parent"]);
+const ANCESTORS = new Set<CharacterRelationshipType>(["grandparent"]);
+const CHILDREN = new Set<CharacterRelationshipType>(["son", "daughter", "child"]);
+const DESCENDANTS = new Set<CharacterRelationshipType>(["grandchild"]);
+const SIBLINGS = new Set<CharacterRelationshipType>(["brother", "sister", "sibling"]);
+const PARTNERS = new Set<CharacterRelationshipType>(["partner", "spouse"]);
+
+function generation(type: CharacterRelationshipType): number {
+  if (ANCESTORS.has(type)) return -2;
+  if (PARENTS.has(type)) return -1;
+  if (CHILDREN.has(type)) return 1;
+  if (DESCENDANTS.has(type)) return 2;
+  return 0;
+}
+
+function layoutRelationships(entries: CharacterRelationship[]) {
+  const positions = new Map<string, { x: number; y: number }>();
+  const width = 184;
+  const center = 340;
+  const groups = new Map<number, CharacterRelationship[]>();
+  entries.forEach((entry) => {
+    const level = generation(entry.type);
+    groups.set(level, [...(groups.get(level) ?? []), entry]);
+  });
+
+  for (const level of [-2, -1, 1, 2]) {
+    const group = groups.get(level) ?? [];
+    const y = 220 + level * 170;
+    group.forEach((entry, index) => {
+      positions.set(entry.id, {
+        x: center + (index - (group.length - 1) / 2) * width,
+        y,
+      });
+    });
+  }
+
+  const sameGeneration = groups.get(0) ?? [];
+  const siblings = sameGeneration.filter((entry) => SIBLINGS.has(entry.type));
+  const partners = sameGeneration.filter((entry) => PARTNERS.has(entry.type));
+  const others = sameGeneration.filter((entry) =>
+    !SIBLINGS.has(entry.type) && !PARTNERS.has(entry.type));
+
+  siblings.forEach((entry, index) => {
+    positions.set(entry.id, { x: center - width * (siblings.length - index), y: 220 });
+  });
+  partners.forEach((entry, index) => {
+    positions.set(entry.id, { x: center + width * (index + 1), y: 220 });
+  });
+  others.forEach((entry, index) => {
+    positions.set(entry.id, { x: center + (index + 1) * width, y: 320 });
+  });
+  return positions;
 }
 
 type Props = {
@@ -88,34 +149,42 @@ export function CharacterRelationships({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  const layout = useMemo(() => layoutRelationships(entries), [entries]);
   const nodes = useMemo<PersonNode[]>(() => [
     {
       id: "character",
       type: "person",
-      position: { x: 190, y: 190 },
+      position: { x: 340, y: 220 },
       data: { name: characterName || "New character", subtitle: "Current character", primary: true },
       draggable: false,
     },
-    ...entries.map((entry, index) => ({
+    ...entries.map((entry) => ({
       id: entry.id,
       type: "person" as const,
-      position: entry.position ?? defaultPosition(index, entries.length),
+      position: entry.position ?? layout.get(entry.id) ?? { x: 340, y: 380 },
       data: { name: entry.name, subtitle: relationshipLabel(entry.type), primary: false },
       draggable: !disabled,
     })),
-  ], [characterName, entries, disabled]);
+  ], [characterName, entries, disabled, layout]);
 
   const [graphNodes, setGraphNodes, onNodesChange] = useNodesState<PersonNode>(nodes);
   useEffect(() => { setGraphNodes(nodes); }, [nodes, setGraphNodes]);
 
   const edges = useMemo<Edge[]>(() =>
-    entries.map((entry) => ({
-      id: `relationship-${entry.id}`,
-      source: "character",
-      target: entry.id,
-      type: "smoothstep",
-      style: { stroke: "#a64765", strokeWidth: 2 },
-    })), [entries]);
+    entries.map((entry) => {
+      const level = generation(entry.type);
+      const isParent = level < 0;
+      const isSameLevel = level === 0;
+      return {
+        id: `relationship-${entry.id}`,
+        source: isParent ? entry.id : "character",
+        target: isParent ? "character" : entry.id,
+        sourceHandle: isSameLevel ? "right" : "bottom",
+        targetHandle: isSameLevel ? "target-left" : "target-top",
+        type: "smoothstep",
+        style: { stroke: "#a64765", strokeWidth: 2 },
+      };
+    }), [entries]);
 
   const beginAdd = () => {
     setEditingId(null);
@@ -152,7 +221,7 @@ export function CharacterRelationships({
 
   return (
     <aside
-      className="flex min-h-0 w-full flex-col overflow-hidden rounded-xl border-2 border-rosewood-ink/15 bg-rosewood-surface/40 px-4 pb-4 pt-5 xl:h-full xl:w-[320px]"
+      className="flex w-full min-w-0 flex-col rounded-xl border-2 border-rosewood-ink/15 bg-rosewood-surface/40 px-4 pb-4 pt-5"
       aria-label="Character relationships"
     >
       <div className="mb-3 flex shrink-0 items-start justify-between gap-2">
@@ -173,14 +242,14 @@ export function CharacterRelationships({
         </button>
       </div>
 
-      <div className="h-[270px] shrink-0 overflow-hidden rounded-lg border border-rosewood-ink/20 bg-white">
+      <div className="h-[460px] w-full overflow-hidden rounded-lg border border-rosewood-ink/20 bg-white">
         <ReactFlow
           nodes={graphNodes}
           onNodesChange={onNodesChange}
           edges={edges}
           nodeTypes={nodeTypes}
           fitView
-          fitViewOptions={{ padding: 0.25, maxZoom: 1 }}
+          fitViewOptions={{ padding: 0.22, maxZoom: 1 }}
           minZoom={0.2}
           maxZoom={1.5}
           nodesConnectable={false}
@@ -200,7 +269,7 @@ export function CharacterRelationships({
         Drag relatives to reposition. Zoom or pan to explore.
       </p>
 
-      <div className="mt-4 min-h-0 flex-1 overflow-y-auto overscroll-contain">
+      <div className="mt-4 grid gap-2 md:grid-cols-2">
         {entries.map((entry) => (
           <div key={entry.id} className="mb-2 flex items-start gap-2 rounded-md border border-rosewood-ink/15 bg-white/70 p-2">
             <div className="min-w-0 flex-1">
