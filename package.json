@@ -13,7 +13,8 @@
     "publish": "electron-forge publish",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "lint": "eslint --ext .ts,.tsx,.mts .",
-    "upgrade:sue-tissue": "yarn upgrade sue-tissue-lwg"
+    "upgrade:sue-tissue": "yarn upgrade sue-tissue-lwg",
+    "install:mac": "bash scripts/build-and-install.sh"
   },
   "keywords": [],
   "author": {
