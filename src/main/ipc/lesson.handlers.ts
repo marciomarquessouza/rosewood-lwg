@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
 import { LessonBase, LessonContentOptions } from "../../schemas/lesson";
 import { lessonsServices } from "../services/lessons";
+import type { ExampleAudioIdentity } from "../services/lessons/generateAudio";
 
 export function registerLessonHandlers() {
   ipcMain.handle(
@@ -26,8 +27,14 @@ export function registerLessonHandlers() {
       targetPath: string,
       options: LessonContentOptions,
       target: string,
+      example?: ExampleAudioIdentity,
     ) => {
-      return lessonsServices.generateAudio(targetPath, options, target);
+      return lessonsServices.generateAudio(
+        targetPath,
+        options,
+        target,
+        example,
+      );
     },
   );
 

@@ -8010,7 +8010,7 @@ style-mod@^4.0.0, style-mod@^4.1.0:
 
 "sue-tissue-lwg@git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#main":
   version "1.0.0"
-  resolved "git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#38d8a1ed6cfa7411f08aab861c5b8141e80da705"
+  resolved "git+https://github.com/marciomarquessouza/sue-tissue-lwg.git#1596150db6a0e77a54b96df222cbe7ca8d71a4e2"
 
 sumchecker@^3.0.1:
   version "3.0.1"

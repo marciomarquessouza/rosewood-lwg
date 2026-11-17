@@ -106,22 +106,27 @@ export function LessonForm() {
         ...dayContent.lesson,
         entries: { ...dayContent.lesson.entries, [entryId]: updatedEntry },
       });
-      await window.rosewood.updateLocaleContent(projectPath, {
-        ...options, locale,
-      }, {
-        ...localeContent,
-        lesson: {
-          ...localeContent.lesson,
-          entries: {
-            ...localeContent.lesson.entries,
-            [entryId]: {
-              ...(localeContent.lesson.entries[entryId] ?? { steps: {} }),
-              concept: value.concept,
-              description: value.description,
+      await window.rosewood.updateLocaleContent(
+        projectPath,
+        {
+          ...options,
+          locale,
+        },
+        {
+          ...localeContent,
+          lesson: {
+            ...localeContent.lesson,
+            entries: {
+              ...localeContent.lesson.entries,
+              [entryId]: {
+                ...(localeContent.lesson.entries[entryId] ?? { steps: {} }),
+                concept: value.concept,
+                description: value.description,
+              },
             },
           },
         },
-      });
+      );
       await loadDaysContent(projectPath, { language, level });
       showFeedback({ type: "success", message: "Entry details saved" });
     } catch (error) {
@@ -239,7 +244,8 @@ export function LessonForm() {
         if (!entry) return null;
         const lessonEntry = dayContent.lesson.entries?.[entry.id];
         if (!lessonEntry) return null;
-        const localeEntry = dayContent.locales[locale]?.lesson.entries[entry.id];
+        const localeEntry =
+          dayContent.locales[locale]?.lesson.entries[entry.id];
         return (
           <EntryDetailsForm
             key={`${locale}-${entry.id}`}
@@ -257,7 +263,8 @@ export function LessonForm() {
         if (!entry) return null;
         const lessonEntry = dayContent.lesson.entries?.[entry.id];
         if (!lessonEntry) return null;
-        const localeEntry = dayContent.locales[locale]?.lesson.entries[entry.id];
+        const localeEntry =
+          dayContent.locales[locale]?.lesson.entries[entry.id];
         return (
           <EntryExamplesForm
             key={`${locale}-${entry.id}`}
@@ -268,9 +275,12 @@ export function LessonForm() {
             initialExamples={localeEntry?.examples}
             saving={savingEntry}
             onSave={(examples) => saveEntryExamples(entry.id, locale, examples)}
-            onGenerateAudio={async (text) => {
+            onGenerateAudio={async (text, exampleId) => {
               const response = await window.rosewood.generateAudio(
-                projectPath, { language, level, dayDirectory }, text,
+                projectPath,
+                { language, level, dayDirectory },
+                text,
+                { entryId: entry.id, exampleId, locale },
               );
               return response.path;
             }}

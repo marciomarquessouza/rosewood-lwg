@@ -1,41 +1,60 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+
 import { LessonContentOptions } from "../../../schemas/lesson";
 
 const execFileAsync = promisify(execFile);
+
+export interface ExampleAudioIdentity {
+  entryId: string;
+  exampleId: string;
+  locale: string;
+}
 
 export async function generateAudio(
   targetPath: string,
   options: LessonContentOptions,
   target: string,
+  example?: ExampleAudioIdentity,
 ): Promise<{ path: string }> {
   const { language, level, dayDirectory } = options;
 
-  const { stdout } = await execFileAsync(
-    "node",
-    [
-      "dist/audio-generator-v2.cjs",
-      "--language",
-      language,
-      "--level",
-      level,
-      "--day",
-      dayDirectory,
-      "--entry",
-      `"${target}"`,
-    ],
-    {
-      cwd: targetPath,
-    },
-  );
-  const match = stdout.trim().match(/"path"\s*:\s*"([^"]+\.mp3)"/);
-  const path = match?.[1] ?? null;
+  const args = [
+    "dist/audio-generator-v2.cjs",
+    "--language",
+    language,
+    "--level",
+    level,
+    "--day",
+    dayDirectory,
+    "--entry",
+    target,
+  ];
 
-  if (!path) {
-    throw new Error(
-      `Error generating the audio path. Response ${stdout.trim()}`,
+  if (example) {
+    args.push(
+      "--entry-id",
+      example.entryId,
+      "--example-id",
+      example.exampleId,
+      "--locale",
+      example.locale,
     );
   }
 
-  return { path };
+  const { stdout } = await execFileAsync("node", args, {
+    cwd: targetPath,
+  });
+
+  const response = JSON.parse(stdout.trim()) as {
+    success: boolean;
+    path?: string;
+    error?: string;
+  };
+
+  if (!response.success || !response.path) {
+    throw new Error(response.error ?? "Audio generation failed");
+  }
+
+  return { path: response.path };
 }
