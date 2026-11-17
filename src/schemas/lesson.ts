@@ -1,9 +1,14 @@
 export {
   lessonContentNodeTypeSchema,
-  type LessonContentNodeType,
   LESSON_STEPS,
   LessonStepTypeSchema,
   type LessonStepType,
+  LessonEntryTypeSchema,
+  type LessonEntryType,
+  LessonEnabledStepsSchema,
+  type LessonEnabledSteps,
+  LessonLocaleExampleSchema,
+  type LessonLocaleExample,
   PronunciationLimitsSchema,
   type PronunciationLimits,
   WritingLimitsSchema,
@@ -34,3 +39,9 @@ export {
   lessonContentOptionsSchema,
   type LessonContentOptions,
 } from "sue-tissue-lwg/schemas/lesson";
+
+/** Editor-only nodes; these are not serialized in Sue Tissue. */
+export type LessonContentNodeType =
+  | import("sue-tissue-lwg/schemas/lesson").LessonContentNodeType
+  | "details"
+  | "examples";

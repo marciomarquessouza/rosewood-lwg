@@ -1,5 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
+  BookOpen,
+  ListOrdered,
   Footprints,
   LayoutList,
   LucideIcon,
@@ -7,7 +9,14 @@ import {
   NotebookDot,
   Type,
 } from "lucide-react";
-import { LessonContentNodeType } from "../../../schemas/lesson";
+import {
+  LessonContentNodeType,
+  type LessonLocaleExample,
+  type LessonEntry,
+} from "../../../schemas/lesson";
+import { useFeedback } from "../../contexts/FeedbackContext";
+import { EntryDetailsForm, type EntryDetails } from "./forms/EntryDetailsForm";
+import { EntryExamplesForm } from "./forms/EntryExamplesForm";
 import {
   MillerColumns,
   MillerNode,
@@ -40,10 +49,14 @@ const nodeIcons: Partial<Record<LessonContentNodeType, LucideIcon>> = {
   entries: NotebookDot,
   entry: LayoutList,
   step: Footprints,
+  details: BookOpen,
+  examples: ListOrdered,
 };
 
 export function LessonForm() {
   const { projectPath } = useProjectInfo();
+  const { showFeedback, clearFeedback } = useFeedback();
+  const [savingEntry, setSavingEntry] = useState(false);
   const { findDayContent, loadDaysContent } = useDaysContent();
   const {
     language: languageParam,
@@ -68,6 +81,96 @@ export function LessonForm() {
   }, [projectPath, language, level, loadDaysContent]);
 
   const dayContent = findDayContent(dayDirectory);
+
+  const saveEntryDetails = async (
+    entryId: string,
+    locale: ReturnType<typeof languageSchema.parse>,
+    value: EntryDetails,
+  ) => {
+    if (!dayContent) return;
+    const entry = dayContent.lesson.entries?.[entryId];
+    const localeContent = dayContent.locales[locale];
+    if (!entry || !localeContent) return;
+    clearFeedback();
+    setSavingEntry(true);
+    try {
+      const options = { language, level, dayDirectory };
+      // The two files have separate owners; keep all unrelated fields intact.
+      const updatedEntry: LessonEntry = {
+        ...entry,
+        target: value.target,
+        type: value.type,
+        enabledSteps: value.enabledSteps,
+      };
+      await window.rosewood.updateLessonContent(projectPath, options, {
+        ...dayContent.lesson,
+        entries: { ...dayContent.lesson.entries, [entryId]: updatedEntry },
+      });
+      await window.rosewood.updateLocaleContent(projectPath, {
+        ...options, locale,
+      }, {
+        ...localeContent,
+        lesson: {
+          ...localeContent.lesson,
+          entries: {
+            ...localeContent.lesson.entries,
+            [entryId]: {
+              ...(localeContent.lesson.entries[entryId] ?? { steps: {} }),
+              concept: value.concept,
+              description: value.description,
+            },
+          },
+        },
+      });
+      await loadDaysContent(projectPath, { language, level });
+      showFeedback({ type: "success", message: "Entry details saved" });
+    } catch (error) {
+      console.error(error);
+      showFeedback({ type: "error", message: String(error) });
+      throw error;
+    } finally {
+      setSavingEntry(false);
+    }
+  };
+
+  const saveEntryExamples = async (
+    entryId: string,
+    locale: ReturnType<typeof languageSchema.parse>,
+    examples: LessonLocaleExample[],
+  ) => {
+    if (!dayContent) return;
+    const localeContent = dayContent.locales[locale];
+    if (!localeContent) return;
+    clearFeedback();
+    setSavingEntry(true);
+    try {
+      await window.rosewood.updateLocaleContent(
+        projectPath,
+        { language, level, dayDirectory, locale },
+        {
+          ...localeContent,
+          lesson: {
+            ...localeContent.lesson,
+            entries: {
+              ...localeContent.lesson.entries,
+              [entryId]: {
+                ...(localeContent.lesson.entries[entryId] ?? { steps: {} }),
+                examples,
+              },
+            },
+          },
+        },
+      );
+      await loadDaysContent(projectPath, { language, level });
+      showFeedback({ type: "success", message: "Examples saved" });
+    } catch (error) {
+      console.error(error);
+      showFeedback({ type: "error", message: String(error) });
+      throw error;
+    } finally {
+      setSavingEntry(false);
+    }
+  };
 
   const getNodeActions = (
     node: MillerNode<LessonContentNodeType>,
@@ -128,6 +231,50 @@ export function LessonForm() {
             saving={savingTitle}
             initialValue={currentTitle}
             onSave={(title) => saveTitle(options, title, dayContent)}
+          />
+        );
+      }
+      case "details": {
+        const entry = path.find((node) => node.type === "entry");
+        if (!entry) return null;
+        const lessonEntry = dayContent.lesson.entries?.[entry.id];
+        if (!lessonEntry) return null;
+        const localeEntry = dayContent.locales[locale]?.lesson.entries[entry.id];
+        return (
+          <EntryDetailsForm
+            key={`${locale}-${entry.id}`}
+            locale={locale}
+            entry={lessonEntry}
+            concept={localeEntry?.concept}
+            description={localeEntry?.description}
+            saving={savingEntry}
+            onSave={(value) => saveEntryDetails(entry.id, locale, value)}
+          />
+        );
+      }
+      case "examples": {
+        const entry = path.find((node) => node.type === "entry");
+        if (!entry) return null;
+        const lessonEntry = dayContent.lesson.entries?.[entry.id];
+        if (!lessonEntry) return null;
+        const localeEntry = dayContent.locales[locale]?.lesson.entries[entry.id];
+        return (
+          <EntryExamplesForm
+            key={`${locale}-${entry.id}`}
+            locale={locale}
+            entryId={entry.id}
+            target={lessonEntry.target}
+            legacyAudio={lessonEntry.audio}
+            initialExamples={localeEntry?.examples}
+            saving={savingEntry}
+            onSave={(examples) => saveEntryExamples(entry.id, locale, examples)}
+            onGenerateAudio={async (text) => {
+              const response = await window.rosewood.generateAudio(
+                projectPath, { language, level, dayDirectory }, text,
+              );
+              return response.path;
+            }}
+            onPlayAudio={playAudio}
           />
         );
       }
