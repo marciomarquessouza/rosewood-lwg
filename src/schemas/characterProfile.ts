@@ -13,6 +13,7 @@ export const characterTimelineTypeSchema = z.enum([
 export const characterTimelineEntrySchema = z.object({
   id: z.string().min(1),
   date: z.string().trim().min(1, "Date is required"),
+  age: z.string().optional(),
   title: z.string().trim().min(1, "Title is required"),
   description: z.string(),
   type: characterTimelineTypeSchema,

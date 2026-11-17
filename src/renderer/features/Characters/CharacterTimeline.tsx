@@ -6,6 +6,7 @@ import {
   Heart,
   Landmark,
   Plus,
+  Pencil,
   Skull,
   Sparkles,
   Trash2,
@@ -36,6 +37,7 @@ const TYPES: Record<
 const emptyEntry = (): CharacterTimelineEntry => ({
   id: crypto.randomUUID(),
   date: "",
+  age: "",
   title: "",
   description: "",
   type: "milestone",
@@ -55,16 +57,24 @@ export function CharacterTimeline({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<CharacterTimelineEntry | null>(null);
   const [error, setError] = useState("");
+  const [position, setPosition] = useState<"before" | "after">("after");
+  const [anchorId, setAnchorId] = useState("");
+
+  const positionCandidates = entries.filter((entry) => entry.id !== editingId);
 
   const beginAdd = () => {
     setDraft(emptyEntry());
     setEditingId(null);
+    setPosition("after");
+    setAnchorId(entries.at(-1)?.id ?? "");
     setError("");
   };
 
   const beginEdit = (entry: CharacterTimelineEntry) => {
     setDraft({ ...entry });
     setEditingId(entry.id);
+    setAnchorId("");
+    setPosition("after");
     setError("");
   };
 
@@ -77,14 +87,26 @@ export function CharacterTimeline({
     const next = {
       ...draft,
       date: draft.date.trim(),
+      age: draft.age?.trim() ?? "",
       title: draft.title.trim(),
       description: draft.description.trim(),
     };
-    onChange(
-      editingId
-        ? entries.map((entry) => (entry.id === editingId ? next : entry))
-        : [...entries, next],
-    );
+    const updated = editingId
+      ? entries.map((entry) => (entry.id === editingId ? next : entry))
+      : [...entries, next];
+
+    if (anchorId) {
+      const withoutMoving = updated.filter((entry) => entry.id !== next.id);
+      const anchorIndex = withoutMoving.findIndex((entry) => entry.id === anchorId);
+      if (anchorIndex >= 0) {
+        withoutMoving.splice(anchorIndex + (position === "after" ? 1 : 0), 0, next);
+        onChange(withoutMoving);
+      } else {
+        onChange(updated);
+      }
+    } else {
+      onChange(updated);
+    }
     setDraft(null);
     setEditingId(null);
     setError("");
@@ -144,7 +166,7 @@ export function CharacterTimeline({
                     type="button"
                     disabled={disabled}
                     onClick={() => beginEdit(entry)}
-                    className="min-w-0 text-left disabled:cursor-default"
+                    className="min-w-0 flex-1 text-left disabled:cursor-default"
                   >
                     <span className="block text-xs font-bold text-rosewood-accent">
                       {entry.date}
@@ -152,6 +174,20 @@ export function CharacterTimeline({
                     <span className="mt-1 block font-bold leading-snug text-rosewood-ink group-hover:underline">
                       {entry.title}
                     </span>
+                    {entry.age && (
+                      <span className="mt-1 block text-xs text-rosewood-ink/55">
+                        Age: {entry.age}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => beginEdit(entry)}
+                    aria-label={`Edit ${entry.title}`}
+                    className="shrink-0 rounded p-1 text-rosewood-ink/50 opacity-0 transition-opacity hover:text-rosewood-accent focus:opacity-100 group-hover:opacity-100 disabled:hidden"
+                  >
+                    <Pencil size={15} />
                   </button>
                   <button
                     type="button"
@@ -206,6 +242,18 @@ export function CharacterTimeline({
                 />
               </label>
               <label className="block text-xs font-bold">
+                Age (reference only)
+                <input
+                  value={draft.age ?? ""}
+                  onChange={(event) =>
+                    setDraft({ ...draft, age: event.target.value })
+                  }
+                  placeholder="e.g. 22, around 30"
+                  maxLength={80}
+                  className="mt-1 w-full rounded-md border-2 border-rosewood-ink bg-rosewood-surface px-2 py-2 text-sm font-normal outline-none focus:border-rosewood-accent"
+                />
+              </label>
+              <label className="block text-xs font-bold">
                 Title
                 <input
                   value={draft.title}
@@ -236,6 +284,39 @@ export function CharacterTimeline({
                   ))}
                 </select>
               </label>
+              {positionCandidates.length > 0 && (
+                <div className="space-y-2 border-t border-rosewood-ink/15 pt-3">
+                  <p className="text-xs font-bold">Position</p>
+                  <label className="block text-xs">
+                    Relative to
+                    <select
+                      value={anchorId}
+                      onChange={(event) => setAnchorId(event.target.value)}
+                      className="mt-1 w-full rounded-md border-2 border-rosewood-ink bg-rosewood-surface px-2 py-2 text-sm outline-none focus:border-rosewood-accent"
+                    >
+                      <option value="">{editingId ? "Keep current position" : "Add at end"}</option>
+                      {positionCandidates.map((entry) => (
+                        <option key={entry.id} value={entry.id}>
+                          {entry.date} — {entry.title}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  {anchorId && (
+                    <label className="block text-xs">
+                      Place
+                      <select
+                        value={position}
+                        onChange={(event) => setPosition(event.target.value as "before" | "after")}
+                        className="mt-1 w-full rounded-md border-2 border-rosewood-ink bg-rosewood-surface px-2 py-2 text-sm outline-none focus:border-rosewood-accent"
+                      >
+                        <option value="before">Before selected event</option>
+                        <option value="after">After selected event</option>
+                      </select>
+                    </label>
+                  )}
+                </div>
+              )}
               <label className="block text-xs font-bold">
                 Description
                 <textarea
@@ -268,7 +349,7 @@ export function CharacterTimeline({
         )}
       </div>
       <p className="mt-4 border-t border-rosewood-ink/15 pt-3 text-xs text-rosewood-ink/50">
-        Events appear in the order added. Save Changes to persist.
+        Events follow the selected order. Save Changes to persist.
       </p>
     </aside>
   );
