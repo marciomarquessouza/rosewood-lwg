@@ -175,12 +175,13 @@ export function CharacterRelationships({
       const level = generation(entry.type);
       const isParent = level < 0;
       const isSameLevel = level === 0;
+      const side = SIBLINGS.has(entry.type) ? "left" : "right";
       return {
         id: `relationship-${entry.id}`,
         source: isParent ? entry.id : "character",
         target: isParent ? "character" : entry.id,
-        sourceHandle: isSameLevel ? "right" : "bottom",
-        targetHandle: isSameLevel ? "target-left" : "target-top",
+        sourceHandle: isSameLevel ? side : "bottom",
+        targetHandle: isSameLevel ? (side === "left" ? "target-right" : "target-left") : "target-top",
         type: "smoothstep",
         style: { stroke: "#a64765", strokeWidth: 2 },
       };
