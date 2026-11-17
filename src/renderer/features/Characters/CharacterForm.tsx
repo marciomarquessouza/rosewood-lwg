@@ -16,6 +16,7 @@ import {
 } from "../../../schemas/characterProfile";
 import { Avatar } from "../../components/Avatar";
 import { CharacterTimeline } from "./CharacterTimeline";
+import { CharacterRelationships } from "./CharacterRelationships";
 
 const initialCharacter: CharacterProfile = {
   id: "",
@@ -29,6 +30,7 @@ const initialCharacter: CharacterProfile = {
   notes: "",
   avatarPath: "",
   timeline: [],
+  relationships: [],
 };
 
 const markdownFields = [
@@ -64,7 +66,7 @@ export function CharacterForm() {
   useEffect(() => {
     setCharacter(
       current
-        ? { ...current, timeline: current.timeline ?? [] }
+        ? { ...current, timeline: current.timeline ?? [], relationships: current.relationships ?? [] }
         : initialCharacter,
     );
     setErrors({});
@@ -205,6 +207,20 @@ export function CharacterForm() {
                     }
                   />
                 </div>
+              </div>
+            </Collapsible>
+
+            <Collapsible title="Family Tree" defaultOpen={false}>
+              <div className="px-2 py-3">
+                <CharacterRelationships
+                  characterName={character.displayName || character.name}
+                  entries={character.relationships}
+                  disabled={saving || contentLoading}
+                  onChange={(relationships) => {
+                    setCharacter((previous) => ({ ...previous, relationships }));
+                    setErrors((previous) => ({ ...previous, relationships: undefined }));
+                  }}
+                />
               </div>
             </Collapsible>
 
