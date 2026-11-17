@@ -16,6 +16,7 @@ import {
 } from "../../../schemas/characterProfile";
 import { Avatar } from "../../components/Avatar";
 import { CharacterTimeline } from "./CharacterTimeline";
+import { CharacterRelationships } from "./CharacterRelationships";
 
 const initialCharacter: CharacterProfile = {
   id: "",
@@ -29,6 +30,7 @@ const initialCharacter: CharacterProfile = {
   notes: "",
   avatarPath: "",
   timeline: [],
+  relationships: [],
 };
 
 const markdownFields = [
@@ -54,6 +56,7 @@ export function CharacterForm() {
   const [character, setCharacter] =
     useState<CharacterProfile>(initialCharacter);
   const [saving, setSaving] = useState(false);
+  const [sidePanel, setSidePanel] = useState<"timeline" | "family">("timeline");
   const [errors, setErrors] = useState<
     Partial<Record<keyof CharacterProfile, string>>
   >({});
@@ -64,7 +67,7 @@ export function CharacterForm() {
   useEffect(() => {
     setCharacter(
       current
-        ? { ...current, timeline: current.timeline ?? [] }
+        ? { ...current, timeline: current.timeline ?? [], relationships: current.relationships ?? [] }
         : initialCharacter,
     );
     setErrors({});
@@ -226,14 +229,43 @@ export function CharacterForm() {
           </div>
         </div>
 
-        <CharacterTimeline
-          entries={character.timeline}
-          disabled={saving || contentLoading}
-          onChange={(timeline) => {
-            setCharacter((previous) => ({ ...previous, timeline }));
-            setErrors((previous) => ({ ...previous, timeline: undefined }));
-          }}
-        />
+        <div className="flex min-h-0 w-full shrink-0 flex-col gap-3 xl:h-full xl:w-[320px]">
+          <div className="grid grid-cols-2 gap-1 rounded-lg border border-rosewood-ink/15 bg-rosewood-surface/40 p-1">
+            {(["timeline", "family"] as const).map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                aria-pressed={sidePanel === tab}
+                onClick={() => setSidePanel(tab)}
+                className={`rounded-md px-2 py-2 text-sm font-bold transition-colors ${sidePanel === tab
+                  ? "bg-rosewood-accent text-white"
+                  : "text-rosewood-ink hover:bg-white/70"}`}
+              >
+                {tab === "timeline" ? "Timeline" : "Family Tree"}
+              </button>
+            ))}
+          </div>
+          {sidePanel === "timeline" ? (
+            <CharacterTimeline
+              entries={character.timeline}
+              disabled={saving || contentLoading}
+              onChange={(timeline) => {
+                setCharacter((previous) => ({ ...previous, timeline }));
+                setErrors((previous) => ({ ...previous, timeline: undefined }));
+              }}
+            />
+          ) : (
+            <CharacterRelationships
+              characterName={character.displayName || character.name}
+              entries={character.relationships}
+              disabled={saving || contentLoading}
+              onChange={(relationships) => {
+                setCharacter((previous) => ({ ...previous, relationships }));
+                setErrors((previous) => ({ ...previous, relationships: undefined }));
+              }}
+            />
+          )}
+        </div>
       </div>
     </Panel>
   );
