@@ -102,15 +102,12 @@ export function LessonForm() {
         type: value.type,
         enabledSteps: value.enabledSteps,
       };
-      await window.rosewood.updateLessonContent(projectPath, options, {
-        ...dayContent.lesson,
-        entries: { ...dayContent.lesson.entries, [entryId]: updatedEntry },
-      });
-      await window.rosewood.updateLocaleContent(
+      await window.rosewood.updateEntryDetails(
         projectPath,
+        { ...options, locale },
         {
-          ...options,
-          locale,
+          ...dayContent.lesson,
+          entries: { ...dayContent.lesson.entries, [entryId]: updatedEntry },
         },
         {
           ...localeContent,
