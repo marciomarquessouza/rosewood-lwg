@@ -2,6 +2,7 @@
 import { useState } from "react";
 import {
   BookOpenText,
+  MessageSquareText,
   CalendarDays,
   ChevronDown,
   ClipboardList,
@@ -53,6 +54,15 @@ export function DayForm() {
     : getNextDay(project?.days);
 
   const day = dayDirectoryToNumber(dayDirectory);
+
+  // Project content exposes the files that actually exist for each day.
+  // Keep navigation hidden for new days or files that are not available.
+  const dayFiles = isUpdate
+    ? project?.days?.find((item) => item.directory === dayDirectory)?.files
+    : undefined;
+  const hasLesson = dayFiles?.includes("lesson.json") ?? false;
+  const hasDialogues = dayFiles?.includes("dialogues.json") ?? false;
+  const dayRoute = `/project/${language}/${level}/days/${dayDirectory}`;
 
   const projectOptions = {
     language,
@@ -138,15 +148,41 @@ export function DayForm() {
               </p>
             </div>
           </div>
-          <Button
-            variant="accent"
-            onClick={handleSaveDay}
-            loading={saving}
-            disabled={loading || saving}
-            className="shrink-0"
-          >
-            {isUpdate ? "Save Changes" : "Create Day"}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            {hasLesson && (
+              <Button
+                variant="light"
+                onClick={() => navigate(`${dayRoute}/lesson`)}
+                disabled={saving}
+                className="shrink-0"
+                title="Open this day's lesson"
+              >
+                <BookOpenText size={17} aria-hidden />
+                Lesson
+              </Button>
+            )}
+            {hasDialogues && (
+              <Button
+                variant="light"
+                onClick={() => navigate(`${dayRoute}/dialogues`)}
+                disabled={saving}
+                className="shrink-0"
+                title="Open this day's dialogues"
+              >
+                <MessageSquareText size={17} aria-hidden />
+                Dialogues
+              </Button>
+            )}
+            <Button
+              variant="accent"
+              onClick={handleSaveDay}
+              loading={saving}
+              disabled={loading || saving}
+              className="shrink-0"
+            >
+              {isUpdate ? "Save Changes" : "Create Day"}
+            </Button>
+          </div>
         </div>
       }
     >
