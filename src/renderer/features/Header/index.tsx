@@ -1,6 +1,7 @@
 import { useProjectInfo } from "../../contexts/ProjectInfoContext";
 import { useFeedback } from "../../contexts/FeedbackContext";
-import { Button } from "../Button";
+import { Button } from "../../components/Button";
+import { NavigationControls } from "../Navigation/NavigationControls";
 
 export function Header() {
   const { connected, contentPath, loading } = useProjectInfo();
@@ -39,10 +40,14 @@ export function Header() {
   return (
     <header className="p-6 flex flex-row justify-between">
       <div>
-        <h1 className="font-josefin text-3xl font-bold">
-          ROSEWOOD -{" "}
-          <span className=" text-rosewood-accent">CONTENT MANAGER</span>
-        </h1>
+        <div className="flex flex-wrap items-center gap-5">
+          <h1 className="font-josefin text-3xl font-bold">
+            ROSEWOOD -{" "}
+            <span className=" text-rosewood-accent">CONTENT MANAGER</span>
+          </h1>
+          <NavigationControls />
+        </div>
+
         <div className=" flex flex-row font-light text-sm">
           <span>Learning with Ghosts</span>
           <span className=" font-bold mx-1">◆ Status:</span>
