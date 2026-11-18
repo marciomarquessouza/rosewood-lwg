@@ -119,23 +119,6 @@ export function DayList() {
     >
       <div className="h-full overflow-y-auto">
         <div className="flex flex-col gap-4">
-          <Collapsible title="Details">
-            <div className="flex flex-col gap-3 pl-4">
-              <TextArea
-                id="lesson-plan"
-                readOnly
-                placeholder="Write overview outline here..."
-                value={project.lessonPlan}
-              />
-
-              <TextArea
-                id="lore"
-                readOnly
-                placeholder="Write overview outline here..."
-                value={project.lore}
-              />
-            </div>
-          </Collapsible>
           <Collapsible title={`Lesson Days`}>
             <>
               <div className="flex flex-row pl-4 items-center pb-2">

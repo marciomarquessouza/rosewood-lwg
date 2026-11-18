@@ -50,7 +50,27 @@ export function DayItem({
               )
             }
           >
-            Open
+            Details
+          </Button>
+          <Button
+            variant="light"
+            onClick={() =>
+              navigate(
+                `/project/${language}/${level}/days/${numberToDayDirectory(dayLessonContent.day)}/lesson`,
+              )
+            }
+          >
+            Lessons
+          </Button>
+          <Button
+            variant="light"
+            onClick={() =>
+              navigate(
+                `/project/${language}/${level}/days/${numberToDayDirectory(dayLessonContent.day)}/dialogues`,
+              )
+            }
+          >
+            Dialogues
           </Button>
           <Button
             variant="accent"
