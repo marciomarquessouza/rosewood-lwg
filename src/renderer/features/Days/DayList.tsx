@@ -5,7 +5,6 @@ import { levelSchema } from "../../../schemas/level";
 import { Panel } from "../../components/Panel";
 import { Feedback, FeedbackTypes } from "../../components/Feedback";
 import { Collapsible } from "../../components/Collapsible";
-import { TextArea } from "../../components/TextArea";
 import { useProjectContent } from "../../contexts/ProjectContentContext";
 import { Pill } from "../../components/Pill";
 import { Button } from "../../components/Button";
