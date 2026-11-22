@@ -5,6 +5,9 @@ export function getCreatePath(node: ProjectTreeNode): string | null {
     case "game-design-category":
       return `/${node.id}/new`;
 
+    case "game-design-category":
+      return `/${node.id}/new`;
+
     case "characters":
       return "/characters/new";
 
