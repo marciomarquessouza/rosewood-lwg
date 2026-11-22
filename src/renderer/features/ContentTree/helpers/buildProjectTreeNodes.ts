@@ -1,6 +1,9 @@
 import { ProjectContentLines } from "../../../../shared/project";
 
 type ProjectNodeType =
+  | "game-design"
+  | "game-design-category"
+  | "game-design-document"
   | "root"
   | "characters"
   | "character"
@@ -81,6 +84,21 @@ export function buildProjectTreeNodes(
             id: `characters/${character.id}`,
             name: `${character.displayName} [${character.id}]`,
             type: "character" as const,
+          })),
+        },
+        {
+          id: "game-design",
+          name: "Game Design",
+          type: "game-design",
+          children: (["overview", "mechanics", "lore"] as const).map((category) => ({
+            id: `game-design/${category}`,
+            name: category.charAt(0).toUpperCase() + category.slice(1),
+            type: "game-design-category" as const,
+            children: data.gameDesign.filter((doc) => doc.category === category).map((doc) => ({
+              id: `game-design/${category}/${doc.slug}`,
+              name: doc.title,
+              type: "game-design-document" as const,
+            })),
           })),
         },
         {
