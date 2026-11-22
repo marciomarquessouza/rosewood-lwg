@@ -6,6 +6,7 @@ import { DayLessonLocales, LocaleContentOptions } from "../schemas/locales";
 import { ProjectContent, ProjectOptions } from "../schemas/project";
 import { ProjectContentLines, ProjectInfo } from "./project";
 import type { GameDesignDocument, GameDesignCategory } from "./gameDesign";
+import type { GameDesignDocument, GameDesignCategory } from "./gameDesign";
 import type { CharacterProfile } from "../schemas/characterProfile";
 import { AppSettings } from "./settings";
 
@@ -32,6 +33,10 @@ export interface Rosewood {
     language: Language,
     level: Level,
   ): Promise<void>;
+
+  // game design
+  saveGameDesignDocument(path: string, document: GameDesignDocument, isUpdate: boolean): Promise<void>;
+  deleteGameDesignDocument(path: string, category: GameDesignCategory, slug: string): Promise<void>;
 
   // game design
   saveGameDesignDocument(path: string, document: GameDesignDocument, isUpdate: boolean): Promise<void>;
