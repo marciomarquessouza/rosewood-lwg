@@ -1,5 +1,7 @@
 import { saveGameDesignDocument, deleteGameDesignDocument } from "../services/gameDesign";
 import type { GameDesignCategory, GameDesignDocument } from "../../shared/gameDesign";
+import { saveGameDesignDocument, deleteGameDesignDocument } from "../services/gameDesign";
+import type { GameDesignCategory, GameDesignDocument } from "../../shared/gameDesign";
 import { ipcMain } from "electron";
 import { projectServices } from "../services/project";
 import { ProjectContent } from "../../schemas/project";
@@ -9,6 +11,8 @@ import type { CharacterProfile } from "../../schemas/characterProfile";
 import { Level } from "../../schemas/level";
 
 export function registerProjectHandlers() {
+  ipcMain.handle("game-design:save", (_, projectPath: string, document: GameDesignDocument, isUpdate: boolean) => saveGameDesignDocument(projectPath, document, isUpdate));
+  ipcMain.handle("game-design:delete", (_, projectPath: string, category: GameDesignCategory, slug: string) => deleteGameDesignDocument(projectPath, category, slug));
   ipcMain.handle("game-design:save", (_, projectPath: string, document: GameDesignDocument, isUpdate: boolean) => saveGameDesignDocument(projectPath, document, isUpdate));
   ipcMain.handle("game-design:delete", (_, projectPath: string, category: GameDesignCategory, slug: string) => deleteGameDesignDocument(projectPath, category, slug));
   ipcMain.handle("characters:save", async (_, projectPath: string, character: CharacterProfile, isUpdate: boolean) => {
