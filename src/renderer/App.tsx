@@ -17,7 +17,6 @@ import { ProjectLayout } from "./layouts/ProjectLayout";
 import { LessonForm } from "./features/Lesson/LessonForm";
 import { DialoguesForm } from "./features/Dialogues/DialoguesForm";
 import { GameDesignPage } from "./features/GameDesign/GameDesignPage";
-import { GameDesignPage } from "./features/GameDesign/GameDesignPage";
 import { ProjectDashboard } from "./features/Projects/ProjectDashboard";
 
 export function App() {
@@ -31,8 +30,6 @@ export function App() {
                 <Route element={<ProjectLayout />}>
                   <Route index element={<Dashboard />} />
 
-                  <Route path="game-design" element={<GameDesignPage />} />
-                  <Route path="game-design/:category/:slug" element={<GameDesignPage />} />
                   <Route path="game-design" element={<GameDesignPage />} />
                   <Route path="game-design/:category/:slug" element={<GameDesignPage />} />
                   <Route path="characters" element={<CharactersDashboard />} />
