@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { ProjectContentLines } from "../../../shared/project";
 import { getGameDesignDocuments } from "../gameDesign";
+import { getGameDesignDocuments } from "../gameDesign";
 import { getCharacters } from "../characters";
 import { openProject } from "./openProject";
 import { languageSchema } from "../../../schemas/language";
