@@ -24,6 +24,10 @@ const api: Rosewood = {
   saveGameDesignDocument: (path, document, isUpdate) => ipcRenderer.invoke("game-design:save", path, document, isUpdate),
   deleteGameDesignDocument: (path, category, slug) => ipcRenderer.invoke("game-design:delete", path, category, slug),
 
+  // game design
+  saveGameDesignDocument: (path, document, isUpdate) => ipcRenderer.invoke("game-design:save", path, document, isUpdate),
+  deleteGameDesignDocument: (path, category, slug) => ipcRenderer.invoke("game-design:delete", path, category, slug),
+
   // characters
   saveCharacter: (path, character, isUpdate) =>
     ipcRenderer.invoke("characters:save", path, character, isUpdate),
