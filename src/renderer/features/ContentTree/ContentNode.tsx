@@ -2,6 +2,9 @@ import { NodeRendererProps } from "react-arborist";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getCreatePath } from "./helpers/getCreatePath";
 import {
+  BookMarked,
+  FileText,
+  Gamepad2,
   BookOpen,
   ChevronDown,
   ChevronRight,
@@ -112,6 +115,9 @@ export function ContentNode({
 }
 
 const NODE_ICONS = {
+  "game-design": Gamepad2,
+  "game-design-category": BookMarked,
+  "game-design-document": FileText,
   root: LayoutDashboard,
   characters: Users,
   character: UserRound,

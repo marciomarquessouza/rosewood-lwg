@@ -3,6 +3,7 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 
 import { ProjectContentLines } from "../../../shared/project";
+import { getGameDesignDocuments } from "../gameDesign";
 import { getCharacters } from "../characters";
 import { openProject } from "./openProject";
 import { languageSchema } from "../../../schemas/language";
@@ -113,5 +114,6 @@ export async function getProjectContent(
   );
 
   const characters = await getCharacters(projectPath);
-  return { lines, characters };
+  const gameDesign = await getGameDesignDocuments(projectPath);
+  return { lines, characters, gameDesign };
 }

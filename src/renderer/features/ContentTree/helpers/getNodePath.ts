@@ -3,6 +3,9 @@ import { ProjectTreeNode } from "./buildProjectTreeNodes";
 export function getNodePath(node: ProjectTreeNode): string | null {
   const { type, id } = node;
 
+  if (type === "game-design") return "/game-design";
+  if (type === "game-design-category") return "/game-design";
+  if (type === "game-design-document") return `/${id}`;
   if (type === "root") return "/";
   if (type === "characters") return "/characters";
   if (type === "character")
