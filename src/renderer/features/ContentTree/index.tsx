@@ -53,6 +53,12 @@ export function ContentTree() {
           disableDrag
           disableDrop
           disableEdit
+          initialOpenState={{
+            root: true,
+            characters: false,
+            lesson: true,
+            "game-design": false,
+          }}
         >
           {ContentNode}
         </Tree>
